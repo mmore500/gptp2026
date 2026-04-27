@@ -2,8 +2,14 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=latex
 
 main.pdf
-paperproject.pdf
-paperproject.pdf
+gptp2026.pdf
+gptp2026-draft.pdf
+gptp2026-manuscript.pdf
+gptp2026-manuscript-draft.pdf
+gptp2026-supplement.pdf
+gptp2026-supplement-draft.pdf
+gptp2026.tex
+gptp2026-draft.tex
 
 ### LaTeX ###
 ## Core latex/pdflatex auxiliary files:
