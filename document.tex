@@ -4,6 +4,10 @@
 %%%%%                   GPTP 2026                          %%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% svmult loads color at end of class; force dvipsnames before any
+% package (e.g. hyperref via bookmark) pulls xcolor in unflagged.
+\PassOptionsToPackage{dvipsnames}{xcolor}
+
 \usepackage{imakeidx}
 
 \usepackage[utf8]{inputenc}
@@ -149,6 +153,8 @@
 
 \begin{document}
 
-\includefrom{Authors/Name/}{Author}
+% \subincludefrom (rather than \includefrom) appends to the parent
+% import path so the parent main.tex's \import{tex/}{...} keeps working.
+\subincludefrom{Authors/Name/}{Author}
 
 \end{document}
