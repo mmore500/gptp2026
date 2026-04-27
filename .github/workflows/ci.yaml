@@ -1,0 +1,26 @@
+name: CI
+on:
+  push:
+    branches: [ main, dev, tex ]
+  pull_request:
+    branches:
+      - '**'
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+jobs:
+
+  latex:
+    name: Latex Build
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/mmore500/teximage:sha-77b8179
+      options: --user root
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Build LaTeX document
+        run: |
+          trap 'cat *.log || true >> "$GITHUB_OUTPUT"' EXIT
+          make
