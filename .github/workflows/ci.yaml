@@ -24,3 +24,10 @@ jobs:
         run: |
           trap 'cat *.log || true >> "$GITHUB_OUTPUT"' EXIT
           make
+      - name: Upload PDF artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: main-pdf
+          path: main.pdf
+          if-no-files-found: warn
