@@ -1,3 +1,33 @@
 \abstract{%
-TODO abstract.
+% Exponential advances in HPC hardware enables profound scientific and industrial innovation, but performance overhead from synchronization and error recovery has become increasingly challenging.
+% ``Best-effort'' approaches that improve efficiency by relaxing guarantees of correctness and determinism have emerged as a promising remedy.
+% Here, we test the performance and scalability of fully-asynchronous, best-effort communication on existing, commercially-available HPC hardware.
+
+% A first set of experiments tested whether best-effort communication strategies can benefit performance compared to the traditional perfect communication model.
+% At high CPU counts, best-effort communication improved both the number of computational steps executed per unit time and the solution quality achieved within a fixed-duration run window.
+% Computation-heavy benchmark workloads yielded the strongest scaling efficiency, achieving at 64 processes 92\% the update-rate of single-process execution.
+% We observed a relative speedup of up to $7.8\times$ under communication-heavy workloads.
+
+% Under the best-effort model, characterizing the distribution of quality of service across processing components and over time is critical to understanding the actual computation being performed.
+% Additionally, a complete picture of scalability under the best-effort model requires analysis of how such quality of service fares at scale.
+% To answer these questions, we designed and measured a suite of quality of service metrics: simulation update period, message latency, message delivery failure rate, and message delivery coagulation.
+% Under a lower communication-intensivity benchmark parameterization, we found that median values for all quality of service metrics were stable when scaling from 64 to 256 processes.
+% Under maximal communication intensivity, we found only minor --- and, in most cases, nil --- degradation in median quality of service.
+
+% In an additional set of experiments, we tested the effect of an apparently faulty compute node on performance and quality of service.
+% Despite extreme quality of service degradation among that node and its clique, median performance and quality of service remained stable.
+
+% We used the Conduit C++ library for best-effort communication to perform reported experiments.
+% Development of this library stemmed from a practical need for a general-purpose, prepackaged framework for best-effort communication.
+% We hope that free availability of this library, which includes built-in tools to measure quality of service metrics, can facilitate broader incorporation of best-effort communication into HPC applications.
+
+
+Exploding compute, including the advent of new HPC accelerators, are straining existing paradigms for high-performance computing.
+One possible engineering trade-off is to move towards best-effort compute, trading determinism for better scalability vis-a-vis reduced synchronization overhead and irregularity/fault-robustness.
+Digital evolution, including evolutionary computation and artificial life, are uniquely positioned to explore this frontier.
+Evolution is uniquely amenable to disturbances --- including major extinctions --- and stochasticity, and out of necessity rich methods exist to overcome such challenges in allied fields of ecology and evolutionary biology.
+Further, in particular artificial life is meant to capture general dynamics, rather than to model anything specific, and evolutionary computation is measn tot optimize rather than to reflect nature.
+Shifting away from a deterministic computing paradign, however, introduces new challenges in managing reproducibility, variance, and bias.
+To this end, in addition to traditional data collection of simulation events, we argue that instrumentation on the real-time performance of simulation on hardware can help to understand the underlying structure of the computation actually being performed and screen for potential biases.
+Here, we review two case studies of best-effort computing infrastructure developed for digital evolution projects --- one using traditional HPC nodes and the other using the Cerebras Wafer-Scale Engine --- and show how best-effort computing can improve performance, and how instrumentation can identify potential biases.
 }
