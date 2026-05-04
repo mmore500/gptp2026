@@ -22,57 +22,5 @@
 
 \input{Author-acknowledgement}
 
-% Inline bibliography to avoid chapterbib/bibtex differences between
-% the local TeX Live and the older one in the CI teximage container.
-\begin{thebibliography}{1}
-\providecommand{\url}[1]{{#1}}
-\providecommand{\urlprefix}{URL }
-\expandafter\ifx\csname urlstyle\endcsname\relax
-  \providecommand{\doi}[1]{DOI~\discretionary{}{}{}#1}\else
-  \providecommand{\doi}{DOI~\discretionary{}{}{}\begingroup
-  \urlstyle{rm}\Url}\fi
-
-\bibitem{2020SciPy-NMeth}
-Virtanen, P., Gommers, R., Oliphant, T.E., et~al.: {SciPy} 1.0: Fundamental
-  Algorithms for Scientific Computing in Python.
-\newblock Nature Methods \textbf{17}, 261--272 (2020).
-\newblock \doi{10.1038/s41592-019-0686-2}
-
-\bibitem{foster2017open}
-Foster, E.D., Deardorff, A.: Open Science Framework (OSF).
-\newblock Journal of the Medical Library Association \textbf{105}(2) (2017).
-\newblock \doi{10.5195/jmla.2017.88}
-
-\bibitem{harris2020array}
-Harris, C.R., Millman, K.J., van~der Walt, S.J., et~al.: Array programming with
-  {NumPy}.
-\newblock Nature \textbf{585}(7825), 357--362 (2020).
-\newblock \doi{10.1038/s41586-020-2649-2}
-
-\bibitem{hunter2007matplotlib}
-Hunter, J.D.: Matplotlib: A 2D graphics environment.
-\newblock Computing in Science \& Engineering \textbf{9}(3), 90--95 (2007).
-\newblock \doi{10.1109/mcse.2007.55}
-
-\bibitem{mckinney-proc-scipy-2010}
-McKinney, W.: Data Structures for Statistical Computing in Python.
-\newblock In: Proceedings of the 9th Python in Science Conference, pp.~56--61
-  (2010).
-\newblock \doi{10.25080/Majora-92bf1922-00a}
-
-\bibitem{moreno2023teeplot}
-Moreno, M.A.: mmore500/teeplot.
-\newblock Zenodo (2023).
-\newblock \doi{10.5281/zenodo.10440670}
-
-\bibitem{reback2020pandas}
-pandas developers: pandas-dev/pandas: Pandas.
-\newblock Zenodo (2020).
-\newblock \doi{10.5281/zenodo.3509134}
-
-\bibitem{waskom2021seaborn}
-Waskom, M.L.: seaborn: statistical data visualization.
-\newblock Journal of Open Source Software \textbf{6}(60), 3021 (2021).
-\newblock \doi{10.21105/joss.03021}
-
-\end{thebibliography}
+\bibliographystyle{spmpsci}
+\bibliography{Authors/Moreno/reference}
