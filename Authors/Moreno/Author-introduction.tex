@@ -2,6 +2,60 @@
 
 \input{fig/best-effort.tex}
 
+\subsection{Outline}
+\begin{itemize}
+\item digital evolution needs larger-scale models
+  \begin{itemize}
+  \item is scale all you need? (TODO check hstrat-synthesis, MICDE proposal)
+  \item ride the coat tails of AI/ML and HPC
+  \item emerging AI/ML hardware accelerators
+  \end{itemize}
+\item massively distributed data architecture
+  \begin{itemize}
+  \item epitomize the extreme end of this is the Cerebras Wafer-Scale Engine, which...
+  \item but this poses challenges
+  \item mirroring broader trends in HPC
+  \end{itemize}
+\item a particular challenge is collecting data
+  \begin{itemize}
+  \item scientific simulation is only useful insofar as it is observable
+  \item likewise, diagnostic information is necessary for understanding how evolutionary computation works and troubleshooting/fine tuning it
+  \end{itemize}
+\item these challenges are not dissimilar to challenges faced in studying real-world systems
+  \begin{itemize}
+  \item it is possible to ``make do'' with incomplete and nondeterministic data collection
+  \item thus, one possible approach to collecting data within constraints of hardware accelerator devices is to stream it off by sampling at a capacity-available rate
+  \item we term this approach ``inferential obervability''
+  \end{itemize}
+\item such an approach is closely related to, but distinct from, approximate computing
+  \begin{itemize}
+  \item introduce non-determinstic computing
+  \item define different types of best-effort relaxation
+  \end{itemize}
+\item beyond data collection, with respect to the core underlying computation other challenge that arise at scale are synchronization and robustness
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\item need to contend with notable additional challenges in reproducibility and additional sources of bias are introduced and need to be contended with, as we will discuss later
+  \begin{itemize}
+  \item moving to a best-effort approach does not necessarily mean a complete lassiez-faire approach, it is possible to monitor within acceptable bounds
+  \item collecting data is important for understanding and reporting the structure of the underlying computation actually being done
+  \item and also screening for potential sources of bias
+  \item the first step to doing this is measuring
+  \end{itemize}
+\item we therefore propose that an additional layer of instrumentation should be considered when performing best-effort computation
+  \begin{itemize}
+  \item collect real-time performance characteristics (aka ``quality of service'')
+  \item it is possible to do this at an instantaneous rate, to aggregate over the long-run
+  \item here, we propose a few non-exhaustive metrics
+\end{itemize}
+\item next, we proceed to two case studies
+\begin{itemize}
+  \item in the first case study, we use our proposed metrics to examine the best-effort characteristics of multiprocessing-based best-effort framework to examine how its performance and quality-of-service scale and the robustness to hardware anomaly
+  \item in the second case study, we look at these strategies in action on the cerebras wafer-scale engine, and show how data collection and instrumentation can be used to flag and mitigate potential sources of bias
+\end{itemize
+\end{itemize}
+
 \subsection{Large Scale Applications}
 Successful modeling efforts, though, require sufficient scale to capture modeled systems' emergent behavior.
 qualitatively correct outcomes require large models because they hinge on cross-scale dynamics \cite{penczykowski2016understanding,alizon2012modelling}
