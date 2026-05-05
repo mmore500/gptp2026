@@ -1,3 +1,19 @@
 \section{Case Study 1} \label{moreno:sec:case1}
 
 \input{fig/cpu.tex}
+
+The Message Passing Interface (MPI) standard \cite{gropp1996high} represents the mainstay for high-performance computing applications.
+This standard exposes communication primitives directly to the end user.
+MPI's nonblocking communication primitives, in particular, are sufficient to program distributed computations with relaxed synchronization requirements.
+Although it's explicit, the imperative nature of the MPI protocols enables precise control over execution; unfortunately it also poses significant expense in terms of programmability.
+This cost manifests in terms of reduced programmer productivity and software quality, while increasing domain knowledge requirements and the effort required to tune for performance due to program brittleness \cite{gu2019comparative, tang2014mpi}.
+
+In response to programmability concerns, many frameworks have arisen to offer useful parallel and distributed programming abstractions.
+Task-based frameworks such as Charm++ \cite{kale1993charm++}, Legion \cite{bauer2012legion}, Cilk \cite{blumofe1996cilk}, and Threading Building Blocks (TBB) \cite{reinders2007intel} describe the dependency relationships among computational tasks and associated data and rely on an associated runtime to automatically schedule and manage execution.
+These frameworks assume a deterministic relationship between tasks.
+In a similar vein, programming languages and extensions like Unified Parallel C (UPC) \cite{el2006upc} and Chapel \cite{chamberlain2007parallel} rely on programmers to direct execution, but equip them with powerful abstractions, such as global shared memory.
+However, Chapel's memory model explicitly forbids data races and UPC ultimately relies on a barrier model for data transfer.
+
+To bridge these shortcomings, we employ a new software framework, the Conduit C++ Library for Best-Effort High Performance Computing \cite{moreno2021conduit}.
+The Conduit library provides tools to perform best-effort communication in a flexible, intuitive interface and uniform inter-operation of serial, parallel, and distributed modalities.
+Although Conduit currently implements distributed functionality via MPI intrinsics, in future work we will explore lower-level protocols like InfiniBand Unreliable Datagrams \cite{kashyap2006ip, koop2007high}.
