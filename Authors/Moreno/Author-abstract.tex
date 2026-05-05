@@ -29,14 +29,14 @@ Available processing power, however, is by nature vastly distributed --- a chall
 % (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras), which rely on highly-distributed on-chip dataflow architectures comprising hundreds or thousands of cores.
 For instance, to pack 880,000 processors onto a single chip, the Cerebras Wafer-Scale Engine (WSE) provisions just 42kB of on-device memory per processor, requires multi-hop routing for point-to-point communication, and supports data export only from the chip periphery.
 Such constraints, compounded by inevietable hardware anomolies at scale, may make worthwhile partial relaxations of the traditional deterministic computing paradigm.
-Such best-effort approaches, however, necessitate care to maintain reproducibility and mitigate bias.
+Best-effort approaches, however, require care to maintain reproducibility and mitigate bias in the face of hardware stochasticity and anomalies.
 % Such best-effort relaxations may accept potentially-incomplete data collection, or .
 % one using  and the other using .
 % collection, a paradigm we term ``inferential observability,'' or be extended to underlying core computation.
-Here, we develop a framework to characterize runtime behavior of best-effort code to screen for runtime anomalies and apply it to two case studies of best-effort computing approaches in digital evolution projects.
+Here, we develop a framework to characterize runtime behavior of best-effort code and apply it to two case studies of best-effort computing approaches in digital evolution projects.
 The first case study, applying best-effort strategies to CPU-based multiprocessing, tests scaling efficiency, runtime quality-of-service, and robustness of both to hardware anomolies.
-The second case study explores best-effort digital evolution on the Cerebras Wafer-Scale Engine, focusing in particular on tracking evolution under constraints memory, bandwidth, and data loss arising from hardware faults.
-Cataloging potential scopes and forms of best-effort relaxations, we argue that digital evolution is uniquely positioned to lead exploration of post-deterministic HPC and, indeed, already has a rich history of doing so.
+The second case study explores digital evolution on the Cerebras Wafer-Scale Engine, testing best-effort strategies to track evolution under constraints in memory, bandwidth, and data fidelity.
+Cataloging potential forms of best-effort relaxation and scopes in which they might be applied, we argue that digital evolution is uniquely positioned to lead exploration of post-deterministic HPC and, indeed, already has a rich history of doing so.
 % In the latter case, to mitigate potential bias and improve reproducibility, we argue that instrumentation on real-time performance of simulation on hardware can help to understand the underlying structure of the computation actually being performed.
 % Here, we review two case studies of best-effort computing infrastructure developed for digital evolution projects --- one using traditional HPC nodes and the other using the Cerebras Wafer-Scale Engine --- and show how best-effort computing can improve scalability, and how suggest possible instrumentation to identify and mitigate potential biases.
 % Evolution is uniquely amenable to disturbances --- including major extinctions --- and stochasticity, and out of necessity rich methods exist to overcome such challenges in allied fields of ecology and evolutionary biology.
