@@ -21,10 +21,10 @@
 % Development of this library stemmed from a practical need for a general-purpose, prepackaged framework for best-effort communication.
 % We hope that free availability of this library, which includes built-in tools to measure quality of service metrics, can facilitate broader incorporation of best-effort communication into HPC applications.
 %
-Developments in high-performance computing (HPC) technology continue to drastically increase quantities of available processor cores, driven in large part by compute-dense hardware accelerator devices.
+Developments in high-performance computing (HPC) technology continue to drastically increase quantities of available processor cores, driven in large part by advances in compute-dense hardware accelerator devices.
 % In the context of evolutionary biology, these technologies offer new opportunities for digital experiments exploring cross-scale biological phenomena — such as many-species eco-evolutionary dynamics and evolutionary transitions in individuality (e.g., multicellularity, eusociality).
-In the context of digital evolution, this explosive growth offers immense opportunity to advance both hypothesis-driven explorations of multi-scale biological phenomena and application-driven optimization targeting rugged, expensive problem domains.
-Such processing power, however, is by nature vastly distributed --- a challenge epitomized by emerging AI/ML hardware accelerator platforms.
+In the context of digital evolution, this explosive growth offers immense opportunity to advance both hypothesis-driven explorations of multi-scale biological phenomena and application-driven evolutionary optimization targeting rugged, expensive problem domains.
+Available processing power, however, is by nature vastly distributed --- a challenge epitomized by emerging AI/ML hardware accelerator platforms.
 % memory, bandwidth, fault-tolerance, and synchronization arise in harnessing it
 % (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras), which rely on highly-distributed on-chip dataflow architectures comprising hundreds or thousands of cores.
 For instance, to pack 880,000 processors onto a single chip, Cerebras' Wafer-Scale Engine (WSE) platform provisions only 42kB of on-device memory per processor, requires multi-hop routing for point-to-point communication, and supports data export only from the chip periphery.
@@ -32,13 +32,12 @@ To work within such constraints, partial relaxations of traditional deterministi
 % Such best-effort relaxations may accept potentially-incomplete data collection, or .
 % one using  and the other using .
 % collection, a paradigm we term ``inferential observability,'' or be extended to underlying core computation.
-Here, we develop a conceptual framework for screening for potential issues in reproducibility and bias and explore two case studies of best-effort computing approaches in digital evolution projects.
-The first, leveraging CPU-based multiprocessing to support experiments studying major transitions in evolution, develops metrics for quality-of-service, explores how they scale and are distributed within processor topology, and how they respond to hardware anomolies.
-The second focuses on best-effort data collection from the the Cerebras Wafer-Scale Engine, demonstrating how best-effort approaches can be used to effectively work within constraints of on-chip memory, host-device bandwidth, and even hardware faults rendering certain data unavailable.
-% Finally, we propose a roadmap for further progress in this area,
-Digital evolution is uniquely positioned to explore such possibilities and, indeed, has a rich history of doing so establish a roadmap.
+Here, we develop a framework for instrumenting best-effort code to screen for runtime anomalies and explore two case studies of best-effort computing approaches in digital evolution projects.
+The first case study, leveraging CPU-based multiprocessing to support experiments studying major transitions in evolution, explores how performance benefits scale, how best-effort quality-of-service vary, and how both respond to hardware anomolies.
+The second case study focuses on best-effort data collection from the the Cerebras Wafer-Scale Engine, demonstrating how best-effort approaches can be used to effectively work within constraints of on-chip memory, host-device bandwidth, and even hardware faults rendering certain data unavailable.
+Cataloging potential types of best-effort relaxations and scopes of best-effort strategies, we argue that digital evolution is uniquely positioned to lead exploration of best-effort computing strategies for high-performance computing and, indeed, already has a rich history of doing so.
 % In the latter case, to mitigate potential bias and improve reproducibility, we argue that instrumentation on real-time performance of simulation on hardware can help to understand the underlying structure of the computation actually being performed.
-Here, we review two case studies of best-effort computing infrastructure developed for digital evolution projects --- one using traditional HPC nodes and the other using the Cerebras Wafer-Scale Engine --- and show how best-effort computing can improve scalability, and how suggest possible instrumentation to identify and mitigate potential biases.
+% Here, we review two case studies of best-effort computing infrastructure developed for digital evolution projects --- one using traditional HPC nodes and the other using the Cerebras Wafer-Scale Engine --- and show how best-effort computing can improve scalability, and how suggest possible instrumentation to identify and mitigate potential biases.
 % Evolution is uniquely amenable to disturbances --- including major extinctions --- and stochasticity, and out of necessity rich methods exist to overcome such challenges in allied fields of ecology and evolutionary biology.
 % Further, in particular artificial life is meant to capture general dynamics, rather than to model anything specific, and evolutionary computation is meant to optimize rather than to reflect nature.
 % Shifting away from a deterministic computing paradign, however, introduces new challenges in managing reproducibility, variance, and bias.
