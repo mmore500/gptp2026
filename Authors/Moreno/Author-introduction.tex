@@ -1,7 +1,7 @@
 \section{Introduction} \label{moreno:sec:introduction}
 
 % --- Paragraph 1: Opening ---
-Next-generation computational hardware accelerators (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras) have demonstrated immense potential in testbed deployments \citep{VanEssendelft2025} and are transforming the leading edge of High-Performance Computing (HPC).
+Next-generation computational hardware accelerators (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras) have demonstrated immense potential in testbed deployments \cite{VanEssendelft2025} and are transforming the leading edge of High-Performance Computing (HPC).
 These emerging platforms exploit highly-distributed on-chip dataflow architectures to achieve extraordinary computational throughput, at the cost of exacerbating strain on memory and bandwidth capacities.
 For instance, to pack 880,000 processors onto a single chip, Cerebras' Wafer-Scale Engine (WSE) platform provisions only 42kB of on-device memory per processor, requires multi-hop routing for point-to-point communication, and allows data export only from the chip periphery.
 For many HPC applications, meeting these constraints will require a fundamental overhaul of data handling algorithms.
@@ -18,24 +18,24 @@ Accordingly, there is an urgent need to develop algorithmic and statistical tool
 In some regards, computational costs and constraints arising around data storage and accessibility in modern HPC resemble the logistical costs and constraints faced in research studying real-world systems.
 Rather than ``complete,'' deterministic data observability, most real-world studies instead rely on dynamic, query-driven sampling, a paradigm we term ``inferential observability.''
 \textbf{\textit{I propose to translate and extend experimental design, sampling techniques, and statistical methods from natural sciences to facilitate extreme-scale scientific computing under bandwidth/memory-constraint, runtime anomalies and hardware faults, and asymmetries in data accessibility.}}
-This work will build on my previous DOE ASCR-supported work ~\citep{moreno_extending_2025, moreno2025testing} (example in Fig.
+This work will build on my previous DOE ASCR-supported work ~\cite{moreno_extending_2025, moreno2025testing} (example in Fig.
 1) to broaden the set of mainstream HPC workloads able to harness next-generation HPC architectures by helping to accommodate these platforms' constraints in data storage and locality.
 Inferential observability strategies will support simulation analysis capabilities that degrade gracefully under bandwidth scarcity, memory scarcity, hardware heterogeneity, and intermittent anomalies and faults characteristic of post-exascale computing.
 % , coupled with algorithms for on-the-fly data stream sketching and coarsening,
-% Our rationale for this hypothesis draws on successful preliminary work applying inferential observability to agent-based modeling and simulation (ABMS) experiments tracking dynamics of large biological populations on the Cerebras Wafer-Scale Engine (WSE)~\citep{moreno2024trackable,moreno2025testing,moreno2025hypermutator_sc}, as well as the broader track-records of physical, biological, and environmental sciences in overcoming analogous challenges in data availability cost.
-% Furthermore, the history of computational optimization shows that rigorous characterization of scaling behavior has been essential for confidently committing additional compute resources --- and that doing so has repeatedly yielded substantial returns~\citep{kaplan2020scaling}.
+% Our rationale for this hypothesis draws on successful preliminary work applying inferential observability to agent-based modeling and simulation (ABMS) experiments tracking dynamics of large biological populations on the Cerebras Wafer-Scale Engine (WSE)~\cite{moreno2024trackable,moreno2025testing,moreno2025hypermutator_sc}, as well as the broader track-records of physical, biological, and environmental sciences in overcoming analogous challenges in data availability cost.
+% Furthermore, the history of computational optimization shows that rigorous characterization of scaling behavior has been essential for confidently committing additional compute resources --- and that doing so has repeatedly yielded substantial returns~\cite{kaplan2020scaling}.
 % The \underline{\textit{rationale}} that underlies the proposed research is that, once principled inferential-observability methods are available, HPC practitioners will be able to scale simulations and optimizations on accelerator hardware without the current requirement for exhaustive data transfer, thereby unlocking performance and energy-efficiency gains that are presently inaccessible.
-My prior work drawing formal connections between ecological, evolutionary, and computational theory \citep{Dolson2018a,Dolson2024} positions me ideally to tackle these problems.
+My prior work drawing formal connections between ecological, evolutionary, and computational theory \cite{Dolson2018a,Dolson2024} positions me ideally to tackle these problems.
 %and my interdisciplinary network of collaborators spanning statistical methods for spatial ecology, computer science, epidemiology, and evolutionary biology.
 
 \section{Introduction}
 
-\input{fig/model-schematic}
+% \input{fig/model-schematic}
 
 % Explanation of the importance and relevance of the proposed work as well as a review of the relevant literature.
 Sectors ranging from public health to infrastructure to telecommunications rely on agent-based modeling or simulation (ABMS) to provide mechanistic insight and optimize problem-solving efforts.
 Successful modeling efforts, though, require sufficient scale to capture modeled systems' emergent behavior.
-Cluster computing applying Parallel Discrete Event Simulation (PDES) approaches has enabled highly-impactful ABMS work tracking hundreds of thousands of agents across thousands of locations --- for example, plausibly representing the entirety of social interactions within the City of Chicago \citep{macal2018chisim}.
+Cluster computing applying Parallel Discrete Event Simulation (PDES) approaches has enabled highly-impactful ABMS work tracking hundreds of thousands of agents across thousands of locations --- for example, plausibly representing the entirety of social interactions within the City of Chicago \cite{macal2018chisim}.
 However, applications of ABMS to solve problems at larger scales (e.g., national-scale) and finer resolutions (e.g., within-person immunological compartments) are in part constrained by limitations in computational scale.
 Emerging \underline{AI/ML accelerator hardware} platforms (e.g., Cerebras \underline{Wafer-Scale Engine}, Graphcore \underline{Intelligence Processing Unit}) affording hundreds of thousands of processing cores have potential to unleash transformative, orders-of-magnitude growth in ABMS/PDES scale and sophistication.
 While these hardware platforms impose limitations characteristic of highly-distributed, many-processor computation, they are well-suited for work with ABMS; physical constraints in the layout of processor cores mirror the locally-structured interactions typical among agents in ABMS.
@@ -64,9 +64,9 @@ Leveraging these strategies will require the development of algorithms for \unde
 
 
 While such an approach promises to support wide-ranging scientific applications, we will test our ideas in the context of \underline{evolutionary epidemiology} (Figure \ref{fig:model-schematic}).
-We believe this problem domain is a good testbed, as 1) qualitatively correct outcomes require large models because they hinge on cross-scale dynamics \citep{penczykowski2016understanding,alizon2012modelling} and, 2) evolutionary epidemiologists working \textit{in vivo} already employ analogous, mature sampling-based surveillance methods (e.g., wastewater monitoring, viral sequencing).
+We believe this problem domain is a good testbed, as 1) qualitatively correct outcomes require large models because they hinge on cross-scale dynamics \cite{penczykowski2016understanding,alizon2012modelling} and, 2) evolutionary epidemiologists working \textit{in vivo} already employ analogous, mature sampling-based surveillance methods (e.g., wastewater monitoring, viral sequencing).
 Conventional epidemiological models have lagged in incorporating detailed pathogen evolution (and, similarly, models of pathogen evolution often ignore epidemiological processes), in part due to scaling challenges.
-Nevertheless, as the continual evolution of variants of concern during the first years of the COVID-19 pandemic starkly demonstrated \citep{plante2021variant}, pathogen evolution is a crucial consideration for effective public health policy decision-making.
+Nevertheless, as the continual evolution of variants of concern during the first years of the COVID-19 pandemic starkly demonstrated \cite{plante2021variant}, pathogen evolution is a crucial consideration for effective public health policy decision-making.
 To fully capture evolutionary dynamics, these models must implement both hosts and pathogens as first-class agents.
 
 Achieving such evo-epidemiological detail at city scales requires immense compute power, more than is available to typical high performance computing (HPC) users.
@@ -77,7 +77,7 @@ We will also explore implementation on the more conventional 1,400-processor Gra
 % One common purpose for Agent-Based Model Simulations (ABMS) is to reproduce a real-world phenomenon in a digital context where the behavior of the system can be perfectly observed.
 % Often, the behavior of interest relates to interactions or relationships between agents.
 % The inter-agent synchronization that such data collection requires can be a major obstacle to unifying ABMS with Parallel Discrete Event Simulations (PDES).
-% For example, classical approaches to tracking phylogenetic (i.e., ancestry) relationships in ABMS representing evolutionary phenomena incur a dramatic slowdown in parallel computing contexts \citep{morenoHereditaryStratigraphyGenome2022}.
+% For example, classical approaches to tracking phylogenetic (i.e., ancestry) relationships in ABMS representing evolutionary phenomena incur a dramatic slowdown in parallel computing contexts \cite{morenoHereditaryStratigraphyGenome2022}.
 % We propose a space time memory approach to scalable data collection that will enable development of unified ABMS/PDES systems.
 
 % Specifically, our approach will center on a paradigm we term ``best-effort observability.''
@@ -100,7 +100,7 @@ Through this work, we will unlock the ability to perform scientific inquiry that
 
 % While PDES allow dramatic scalability improvements over ABMS, they are more severely impacted by time complexity cost of data tracking.
 Data tracking often requires cross-referencing multiple simulation elements, which can introduce runtime communication costs under parallel and distributed computation.
-For example, in evolutionary models, phylogenetic relatedness (i.e., line of descent) information enables powerful analyses, but perfectly tracking this data necessitates difficult-to-scale bookkeeping to purge extinct lineages \citep{moreno2024analysis} (we solved this problem using a combination of inferential observability and space-time memory; see HStrat in Prior Research).
+For example, in evolutionary models, phylogenetic relatedness (i.e., line of descent) information enables powerful analyses, but perfectly tracking this data necessitates difficult-to-scale bookkeeping to purge extinct lineages \cite{moreno2024analysis} (we solved this problem using a combination of inferential observability and space-time memory; see HStrat in Prior Research).
 Qualitatively similar problems occur more broadly in contexts where patterns of interaction among simulation elements must be tracked (e.g., tracking chains of pathogen transmission).
 Beyond slowdown from synchronization inefficiencies, a fundamental obstacle is also posed when data storage needs exceed available space.
 % Thus, solving this data scalability problem is critical for realizing the full power of ABMS, PDES, and hybrids thereof.
@@ -161,22 +161,22 @@ This approach combines sampling-driven, global-resolution surveillance with trig
 Because trigger-, query-, and sample-driven data are not known \textit{a priori}, our approach must draw on local time series records on demand.
 Space-time memory provides a natural framing to efficiently marshal this on-demand device-to-host telemetry.
 Under the space-time memory model, cooperating processes exchange information through on-demand access to chronological buffers of local state.
-In its original conception, garbage collection on these space-time buffers proceeds through reference-counting or Global Virtual Time (GVT) mechanisms \citep{ramachandran1999space}, which are necessary to ensure no simulation state depended on by another process is discarded.
+In its original conception, garbage collection on these space-time buffers proceeds through reference-counting or Global Virtual Time (GVT) mechanisms \cite{ramachandran1999space}, which are necessary to ensure no simulation state depended on by another process is discarded.
 However, sampling-based inferential observability requires no such firm guarantees because simulation outcomes are not affected.
 Instead, we propose to perform garbage collection implicitly via \textit{DStream stream curation algorithms}.
 These algorithms fill a fixed-size buffer with data stream elements.
 Then, further ingestions are sequenced so that, on a rolling basis as stored entries get overwritten, remaining entries maintain a desired distribution of origin times.
 This scheme allows for constant-time ingestion.
 Providing means to calculate each position's origin time minimizes memory overhead (i.e., no stored indices, pointers, etc.).
-Depending on the nature of analysis objectives, retained data stream elements can be spread evenly across elapsed time (``steady'') or oversampled for recent events in a recency-proportional manner (``tilted'') \citep{han2005stream,zhao2005generalized}.
+Depending on the nature of analysis objectives, retained data stream elements can be spread evenly across elapsed time (``steady'') or oversampled for recent events in a recency-proportional manner (``tilted'') \cite{han2005stream,zhao2005generalized}.
 
 Our first aim harnesses space-time memory buffers for robust inferential observability.
 Then, our second aim devlops additional considerations necessary to ensure full performance on the Graphcore Intelligence Processing Unit (IPU) and the Cerebras Wafer-Scale Engine (WSE) accelerator hardware.
 Simulation will apply a simple conservative synchronization strategy.
 However, the massively decentralized WSE architecture may require synchronization relaxations to achieve satisfactory performance.
 % Under these relaxations, we would either allow some degree of clock drift, where the simulation is allowed to run slower on laggard processes and/or perform load-shedding to maintain a soft real-time pace.
-% Either of these approaches would be vetted explicitly to ensure underlying simulation dynamics remain sound, and runtime behavior would be directly measured to ensure proper contextualization of simulation results \citep{moreno2022best}.
-% Encouragingly, other work suggests evo-epidemiological modeling to be largely robust to such relaxed synchronization \citep{breugnot2023distribution}.
+% Either of these approaches would be vetted explicitly to ensure underlying simulation dynamics remain sound, and runtime behavior would be directly measured to ensure proper contextualization of simulation results \cite{moreno2022best}.
+% Encouragingly, other work suggests evo-epidemiological modeling to be largely robust to such relaxed synchronization \cite{breugnot2023distribution}.
 The IPU provides express support for a more traditional Bulk-Synchronous Parallelism (BSP) model, so will proceed fully independent of such considerations.
 
 Our third aim builds on the agent-based ``ChiSIM'' framework, which will serve as the epidemiological core of our modeling work.
@@ -188,8 +188,8 @@ Marisa Eisenberg to maximize real-world applicability of our modeling efforts.
 
 Simulation is useful insofar as it is interpretable.
 As simulation scales, so does the challenge of managing an exhaustive data record.
-Recent hardware trends only exacerbate matters, growing processing power while reducing the amount of RAM and disk storage available per core --- especially in accelerator-driven HPC architectures \citep{khan2021analysis,gholami2024ai}.
-For such architectures, host-device bandwidth and latency strongly impact performance \citep{kwon2018beyond}.
+Recent hardware trends only exacerbate matters, growing processing power while reducing the amount of RAM and disk storage available per core --- especially in accelerator-driven HPC architectures \cite{khan2021analysis,gholami2024ai}.
+For such architectures, host-device bandwidth and latency strongly impact performance \cite{kwon2018beyond}.
 Such concerns arise especially in work with the Cerebras WSE where only a small fraction of peripherally-located PEs interface to the host.
 Our proposed inferential observability paradigm will help mitigate these problems.
 In this aim, we propose to develop, formalize, and experimentally evaluate this approach.
@@ -199,29 +199,29 @@ As described in Prior Work, we have recently begun developing DStream: a set of 
 All DStream algorithms store data in fixed-size buffers, in essence managed as space-time memory.
 Developed inferential observability methods will support 1) trading precision for computational efficiency in terms of time, space, and synchronization overhead and 2) tuning the extent to which recent data should be prioritized over older data.
 
-\input{lib/dissertationonly.tex}
+% \input{lib/dissertationonly.tex}
 
 \section{Introduction}
 \label{sec:introoduction;ch:conduit}
 
 The ubiquity of computing in modern science and engineering and steady growth in its capability has become so ingrained as to become obscured.
-Hard problems in science and engineering have achieved major advances on account, at least in part, of the enabling role of computational processing power \citep{gagliardi2019international}.
+Hard problems in science and engineering have achieved major advances on account, at least in part, of the enabling role of computational processing power \cite{gagliardi2019international}.
 Important remaining problems stand to hinge on further advances in computational capacity.
 New challenges are emerging with keeping pace, however.
 
-Due to physical constraints associated with existing computing technology, over the last decades, high-performance computational capability has grown through scaling-out rather than souping-up \citep{sutter2005free}.
+Due to physical constraints associated with existing computing technology, over the last decades, high-performance computational capability has grown through scaling-out rather than souping-up \cite{sutter2005free}.
 As such, the computational capacity of high-performance computing (HPC) clusters has become increasingly dependent on the cooperation of larger and larger collections of hardware components.
-With scale, it becomes increasingly difficult to orchestrate efficient use of available hardware and also provide reproducible results (or even near-perfectly reproducible results --- i.e., up to effects from floating point non-transitivity) consistent with models of computation as being performed by a reliable digital machine \citep{heroux2014toward}.
+With scale, it becomes increasingly difficult to orchestrate efficient use of available hardware and also provide reproducible results (or even near-perfectly reproducible results --- i.e., up to effects from floating point non-transitivity) consistent with models of computation as being performed by a reliable digital machine \cite{heroux2014toward}.
 
 
-The bulk synchronous parallel (BSP) model, which is prevalent among classic HPC applications \citep{dongarra2014applied}, illustrates the challenge.
+The bulk synchronous parallel (BSP) model, which is prevalent among classic HPC applications \cite{dongarra2014applied}, illustrates the challenge.
 This model segments computational tasks into sequential global supersteps.
 Tasks at superstep $i$ depend only on data from strictly preceding steps $<i$, often just $i-1$.
 Parallelization assigns tasks across a pool of available processing components.
 
 The BSP model assumes perfectly reliable messaging: all dispatched messages between computational fragments are faithfully delivered.
 In practice, realizing this assumption introduces overhead costs: secondary acknowledgment messages to confirm delivery and mechanisms to dispatch potential resends as the need arises.
-Global synchronization occurs between supersteps, with cotasks held until their preceding superstep has completed \citep{valiant1990bridging}.
+Global synchronization occurs between supersteps, with cotasks held until their preceding superstep has completed \cite{valiant1990bridging}.
 This ensures availability of every single expected input, including those required from fragments located on other processing elements, before proceeding.
 
 Supersteps therefore only turn over once the entire pool of processing components have completed their work for that superstep.
@@ -230,82 +230,82 @@ Put another way, all processing components stall until the most laggardly compon
 
 Heterogeneous tasks, with some fast to process and others much slower, would result in poor efficiency under a naive approach where each processing element handled just one fragment.
 Some processing elements with easy tasks would finish early then idle while more difficult tasks carry on.
-To counteract such load imbalances, programmers can allow for ``parallel slack'' by ensuring computational fragments greatly outnumber processing elements or even performing dynamic load balancing at runtime \citep{valiant1990bridging}.
+To counteract such load imbalances, programmers can allow for ``parallel slack'' by ensuring computational fragments greatly outnumber processing elements or even performing dynamic load balancing at runtime \cite{valiant1990bridging}.
 
 Unfortunately, hardware factors on the underlying processing elements ensure that inherent global superstep jitter will persist: memory access and message delivery time varies due to cache effects, network conditions, error detection and recovery, process scheduling by the operating system, etc.
-\citep{dongarra2014applied}.
-Power management concerns introduce even more variability \citep{gropp2013programming}.
+\cite{dongarra2014applied}.
+Power management concerns introduce even more variability \cite{gropp2013programming}.
 Worse yet, as we work with more and more processes, the expected magnitude of the worst-sampled jitter grows and grows --- and in lockstep with it, our expected superstep duration.
 % In the double dutch analogy, with enough jumpers, at almost every turn of the rope someone will need to stop and tie their shoe.
 The global synchronization operations underpinning the BSP model further hinder its scalability.
-Irrespective of time to complete computational fragments within a superstep, the cost of performing a global synchronization operation increases with processor count \citep{dongarra2014applied}.
+Irrespective of time to complete computational fragments within a superstep, the cost of performing a global synchronization operation increases with processor count \cite{dongarra2014applied}.
 
 Efforts to recover scalability by relaxing superstep synchronization fall under two banners.
-The first approach, termed ``Relaxed Bulk-Synchronous Programming'' (rBSP), hides latency by performing collective operations asynchronously, essentially allowing useful computation to be performed at the same time as synchronization primitives for a single superstep percolate through the collective \citep{heroux2014toward}.
+The first approach, termed ``Relaxed Bulk-Synchronous Programming'' (rBSP), hides latency by performing collective operations asynchronously, essentially allowing useful computation to be performed at the same time as synchronization primitives for a single superstep percolate through the collective \cite{heroux2014toward}.
 So, the time cost required to perform that synchronization can be discounted, up to the time taken up by computational work at one superstep.
 Likewise, individual processes experiencing heavier workloads or performance degradation due to hardware factors can fall behind by up to a single superstep without slowing the entire collective.
 However, this approach cannot mask synchronization costs or cumulative performance degradation exceeding a single superstep's duration.
 
-The second approach, termed relaxed barrier synchronization, forgoes global synchronization entirely \citep{kim1998relaxed}.
+The second approach, termed relaxed barrier synchronization, forgoes global synchronization entirely \cite{kim1998relaxed}.
 Instead, computational fragments at superstep $i$ only wait on expected inputs from the subset of superstep $i-1$ fragments that they directly interact with.
 % Imagine a double-dutch routine where each jumper exchanges patty cakes with both neighboring jumpers at every turn of the rope.
 % Relaxed barrier synchronization would dispense entirely with the rope.
 % Instead, players would be free to proceed to their next round of patty cakes as soon as they had successfully patty-caked both neighbors.
 % With $n$ players, player 0 could conceivably advance $n$ rounds ahead of player $n-1$ (each player would be one round ahead of their right neighbor).
-Assuming computational interactions form a graph structure that persists across supersteps, in the general case before causing the entire collective to slow an individual fragment can fall behind at most a number of supersteps equal to the graph diameter \citep{gamell2015local}.
+Assuming computational interactions form a graph structure that persists across supersteps, in the general case before causing the entire collective to slow an individual fragment can fall behind at most a number of supersteps equal to the graph diameter \cite{gamell2015local}.
 Even though this approach can shield the collective from most one-off performance degradations of a single fragment (especially in large-diameter cases), persistently laggard hardware or extreme one-off degradations will ultimately still hobble efficiency.
-Dynamic task scheduling and migration have been explored to address this shortcoming, redistributing work in order to ``catch up'' delinquent fragments \citep{acun2014parallel}.
+Dynamic task scheduling and migration have been explored to address this shortcoming, redistributing work in order to ``catch up'' delinquent fragments \cite{acun2014parallel}.
 % With our double-dutch analogy, we could think of this something like a team coach temporarily benching a jumper who skinned their knee and instructing the other jumpers to pick up their roles in the routine.
 
 In addition to concerns over efficiency, resiliency poses another inexorable problem to massive HPC systems.
 In small scales, it usually suffices to assume failures occur negligibly, with any that do transpire simply causing an (acceptably rare) global interruption or failure.
-At large scales, however, software crashes and hardware failures become the rule rather than the exception \citep{dongarra2014applied} --- at some point reaching completion requires so many retries as to be practically infeasible.
+At large scales, however, software crashes and hardware failures become the rule rather than the exception \cite{dongarra2014applied} --- at some point reaching completion requires so many retries as to be practically infeasible.
 
-A typical contemporary approach to improve resiliency is checkpointing: the runtime periodically records global state then, when a failure arises, progress is kicked off from the most recent global known-good state \citep{hursey2007design}.
+A typical contemporary approach to improve resiliency is checkpointing: the runtime periodically records global state then, when a failure arises, progress is kicked off from the most recent global known-good state \cite{hursey2007design}.
 Global checkpoint-based recovery is expensive, especially at scale due to overhead associated with regularly recording global state, losing progress since the most recent checkpoint, and actually performing a global teardown and restart procedure.
-% In fact, at large enough scales global recovery durations could conceivably exceed mean time between failures, making any forward simulation progress all but impossible \citep{dongarra2014applied}.
-The local failure, local recovery (LFLR) paradigm eschews global recovery by maintaining persistent state on a process-wise basis and providing a recovery function to initialize a step-in replacement process \citep{heroux2014toward,teranishi2014toward}.
-In practice, such an approach can require keeping running logs of all messaging traffic in order to replay them for the benefit of any potential step-in replacement \citep{chakravorty2004fault}.
+% In fact, at large enough scales global recovery durations could conceivably exceed mean time between failures, making any forward simulation progress all but impossible \cite{dongarra2014applied}.
+The local failure, local recovery (LFLR) paradigm eschews global recovery by maintaining persistent state on a process-wise basis and providing a recovery function to initialize a step-in replacement process \cite{heroux2014toward,teranishi2014toward}.
+In practice, such an approach can require keeping running logs of all messaging traffic in order to replay them for the benefit of any potential step-in replacement \cite{chakravorty2004fault}.
 % Returning once more to the double dutch analogy, LFLR would transpire as something like a handful of teammates pulling a stricken teammate aside to catch them up after an amnesia attack (rather than starting the entire team's routine back at the top of the current track).
 % The intervening jumpers would have to remind the stricken teammate of a previously recorded position then discreetly re-feign some of their moves that the stricken teammate had cued off of between that recorded position and the amnesia episode.
 The possibility of multiple simultaneous failure (perhaps, for example, of dozens of processes resident on a single node) poses an even more difficult, although not insurmountable, challenge for LFLR.
 
 One extension of the LFLR strategy involves pairing up with a remote ``buddy'' process.
 The ``buddy'' hangs onto the focal process' snapshots and is carbon-copied on all of that process' messages in order to ensure an independently survivable log.
-Unfortunately, this could potentially require forwarding all messaging traffic between simulation elements coresident on the focal process to its buddy, dragging inter-node communication into some otherwise trivial simulation operations \citep{chakravorty2007fault}.
-Efforts to ensure resiliency beyond single-node failures currently appear unnecessary \citep[p.
+Unfortunately, this could potentially require forwarding all messaging traffic between simulation elements coresident on the focal process to its buddy, dragging inter-node communication into some otherwise trivial simulation operations \cite{chakravorty2007fault}.
+Efforts to ensure resiliency beyond single-node failures currently appear unnecessary \cite[p.
 12]{ni2016mitigation}.
-Even though LFLR saves the cost of global spin-down and spin-up, all processes will potentially have to wait for work lost since the last checkpoint to be recompleted, although in some cases this could be helped along by tapping idle hardware to take over delinquent work from the failed process and help catch it up \citep{dongarra2014applied}.
+Even though LFLR saves the cost of global spin-down and spin-up, all processes will potentially have to wait for work lost since the last checkpoint to be recompleted, although in some cases this could be helped along by tapping idle hardware to take over delinquent work from the failed process and help catch it up \cite{dongarra2014applied}.
 
-Still more insidious to the reliable digital machine model, though, are soft errors --- events where corruption of data in memory occurs, usually due to environmental interference (i.e., ``cosmic rays'') \citep{karnik2004characterization}.
-Further miniaturization and voltage reduction, assumed as a likely vehicle for continuing advances in hardware efficiency and performance, could worsen susceptibility to such errors \citep{dongarra2014applied,kajmakovic2020challenges}.
+Still more insidious to the reliable digital machine model, though, are soft errors --- events where corruption of data in memory occurs, usually due to environmental interference (i.e., ``cosmic rays'') \cite{karnik2004characterization}.
+Further miniaturization and voltage reduction, assumed as a likely vehicle for continuing advances in hardware efficiency and performance, could worsen susceptibility to such errors \cite{dongarra2014applied,kajmakovic2020challenges}.
 
 What makes soft errors so dangerous is their potential undetectability.
 Unlike typical hardware or software failures, which result in an explicit, observable outcome (i.e., an error code, an exception, or even just a crash), soft errors can transpire silently and lead to incorrect computational results without leaving anyone the wiser.
-Luckily, soft errors occur rarely enough to be largely neglected in most single-processor applications (except the most safety-critical settings); however, at scale soft errors occur at a non-trivial rate \citep{sridharan2015memory,scoles2018cosmic}.
-Redundancy (be it duplicated hardware components or error correction codes) can reduce the rate of uncorrected (or at least undetected) soft errors, although at a non-trivial cost \citep{vankeirsbilck2015soft,sridharan2015memory}.
-In some application domains with symmetries or conservation principles, the rate of soft errors (or, at least, silent soft errors) could also be reduced through so-called ``skeptical'' assertions at runtime \citep{dongarra2014applied}, although this too comes at a cost.
+Luckily, soft errors occur rarely enough to be largely neglected in most single-processor applications (except the most safety-critical settings); however, at scale soft errors occur at a non-trivial rate \cite{sridharan2015memory,scoles2018cosmic}.
+Redundancy (be it duplicated hardware components or error correction codes) can reduce the rate of uncorrected (or at least undetected) soft errors, although at a non-trivial cost \cite{vankeirsbilck2015soft,sridharan2015memory}.
+In some application domains with symmetries or conservation principles, the rate of soft errors (or, at least, silent soft errors) could also be reduced through so-called ``skeptical'' assertions at runtime \cite{dongarra2014applied}, although this too comes at a cost.
 
-Even if soft errors can be effectively eradicated --- or at least suppressed to a point of inconsequentiality --- the nondeterministic mechanics of fault recovery and dynamic task scheduling could conceivably make guaranteeing bitwise reproducibility at exascale effectively impossible, or at least an unreasonable engineering choice \citep{dongarra2014applied}.
-However, the assumption of the reliable digital machine model remains near-universal within parallel and distributed algorithm design \citep{chakradhar2010best}.
+Even if soft errors can be effectively eradicated --- or at least suppressed to a point of inconsequentiality --- the nondeterministic mechanics of fault recovery and dynamic task scheduling could conceivably make guaranteeing bitwise reproducibility at exascale effectively impossible, or at least an unreasonable engineering choice \cite{dongarra2014applied}.
+However, the assumption of the reliable digital machine model remains near-universal within parallel and distributed algorithm design \cite{chakradhar2010best}.
 Be it just costly or simply a practical impossibility, the worsening burden of synchronization, fault recovery, and error correction begs the question of whether it is viable to maintain, or even to strive to maintain, the reliable digital machine model at scale.
-Indeed, software and hardware that relaxes guarantees of correctness and determinism --- a so-called ``best-effort model'' --- have been shown to improve speed \citep{chakrapani2008probabilistic}, energy efficiency \citep{chakrapani2008probabilistic,bocquet2018memory}, and scalability \citep{meng2009best}.
-Discussion around ``approximate computing'' overlaps significantly with ``best-effort computing,'' although focusing more heavily on using algorithm design to shirk non-essential computation (i.e., reducing floating point precision, inexact memoization, etc.) \citep{mittal2016survey}.
+Indeed, software and hardware that relaxes guarantees of correctness and determinism --- a so-called ``best-effort model'' --- have been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.
+Discussion around ``approximate computing'' overlaps significantly with ``best-effort computing,'' although focusing more heavily on using algorithm design to shirk non-essential computation (i.e., reducing floating point precision, inexact memoization, etc.) \cite{mittal2016survey}.
 As technology advances, computing is becoming more distributed and we are colliding with physical limits for speed and reliability.
-%Theoretical exploration of constraints distributed systems will face at the asymptote of technological (and even physical) constraints, performed under the banner of ``indefinite scalability'' in \citep{ackley2011pursue}, highlights an essential role --- at large enough scales, essentially a design inevitability --- for best-effort methods.
+%Theoretical exploration of constraints distributed systems will face at the asymptote of technological (and even physical) constraints, performed under the banner of ``indefinite scalability'' in \cite{ackley2011pursue}, highlights an essential role --- at large enough scales, essentially a design inevitability --- for best-effort methods.
 %Specifically, this theory finds as necessary asynchronous operation and graceful degradation under hardware failure (in addition to decentralized networking and interchangeable hardware components).
-Massively distributed systems are becoming inevitable, and indeed if we are to truly achieve ``indefinite scalability'' \citep{ackley2011pursue} we must shift from guaranteed accuracy to best-effort methods that operate asynchronously and degrade gracefully under hardware failure.
+Massively distributed systems are becoming inevitable, and indeed if we are to truly achieve ``indefinite scalability'' \cite{ackley2011pursue} we must shift from guaranteed accuracy to best-effort methods that operate asynchronously and degrade gracefully under hardware failure.
 
 The suitability of the best-effort model varies from application to application.
-Some domains are clear cut in favor of the reliable digital machine model --- for example, due to regulatory issues \citep{dongarra2014applied}.
-However, a subset of HPC applications can tolerate --- or even harness --- occasionally flawed or even fundamentally nondeterministic computation \citep{chakradhar2010best}.
-Various approximation algorithms or heuristics fall into this category, with notable work being done on best-effort stochastic gradient descent for artificial neural network applications \citep{dean2012large,zhao2019elastic,niu2011hogwild,noel2014dogwild,rhodes2020real}.
-Best-effort, real-time computing approaches have also been used in some artificial life models \citep{ray1995proposal,Ackley2023,Ackley2016}.
-Likewise, algorithms relying on pseudo-stochastic methods that tend to exploit noise (rather than destabilize due to it) also make good candidates \citep{chakrapani2008probabilistic,chakradhar2010best}.
-Real-time control systems that cannot afford to pause or retry, by necessity, fall into the best-effort category \citep{rahmati2011computing, rhodes2020real}.
-\dissertationonly{%
-For this dissertation we will, of course, focus on this latter case of systems well-suited to best-effort methods, as evolving systems already require noise to fuel variation.
-}
+Some domains are clear cut in favor of the reliable digital machine model --- for example, due to regulatory issues \cite{dongarra2014applied}.
+However, a subset of HPC applications can tolerate --- or even harness --- occasionally flawed or even fundamentally nondeterministic computation \cite{chakradhar2010best}.
+Various approximation algorithms or heuristics fall into this category, with notable work being done on best-effort stochastic gradient descent for artificial neural network applications \cite{dean2012large,zhao2019elastic,niu2011hogwild,noel2014dogwild,rhodes2020real}.
+Best-effort, real-time computing approaches have also been used in some artificial life models \cite{ray1995proposal,Ackley2023,Ackley2016}.
+Likewise, algorithms relying on pseudo-stochastic methods that tend to exploit noise (rather than destabilize due to it) also make good candidates \cite{chakrapani2008probabilistic,chakradhar2010best}.
+Real-time control systems that cannot afford to pause or retry, by necessity, fall into the best-effort category \cite{rahmati2011computing, rhodes2020real}.
+% \dissertationonly{%
+% For this dissertation we will, of course, focus on this latter case of systems well-suited to best-effort methods, as evolving systems already require noise to fuel variation.
+% }
 
 This work distills best-effort communication from the larger issue of best-effort computing, paying it special attention and generally pretermiting the larger issue.
 Specifically, we investigate the implications of relaxing synchronization and message delivery requirements.
@@ -315,39 +315,39 @@ We still assume that messages, if and when they are delivered, retain contentual
 
 We see best-effort communication as a particularly fruitful target for investigation.
 Firstly, synchronization constitutes the root cause of many contemporary scaling bottlenecks, well below the mark of thousands or millions of cores where runtime failures and soft errors become critical considerations.
-Secondly, future HPC hardware is expected to provide more heterogeneous, more variable (i.e., due to power management), and generally lower (relative to compute) communication bandwidth \citep{gropp2013programming, acun2014parallel}; a best-effort approach suits these challenges.
+Secondly, future HPC hardware is expected to provide more heterogeneous, more variable (i.e., due to power management), and generally lower (relative to compute) communication bandwidth \cite{gropp2013programming, acun2014parallel}; a best-effort approach suits these challenges.
 A best-effort communication model presents the possibility of runtime adaptation to effectively utilize available resources given the particular ratio of compute and communication capability at any one moment in any one rack.
 
 Complex biological organisms exhibit characteristic best-effort properties: trillions of cells interact asynchronously while overcoming all but the most extreme failures in a noisy world.
 As such, bio-inspired algorithms present strong potential to benefit from best-effort communication strategies.
 For example, evolutionary algorithms commonly use guided stochastic methods (i.e., selection and mutation operators) resulting in a search process that does not guarantee optimality, but typically produces a diverse range of high-quality results.
-Indeed, island model genetic algorithms are easy to parallelize and have been shown to perform well with asynchronous migration \citep{izzo2009parallel}.
-Likewise, artificial life simulations commonly rely on a bottom-up approach and seek to model life-as-it-could-be evolving in a noisy environment akin to the natural world, yet distinct from it \citep{bonabeau1994we}.
+Indeed, island model genetic algorithms are easy to parallelize and have been shown to perform well with asynchronous migration \cite{izzo2009parallel}.
+Likewise, artificial life simulations commonly rely on a bottom-up approach and seek to model life-as-it-could-be evolving in a noisy environment akin to the natural world, yet distinct from it \cite{bonabeau1994we}.
 % rather than the implications of certain mechanistic assumptions
-Although perfect reproducibility and observability have uniquely enabled digital evolution experiments to ask and answer otherwise intractable questions \citep{pontes2020evolutionary,lenski2003evolutionary,grabowski2013case,dolson2020interpreting,fortuna2019coevolutionary,goldsby2014evolutionary,covert2013experiments,zaman2011rapid,bundy2021footprint,dolson2017spatial}, the reliable digital machine model is not strictly necessary for all such work.
-Issues of distributed and parallel computing are of special interest within the artificial life subdomain of open-ended evolution (OEE) \citep{ackley2014indefinitely}, which studies long-term dynamics of evolutionary systems in order to understand factors that affect potential to generate ongoing novelty \citep{taylor2016open}.
-Recent evidence suggests that the generative potential of at least some model systems is --- at least in part --- meaningfully constrained by available compute resources \citep{channon2019maximum}.
+Although perfect reproducibility and observability have uniquely enabled digital evolution experiments to ask and answer otherwise intractable questions \cite{pontes2020evolutionary,lenski2003evolutionary,grabowski2013case,dolson2020interpreting,fortuna2019coevolutionary,goldsby2014evolutionary,covert2013experiments,zaman2011rapid,bundy2021footprint,dolson2017spatial}, the reliable digital machine model is not strictly necessary for all such work.
+Issues of distributed and parallel computing are of special interest within the artificial life subdomain of open-ended evolution (OEE) \cite{ackley2014indefinitely}, which studies long-term dynamics of evolutionary systems in order to understand factors that affect potential to generate ongoing novelty \cite{taylor2016open}.
+Recent evidence suggests that the generative potential of at least some model systems is --- at least in part --- meaningfully constrained by available compute resources \cite{channon2019maximum}.
 
-Much exciting work on best-effort computing has incorporated bespoke experimental hardware \citep{chippa2014scalable, ackley2011homeostatic, cho2012ersa, chakrapani2008probabilistic, rhodes2020real}.
+Much exciting work on best-effort computing has incorporated bespoke experimental hardware \cite{chippa2014scalable, ackley2011homeostatic, cho2012ersa, chakrapani2008probabilistic, rhodes2020real}.
 However, here, we focus on exploring best-effort communication among parallel and distributed elements within existing, commercially-available hardware.
 Existing software libraries, though, do not explicitly expose a convenient best-effort communication interface for such work.
 As such, best-effort approaches remain rare in production software and efforts to study best-effort communication must make use of a combination of limited existing support and the development of new software tools.
 
-The Message Passing Interface (MPI) standard \citep{gropp1996high} represents the mainstay for high-performance computing applications.
+The Message Passing Interface (MPI) standard \cite{gropp1996high} represents the mainstay for high-performance computing applications.
 This standard exposes communication primitives directly to the end user.
 MPI's nonblocking communication primitives, in particular, are sufficient to program distributed computations with relaxed synchronization requirements.
 Although it's explicit, the imperative nature of the MPI protocols enables precise control over execution; unfortunately it also poses significant expense in terms of programmability.
-This cost manifests in terms of reduced programmer productivity and software quality, while increasing domain knowledge requirements and the effort required to tune for performance due to program brittleness \citep{gu2019comparative, tang2014mpi}.
+This cost manifests in terms of reduced programmer productivity and software quality, while increasing domain knowledge requirements and the effort required to tune for performance due to program brittleness \cite{gu2019comparative, tang2014mpi}.
 
 In response to programmability concerns, many frameworks have arisen to offer useful parallel and distributed programming abstractions.
-Task-based frameworks such as Charm++ \citep{kale1993charm++}, Legion \citep{bauer2012legion}, Cilk \citep{blumofe1996cilk}, and Threading Building Blocks (TBB) \citep{reinders2007intel} describe the dependency relationships among computational tasks and associated data and rely on an associated runtime to automatically schedule and manage execution.
+Task-based frameworks such as Charm++ \cite{kale1993charm++}, Legion \cite{bauer2012legion}, Cilk \cite{blumofe1996cilk}, and Threading Building Blocks (TBB) \cite{reinders2007intel} describe the dependency relationships among computational tasks and associated data and rely on an associated runtime to automatically schedule and manage execution.
 These frameworks assume a deterministic relationship between tasks.
-In a similar vein, programming languages and extensions like Unified Parallel C (UPC) \citep{el2006upc} and Chapel \citep{chamberlain2007parallel} rely on programmers to direct execution, but equip them with powerful abstractions, such as global shared memory.
+In a similar vein, programming languages and extensions like Unified Parallel C (UPC) \cite{el2006upc} and Chapel \cite{chamberlain2007parallel} rely on programmers to direct execution, but equip them with powerful abstractions, such as global shared memory.
 However, Chapel's memory model explicitly forbids data races and UPC ultimately relies on a barrier model for data transfer.
 
-To bridge these shortcomings, we employ a new software framework, the Conduit C++ Library for Best-Effort High Performance Computing \citep{moreno2021conduit}.
+To bridge these shortcomings, we employ a new software framework, the Conduit C++ Library for Best-Effort High Performance Computing \cite{moreno2021conduit}.
 The Conduit library provides tools to perform best-effort communication in a flexible, intuitive interface and uniform inter-operation of serial, parallel, and distributed modalities.
-Although Conduit currently implements distributed functionality via MPI intrinsics, in future work we will explore lower-level protocols like InfiniBand Unreliable Datagrams \citep{kashyap2006ip, koop2007high}.
+Although Conduit currently implements distributed functionality via MPI intrinsics, in future work we will explore lower-level protocols like InfiniBand Unreliable Datagrams \cite{kashyap2006ip, koop2007high}.
 
 Here, we present a set of on-hardware experiments to empirically characterize Conduit's best-effort communication model.
 In order to survey across workload profiles, we tested performance under both a communication-intensive graph coloring solver and a compute-intensive artificial life simulation.
@@ -377,7 +377,7 @@ It is even possible to imagine reciprocal interactions between real-time best-ef
 In the case of a positive feedback loop, the magnitude of effects might become extreme.
 For example, in artificial life scenarios, agents may evolve strategies that selectively increase messaging traffic so as to encumber neighboring processing elements or even cause important messages to be dropped.
 
-We monitor five aspects of real-time behavior, which we refer to as quality of service metrics \citep{karakus2017quality},
+We monitor five aspects of real-time behavior, which we refer to as quality of service metrics \cite{karakus2017quality},
 \begin{itemize}
   \item wall-time simulation update rate (``simstep period''),
   \item simulation-time message latency,
