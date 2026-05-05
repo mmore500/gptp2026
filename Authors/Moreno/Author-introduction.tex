@@ -199,7 +199,7 @@ As described in Prior Work, we have recently begun developing DStream: a set of 
 All DStream algorithms store data in fixed-size buffers, in essence managed as space-time memory.
 Developed inferential observability methods will support 1) trading precision for computational efficiency in terms of time, space, and synchronization overhead and 2) tuning the extent to which recent data should be prioritized over older data.
 
-\input{lib/dissertationonly.tex}
+% \input{lib/dissertationonly.tex}
 
 \section{Introduction}
 \label{sec:introoduction;ch:conduit}
@@ -303,9 +303,9 @@ Various approximation algorithms or heuristics fall into this category, with not
 Best-effort, real-time computing approaches have also been used in some artificial life models \cite{ray1995proposal,Ackley2023,Ackley2016}.
 Likewise, algorithms relying on pseudo-stochastic methods that tend to exploit noise (rather than destabilize due to it) also make good candidates \cite{chakrapani2008probabilistic,chakradhar2010best}.
 Real-time control systems that cannot afford to pause or retry, by necessity, fall into the best-effort category \cite{rahmati2011computing, rhodes2020real}.
-\dissertationonly{%
-For this dissertation we will, of course, focus on this latter case of systems well-suited to best-effort methods, as evolving systems already require noise to fuel variation.
-}
+% \dissertationonly{%
+% For this dissertation we will, of course, focus on this latter case of systems well-suited to best-effort methods, as evolving systems already require noise to fuel variation.
+% }
 
 This work distills best-effort communication from the larger issue of best-effort computing, paying it special attention and generally pretermiting the larger issue.
 Specifically, we investigate the implications of relaxing synchronization and message delivery requirements.
