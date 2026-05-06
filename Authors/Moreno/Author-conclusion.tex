@@ -1,8 +1,32 @@
 \section{Conclusion} \label{moreno:sec:conclusion}
 
+Indeed, longstanding and productive exchange has existed between evolution \textit{in silico} and \textit{in vivo} \cite{pennock2007models,dolson2021digital}.
+While experimental approaches to the study of evolution have gained substantial traction \cite{TODO}, simulation approaches have enabled study designs infeasible to observe on human timescales or otherwise difficult to engineer \cite{wiser2013long,Stroud2025}.
+
 \begin{itemize}
 \item best-effort approaches are promising, as we have shown...
 \item digital evolution is uniquely well-suited for best-effort computing
+
+The suitability of the best-effort model varies from application to application.
+Some domains are clear cut in favor of the reliable digital machine model --- for example, due to regulatory issues \cite{dongarra2014applied}.
+However, a subset of HPC applications can tolerate --- or even harness --- occasionally flawed or even fundamentally nondeterministic computation \cite{chakradhar2010best}.
+Various approximation algorithms or heuristics fall into this category, with notable work being done on best-effort stochastic gradient descent for artificial neural network applications \cite{dean2012large,zhao2019elastic,niu2011hogwild,noel2014dogwild,rhodes2020real}.
+Best-effort, real-time computing approaches have also been used in some artificial life models \cite{ray1995proposal,Ackley2023,Ackley2016}.
+Likewise, algorithms relying on pseudo-stochastic methods that tend to exploit noise (rather than destabilize due to it) also make good candidates \cite{chakrapani2008probabilistic,chakradhar2010best}.
+Real-time control systems that cannot afford to pause or retry, by necessity, fall into the best-effort category \cite{rahmati2011computing, rhodes2020real}.
+Digital evolution falls into the latter case of systems well-suited to best-effort methods, as evolving systems already require noise to fuel variation.
+Complex biological organisms exhibit characteristic best-effort properties: trillions of cells interact asynchronously while overcoming all but the most extreme failures in a noisy world.
+As such, bio-inspired algorithms present strong potential to benefit from best-effort communication strategies.
+For example, evolutionary algorithms commonly use guided stochastic methods (i.e., selection and mutation operators) resulting in a search process that does not guarantee optimality, but typically produces a diverse range of high-quality results.
+Indeed, island model genetic algorithms are easy to parallelize and have been shown to perform well with asynchronous migration \cite{izzo2009parallel}.
+Likewise, artificial life simulations commonly rely on a bottom-up approach and seek to model life-as-it-could-be evolving in a noisy environment akin to the natural world, yet distinct from it \cite{bonabeau1994we}.
+% rather than the implications of certain mechanistic assumptions
+Although perfect reproducibility and observability have uniquely enabled digital evolution experiments to ask and answer otherwise intractable questions \cite{pontes2020evolutionary,lenski2003evolutionary,grabowski2013case,dolson2020interpreting,fortuna2019coevolutionary,goldsby2014evolutionary,covert2013experiments,zaman2011rapid,bundy2021footprint,dolson2017spatial}, the reliable digital machine model is not strictly necessary for all such work.
+Evolutionary epidemiologists working \textit{in vivo} already employ analogous, mature sampling-based surveillance methods (e.g., wastewater monitoring, viral sequencing).
+Robust existing methods and statistics for accounting for data limitations in field biology, experimental evolution, and public health make simulations in the sphere of ecology, evolution, and epidemiology an ideal testbed for applications in HPC.
+For instance, we are pursuing ongoing methods development for tracking ancestry (i.e., phylogenies) in evolution simulations using strategies akin to how biologists reconstruct ancestry by comparing DNA sequences — rather than exhaustively tracking all parent-child relationships.
+Robust existing methods and statistics for accounting for data limitations in field biology, experimental evolution, and public health make simulations in the sphere of ecology, evolution, and epidemiology an ideal testbed to develop strategies with potential broader applications in HPC.
+
 \begin{itemize}
   \item chaotic/stochastic and therefore robust to perturbations (extinctions, irregular migration patterns, etc.)
   \item also, unless huge effort is invested to ensure bit-leel rperoducibility, meawningful identical outcomes are dubiouse at scale
@@ -14,5 +38,12 @@
    \item particularly notable work, in the realm of artificial life includes Tom Ray and Dave Ackley
    \item as has been pointed out by Dave Ackley, artificial life has a role to play in exploring and pushing the boundaries of post-deterministic computing
    \item as with most existing studies of best-effort computing, however, attention has focused on bespoke hardware
-   \item by translating these approaches into mainstream high-performance computing writ large, digital evolution may play a role in laying a principled, rigorous, and generalizable foundation for broader development of post-determinstic computing writ large
+\end{itemize}
+
+Much exciting work on best-effort computing has incorporated bespoke experimental hardware \cite{chippa2014scalable, ackley2011homeostatic, cho2012ersa, chakrapani2008probabilistic, rhodes2020real}.
+However, here, we focus on exploring best-effort communication among parallel and distributed elements within existing, commercially-available hardware.
+Existing software libraries, though, do not explicitly expose a convenient best-effort communication interface for such work.
+As such, best-effort approaches remain rare in production software and efforts to study best-effort communication must make use of a combination of limited existing support and the development of new software tools.
+
+\item by translating these approaches into mainstream high-performance computing writ large, digital evolution may play a role in laying a principled, rigorous, and generalizable foundation for broader development of post-determinstic computing writ large
 \end{itemize}

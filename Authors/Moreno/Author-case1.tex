@@ -17,3 +17,43 @@ However, Chapel's memory model explicitly forbids data races and UPC ultimately 
 To bridge these shortcomings, we employ a new software framework, the Conduit C++ Library for Best-Effort High Performance Computing \cite{moreno2021conduit}.
 The Conduit library provides tools to perform best-effort communication in a flexible, intuitive interface and uniform inter-operation of serial, parallel, and distributed modalities.
 Although Conduit currently implements distributed functionality via MPI intrinsics, in future work we will explore lower-level protocols like InfiniBand Unreliable Datagrams \cite{kashyap2006ip, koop2007high}.
+
+Here, we present a set of on-hardware experiments to empirically characterize Conduit's best-effort communication model.
+In order to survey across workload profiles, we tested performance under both a communication-intensive graph coloring solver and a compute-intensive artificial life simulation.
+
+First, we determine whether best-effort communication strategies can benefit performance compared to the traditional perfect communication model.
+We considered two measures of performance: computational steps executed per unit time and solution quality achieved within a fixed-duration run window.
+
+We compare the best-effort and perfect-computation strategies across processor counts, expecting to see the marginal benefit from best-effort communication increase at higher processor counts.
+We focus on weak scaling, growing overall problem size proportional to processor count.
+Put another way, we hold problem size per processor constant.%
+\footnote{
+As opposed to strong scaling, where the problem size is held fixed while processor count increases.
+}
+This approach prevents interference from shifts in processes' workload profiles in observation of the effects of scaling up processor count.
+
+To survey across hardware configurations, we tested scaling CPU count via threading on a single node and scaling CPU count via multiprocessing with each process assigned to a distinct node.
+In addition to a fully best-effort mode and a perfect communication mode, we also tested two intermediate, partially synchronized modes: one where the processor pool completed a global barrier (i.e., they aligned at a synchronization point) at predetermined, rigidly scheduled timepoints and another where global barriers occurred on a rolling basis spaced out by fixed-length delays from the end of the last synchronization.%
+\footnote{
+Our motivation for these intermediate synchronization modes was interest in the effect of clearing any potentially-unbounded accumulation of message backlogs on laggard processes.
+}
+
+Second, we sought to more closely characterize variability in message dispatch, transmission, and delivery under the best-effort model.
+Unlike perfect communication, real-time volatility affects the outcome of computation under the best-effort model.
+Because real-time processing speed degradations and message latency or loss alters inputs to simulation elements, characterizing the distribution of these phenomena across processing components and over time is critical to understanding the actual computation being performed.
+For example, consistently faster execution or lower messaging latency for some subset of processing elements could violate uniformity or symmetry assumptions within a simulation.
+It is even possible to imagine reciprocal interactions between real-time best-effort dynamics and simulation state.
+In the case of a positive feedback loop, the magnitude of effects might become extreme.
+For example, in artificial life scenarios, agents may evolve strategies that selectively increase messaging traffic so as to encumber neighboring processing elements or even cause important messages to be dropped.
+
+In an initial set of experiments, we use the graph coloring problem to test this suite of quality of service metrics across runtime conditions expected to strongly influence them.
+We compare
+\begin{itemize}
+  \item increasing compute workload per simulation update step,
+  \item within-node versus between-node process placement, and
+  \item multithreading versus multiprocessing.
+\end{itemize}
+We perform these experiments using a graph coloring solver configured to maximize communication relative to computation (i.e., just one simulation element per CPU) in order to maximize sensitivity of quality of service to the runtime manipulations.
+
+Finally, we extend our understanding of performance scaling from the preceding experiments by analyzing how each quality of service metric fares as problem size and processor count grow together, a ``weak scaling'' experiment.
+This analysis would detect a scenario where raw performance remains stable under weak scaling, but quality of service (and, therefore, potentially quality of computation) degrades.
