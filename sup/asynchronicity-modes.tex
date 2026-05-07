@@ -1,0 +1,25 @@
+\subsection{Asynchronicity Modes} \label{sec:asynchronicity_modes}
+
+% TODO \subimport{submodule/2021-gecco-conduit/}{fig/asynchronicity_modes}
+
+For both benchmarks, we compared performance across a spectrum of synchronization settings, which we term ``asynchronicity modes'' (Table \ref{tab:asynchronicity_modes}).
+Asynchronicity mode 0 represents traditional fully-synchronous methodology.
+Under this treatment, full barrier synchronization was performed between each computational update.
+Asynchronicity mode 3 represents fully asynchronous methodology.
+Under this treatment, individual threads or processes performed computational updates freely, incorporating input from other threads or processes on a fully best-effort basis.
+
+During early development of the library, we discovered episodes where unprocessed messages built up faster than they could be processed --- even if they were being skipped over to only get the latest message.
+In some instances, this strongly degraded quality of service or even caused runtime instability.
+We switched to MPI communication primitives that could consume many backlogged messages per call and increased buffer size to address these issues, but remained interested in the possibility of partial synchronization to clear potential message backlogs.
+So, we included two partially-synchronized treatments: asynchronicity modes 1 and 2.
+
+In asynchronicity mode 1, threads and processes alternated between performing computational updates for a fixed-time duration and executing a global barrier synchronization.
+For the graph coloring benchmark, work was performed in 10ms chunks.
+For the digital evolution benchmark, which is more computationally intensive, work was performed in 100ms chunks.
+In asynchronicity mode 2, threads and processes executed global barrier synchronizations at predetermined time points based on the UTC clock.
+
+Finally, asynchronicity mode 4 disables all inter-thread and inter-process communication, including barrier synchronization.
+We included this mode to isolate the impact on performance of communication between threads and processes from other factors potentially affecting performance, such as cache crowding.
+In this run mode for the graph coloring benchmark, all calls to send messages between processes or threads were skipped (except after the benchmark concluded, when assessing solution quality).
+Because of its larger footprint, incorporating logic into the digital evolution simulation to disable all inter-thread and inter-process messaging was impractical.
+Instead, we launched multiple instances of the simulation as fully-independent processes and measured performance of each.
