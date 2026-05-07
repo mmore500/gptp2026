@@ -255,7 +255,7 @@ In a benchmark problem with an objective solution quality score, the trade-off b
 
 Next, we tested how performance on the graph coloring and digital evolution benchmarks fared when scaling with fully independent processes located on different hardware nodes.
 
-Figure \ref{fig:multiprocess_graph_coloring_update_rate} shows per-CPU algorithm update rate for the graph coloring benchmark at 1, 4, 16, and 64 processes.
+Figure \ref{moreno:fig:cpu:TODO} shows per-CPU algorithm update rate for the graph coloring benchmark at 1, 4, 16, and 64 processes.
 Unlike the multithreaded benchmark, multiprocess graph coloring exhibits consistent update-rate performance across process counts under asynchronicity mode 4, where inter-CPU communication is entirely disabled.
 This matches the unsurprising expectation that, indeed, with comparable hardware a single process should exhibit the same mean performance as any number of completely decoupled processes.
 
@@ -263,12 +263,12 @@ At 64 processes, best-effort asynchronicity mode 3 with the graph coloring bench
 This represents a $7.8\times$ speedup compared to fully-synchronous mode 0.
 Indeed, best-effort mode 3 enables significantly better per-CPU update rates at 4, 16, and 64 processes ($p < 0.05$, non-overlapping 95\% confidence intervals).
 
-Likewise, shown in Figure \ref{fig:multiprocess_graph_coloring_solution_quality}, best-effort asynchronicity mode 3 yields significantly better graph-coloring results within the allotted time at 4, 16, and 64 processes ($p < 0.05$, non-overlapping 95\% confidence intervals).
+Likewise, shown in Figure \ref{moreno:fig:cpu:TODO}, best-effort asynchronicity mode 3 yields significantly better graph-coloring results within the allotted time at 4, 16, and 64 processes ($p < 0.05$, non-overlapping 95\% confidence intervals).
 Interestingly, partial-synchronization modes 1 and 2 exhibited highly inconsistent solution quality performance at 16 and 64 process count benchmarks.
 Fixed-timepoint barrier sync (mode 2) had particularly poor performance at 64 processes (note the log-scale axis).
 We suspect this was caused by a race condition where workers would assign sync points to different fixed points based on slightly different startup times (i.e., process 0 syncs at seconds 0, 1, 2... while process 1 syncs at seconds 1, 2, 3..).
 
-Figure \ref{fig:multiprocess_digital_evolution_update_rate} presents per-CPU algorithm update rate for the digital evolution benchmark at 1, 4, 16, and 64 processes.
+Figure \ref{moreno:fig:cpu:TODO} presents per-CPU algorithm update rate for the digital evolution benchmark at 1, 4, 16, and 64 processes.
 Relative performance fares well at high process counts under this relatively computation-heavy workload.
 With 64 processes, fully best-effort simulation retains about 92\% the update rate performance of single-process simulation.
 This represents a $2.1\times$ speedup compared to the fully-synchronous run mode 0.
