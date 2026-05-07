@@ -86,6 +86,8 @@ With respect to bias, it is possible and even in fact likely for errors to be no
 Likewise, allowing the behavior of a computatiopn to depend on underlying physical hardware doesn't just remove the exact reproducibility of a result, but can also undermine its qualitative reproducibility --- whether due to needing the particular type of hardware, the particular instance of hardware, or even the hardware at a certain point in time (e.g., under certain load conditions).
 These challenges can be especially pernicious in the case of evolutionary studies, where evolving genotypes can adopt strategies that depend on or even exploit unintentional features of their virtual environment \cite{Thompson1997,Lehman2020}.
 
+\input{fig/best-effort.tex}
+
 However, incorporating best-effort relaxations need not involve arbitrary \textit{laissez-faire} impacts on reproducibility and bias.
 The scope of what aspects of a computation are relaxed, and bounds on the relaxation, can be enforced.
 For instance, in the case of the \textit{inferential observability} paradigm, a distinction is drawn between data collection and the underlying computation (Figure \ref{moreno:fig:best-effort}).
