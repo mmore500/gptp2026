@@ -2,6 +2,15 @@
 
 \input{fig/cpu.tex}
 
+In the first case study incorporating best-effort communication on MPI multiprocessing across traditional CPU-based HPC nodes, we saw that
+\begin{enumerate}
+\item best-effort communication and synchronization improve scaling efficiency for both communication-heavy workloads and compute-heavy problems with heterogenous workloads;
+\item quality of service metrics scale stably with processor count;
+\item in a benchmark problem with an objective solution quality score, the trade-off between quality-of-service and efficiency was such that best-effort approaches were able to produce higher-quality solutions within an alloted runtime;
+\item quality of service metrics were able to flag potential biasing artifacts, such as emergent producer-consumer imbalances; and
+\item quality of service metrics flagged an anomolous laggard node, and allowed us to determine that quality of service and performance nonetheless remained stable across the computation.
+\end{enumerate}
+
 The Message Passing Interface (MPI) standard \cite{gropp1996high} represents the mainstay for high-performance computing applications.
 This standard exposes communication primitives directly to the end user.
 MPI's nonblocking communication primitives, in particular, are sufficient to program distributed computations with relaxed synchronization requirements.
@@ -26,15 +35,15 @@ We considered two measures of performance: computational steps executed per unit
 
 We compare the best-effort and perfect-computation strategies across processor counts, expecting to see the marginal benefit from best-effort communication increase at higher processor counts.
 We focus on weak scaling, growing overall problem size proportional to processor count.
-Put another way, we hold problem size per processor constant.%
-\footnote{
+Put another way, we hold problem size per processor constant.
+\unskip\footnote{
 As opposed to strong scaling, where the problem size is held fixed while processor count increases.
 }
 This approach prevents interference from shifts in processes' workload profiles in observation of the effects of scaling up processor count.
 
 To survey across hardware configurations, we tested scaling CPU count via threading on a single node and scaling CPU count via multiprocessing with each process assigned to a distinct node.
-In addition to a fully best-effort mode and a perfect communication mode, we also tested two intermediate, partially synchronized modes: one where the processor pool completed a global barrier (i.e., they aligned at a synchronization point) at predetermined, rigidly scheduled timepoints and another where global barriers occurred on a rolling basis spaced out by fixed-length delays from the end of the last synchronization.%
-\footnote{
+In addition to a fully best-effort mode and a perfect communication mode, we also tested two intermediate, partially synchronized modes: one where the processor pool completed a global barrier (i.e., they aligned at a synchronization point) at predetermined, rigidly scheduled timepoints and another where global barriers occurred on a rolling basis spaced out by fixed-length delays from the end of the last synchronization.
+\unskip\footnote{
 Our motivation for these intermediate synchronization modes was interest in the effect of clearing any potentially-unbounded accumulation of message backlogs on laggard processes.
 }
 
@@ -59,3 +68,28 @@ Finally, we extend our understanding of performance scaling from the preceding e
 This analysis would detect a scenario where raw performance remains stable under weak scaling, but quality of service (and, therefore, potentially quality of computation) degrades.
 
 It is possible to measure these metrics at instantaneous snapshots, or to aggregate over the entirety of the runtime.
+
+\subsection{Calculating Proposed Metrics}
+
+TODO
+
+\subsection{Benchmark Workloads}
+
+TODO
+
+\subsection{Scaling Efficiency and Solution Qualityk}
+
+Best-effort communication and synchronization improve scaling efficiency for both communication-heavy workloads and compute-heavy problems with heterogenous workloads.
+In a benchmark problem with an objective solution quality score, the trade-off between quality-of-service and efficiency was such that best-effort approaches were able to produce higher-quality solutions within an alloted runtime.
+
+\subsection{Quality-of-Service Scaling}
+
+Quality of service metrics scale stably with processor count.
+
+\subsection{Proder-Consumer Imbalance}
+
+Quality of service metrics were able to flag potential biasing artifacts, such as emergent producer-consumer imbalances.
+
+\subsection{Lac-417 Hardware Anamoly}
+
+Quality of service metrics flagged an anomolous laggard node, and allowed us to determine that quality of service and performance nonetheless remained stable across the computation.
