@@ -1,5 +1,113 @@
 \section{Introduction} \label{moreno:sec:introduction}
 
+Relative to instances of digital evolution \textit{in silico}, biological evolution operates at nearly incomprehensible scale.
+It has been estimated that the biosphere hosts $5 \times 10^{30}$ living cells and on the order of $5.3 \times 10^{37}$ DNA base pairs --- a workload analogized to the storage and processing capacity of between $10^{20}$ and $10^{21}$ supercomputers \textit{circa} 2015 \cite{Landenmark2015}.
+Indeed, at present, detailed simulation at the scope of individual cells only beginning to come into reach \cite{Thornburg2026}.
+As such, it is not surprising that many interesting biological processes remain beyond reach of satisfactory modeling experiments.
+Although serial simulation code can achieve rapid generational turnover and high replicate count, generally this is at the cost of small population sizes when working with rich agent models \cite{moreno2022engineering}.
+In the context of ecology, evolutionary biology, and allied fields, key questions such as many-species eco-evolutionary dynamics and evolutionary transitions in individuality (e.g., multicellularity, eusociality) hinge on cross-scale dynamics \cite{penczykowski2016understanding,alizon2012modelling,schreiber2021cross}.
+Likewise, limitations of simulation scale have been highlighted in studying evolutionary transitions in individuality, eco-evolutionary dynamics, and rare evolutionary innovations \cite{taylor2016open,dolson2021digital,taylor2019evolutionary} --- questions key, in particular, to the topic of open-ended evolution --- how and why evolution generates ongoing complexity, novelty, and adaptation \cite{ackley2014indefinitely}.
+Indeed, evidence suggests that the generative potential of at least some digital evolution systems is --- at least in part --- meaningfully constrained by available compute resources \cite{channon2019maximum}.
+
+By parallel, in retrospect, connectionist artificial intelligence turns out to have been profoundly scale-dependent.
+The utility and ubiquity of ANNs have exploded in tandem with torrential growth in training set sizes, parameter counts, and training FLOPs \cite{marcus2018deep}.
+Recruitment of multi-GPU training for image classification, requiring particular accommodating adjustments to the underlying deep learning architecture, is commonly identified as the watershed moment to this transformation
+ \cite{krizhevsky2012imagenet}.
+Commercial investment in AI capabilities then set in motion a virtuous cycle of further-enabling hardware advances \cite{jouppi2017datacenter}.
+Indeed, the scaling relationship between deep learning and training resources has itself become a major area of active study, with expectation for this virtuous cycle to continue through the foreseeable future \cite{kaplan2020scaling}.
+
+A major upshot of the deep learning race is the emergence of spectacularly capable next-generation compute accelerators affording hundreds of thousands of processing cores (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras)\cite{zhang2016cambricon,emani2021accelerating,jia2019dissecting,medina2020habana}.
+Although tailored expressly to deep learning workloads, these hardware platforms represent an exceptional opportunity to leapfrog progress on grand challenges in digital evolution and advance both hypothesis-driven explorations of multi-scale biological phenomena and application-driven evolutionary optimization targeting rugged, expensive problem domains.
+Indeed, rapid advances in the capability of accelerator devices, driven in particular by market demand for deep learning operations, are anticipated to drive advances in broader agent-based model capabilities writ large \cite{perumalla2022computer}.
+The emerging class of fabric-based accelerators, led by the 880,000 core Cerebras CS-3 Wafer-Scale Engine (WSE) \cite{lauterbach2021path,lie2022cerebras,TODOCS3}, holds particular promise as a vehicle for digital evolution.
+
+Next-generation computational hardware accelerators  have demonstrated immense potential in testbed deployments \cite{VanEssendelft2025} and are transforming the leading edge of High-Performance Computing (HPC).
+These emerging platforms exploit highly-distributed on-chip dataflow architectures to achieve extraordinary computational throughput, at the cost of exacerbating strain on memory and bandwidth capacities.
+For instance, to pack 880,000 processors onto a single chip, Cerebras' Wafer-Scale Engine (WSE) platform provisions only 48kB of on-device memory per processor, requires multi-hop routing for point-to-point communication, and allows data export only from the chip periphery.
+The upcoming CS-3 chip, for instance, supports clustering potentially thousands of constituent accelerators --- potentially reaching upwards of a billion individually-programmable processors \cite{moore2024cerebras}.
+These constraints exemplify broader emerging challenges arising from trends in High-Performance Computing (HPC) where data volumen and movement are becoming more expensive relative to compute \cite{Buluc2021}.
+Due to physical constraints associated with existing computing technology, over the last decades, high-performance computational capability has grown through scaling-out rather than souping-up \cite{sutter2005free}.
+As such, the computational capacity of high-performance computing (HPC) clusters has become increasingly dependent on the cooperation of larger and larger collections of hardware components.
+
+For many HPC applications, meeting these trends will require a fundamental overhaul of data handling algorithms.
+Effectively harnessing AI/ML accelerators for scientific computing workloads, however, poses substantial engineering challenges.
+One such challenge is tracking simulation dynamics that take place across a vast, highly-distributed fabric of memory-constrained processors --- a critical consideration, as simulation is useful insofar as it is interpretable and observable \cite{casti1997wouldbe}.
+Likewise, diagnostic information is necessary for understanding how evolutionary computation works and troubleshooting and fine-tuning it \cite{hernandez2022dossier,Hooker1995}.
+As digital evolution scales, so does the challenge of managing an exhaustive data record.
+Recent hardware trends only exacerbate matters, growing processing power while reducing the amount of RAM and disk storage available per core --- especially in accelerator-driven HPC architectures \cite{khan2021analysis,gholami2024ai}.
+For such architectures, host-device bandwidth and latency strongly impact performance \cite{kwon2018beyond}.
+Such concerns arise especially in work with the Cerebras WSE where only a small fraction of peripherally-located PEs interface to the host.
+
+In some regards, computational costs and constraints arising around data storage and accessibility in modern HPC resemble the logistical costs and constraints faced in research studying real-world systems.
+Rather than ``complete,'' deterministic data observability, most real-world studies instead rely on dynamic, query-driven sampling, a paradigm we term ``inferential observability.''
+In exchange, this paradigm shift addresses device-to-host bandwidth/on-device storage limitations characteristic of hardware accelerators, enables on-the-fly prioritization of data collection, and tolerates intermittent disruption.
+Such approaches degrade gracefully under resource scarcity, system heterogeneity, and intermittent anomalies and faults characteristic of post-exascale computing.
+Untapped potential exists to translate and extend experimental design, sampling techniques, and statistical methods from natural sciences to facilitate extreme-scale scientific computing under bandwidth/memory constraint, runtime anomalies and hardware faults, and asymmetries in data accessibility.
+
+Historically, most research using computational models has assumed complete observability of model state.
+Indeed, the ability to measure properties \textit{in silico} that would be impossible to observe \textit{in vitro} or \textit{in vivo} is a major benefit of computational models for scientific inquiry.
+However, as the scale of these models increases, the cost of data collection becomes a serious obstacle.
+Thus, experiments exist that are intractable in the real world because they rely on data that are physically impossible to measure, but are also intractable in digital models because storing the necessary data to answer the questions at hand is infeasible.
+We propose that, through careful algorithm development, we can solve this problem by recording a smaller amount of data that enables us to draw the desired scientific inferences at a fraction of the computational cost.
+Indeed, past a certain point, precision in data from computational models becomes of essentially negligible value, owing to arbitrary effects of stochasticity and fundamental limitations in correspondence between model and reality.
+Any computational resources invested in producing this excessive level of precision could be better used elsewhere.
+Trading a controlled amount of data precision for increased scalability and hardware accelerator compatibility would be highly worthwhile.
+
+Inferential observability ties into the larger topic of best-effort computing, approaches to computing that relax the assumption of the reliable digital machine in which all steps in an algorithm correspond to determinstic logical transforms.
+This model has important benefits, in that (1) all computational experiments are not only qualitatively reproducible but in fact \textit{exactly} reproducible and (2) the computational profcess can be describe purely logically irrespective of underlying hardware, making the nature of the computation being performed entirely transparent, and readily (fully) expressed in through notational formalalisms.
+Already, hosever, high-performance computing increasingly strains the viability of the reliable digital machine approach to computing.
+With scale, it becomes increasingly difficult to orchestrate efficient use of available hardware and also provide reproducible results (or even near-perfectly reproducible results --- i.e., up to effects from floating point non-transitivity) consistent with models of computation as being performed by a reliable digital machine \cite{heroux2014toward}.
+Even if soft errors can be effectively eradicated --- or at least suppressed to a point of inconsequentiality --- the nondeterministic mechanics of fault recovery and dynamic task scheduling could conceivably make guaranteeing bitwise reproducibility at exascale effectively impossible, or at least an unreasonable engineering choice \cite{dongarra2014applied,Buluc2021}.
+Nontheless, the implicit assumption of the reliable digital machine model remains near-universal within parallel and distributed algorithm design for scientific computing \cite{chakradhar2010best}.
+
+Be it just costly or simply a practical impossibility, the worsening burden of synchronization, fault recovery, and error correction begs the question of whether it is viable to maintain, or even to strive to maintain, the reliable digital machine model at scale.
+Indeed, software and hardware that relaxes guarantees of correctness and determinism --- a so-called ``best-effort model'' --- have been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.
+Discussion around ``approximate computing'' overlaps significantly with ``best-effort computing,'' although focusing more heavily on using algorithm design to shirk non-essential computation (i.e., reducing floating point precision, inexact memoization, etc.) \cite{mittal2016survey}.
+Likewise, ``randomized algorithms'' typically rely on pseudorandom number generation through deterministic funtions, although these topics naturally intertwine with discussion of best-effort computing \cite{Buluc2021}.
+
+Discussion of best-effort computing can be largely conceptualized around three flavors of relaxation: data corruption, data attrition, and asynchrony (Figure \ref{moreno:fig:best-effort}).
+Here, we focus on the latter two, as many types of possible data corruption can be effectively transformed into data attrition (e.g., via checksums, replicate operations, inverse checks, and skeptical assertions).
+With respect to data attrition, this may be considered either in-flight or at-rest.
+In the case of the former, data is dropped in transit due to network anomalies or dynamic congestion.
+In the case of the latter, data is dropped e.g., due to memory limitation --- which may vary device-to-device, be due to the rate at which real-time bandwidth is able to transfer data, or (in departing from the scrict best-effort computation paradigm) be based on the timing between computational events (e.g., simulation dynamics).
+Finally, best-effort approaches may be considered in terms of relaxing synchronization requirements.
+In this case, the logical order of computational events may be allowed to depend on the rate at which processing on different compute elements proceeds or the duration it takes to delvier messages between compute elements.
+Under this model, the runtime strives to minimize message latency and loss, but guarantees elimination of neither.
+Instead, processes continue their compute work unimpeded and incorporate communication from collaborating processes as it happens to become available.
+
+We see best-effort communication and data attrition as a particularly fruitful target for investigation.
+Firstly, synchronization constitutes the root cause of many contemporary scaling bottlenecks, well below the mark of thousands or millions of cores where runtime failures and soft errors become critical considerations.
+Secondly, future HPC hardware is expected to provide more heterogeneous, more variable (i.e., due to power management), and generally lower (relative to compute) communication bandwidth \cite{gropp2013programming,acun2014parallel}; a best-effort approach suits these challenges.
+A best-effort communication model presents the possibility of runtime adaptation to effectively utilize available resources given the particular ratio of compute and communication capability at any one moment in any one rack.
+Likewise, these best-effort strategies allow the possibility of gracefully degrading to meet the memory and bandwidth limitations, e.g., of hardware accelerator devices.
+
+While departing from a strict deterministic computing model can reduce synchronization overhead, increase resource utilization (particularly under heterogenous or fluctuating resource availability), reduce the cost of checkpointing and rollback to handle hardware failures, and --- at its extremum --- allow cost savings through reduced power use and longer acceptable hardware lifespans, it creates important challenges and reproducibility and bias that, if not considered carefully, can effectively entirely undermine the value of the computation being done in the first place.
+With respect to bias, it is possible and even in fact likely for errors to be non-uniformly distributed across the compute fabric and even to correlate with features of the underlying computation (e.g., compute intensity of certain simulation conditions) to create consequences that don't just increase the variance or reduce the bias of the simulation, but in fact systematically bias it --- often in unexpexted or pernissicious ways.
+Likewise, allowing the behavior of a computatiopn to depend on underlying physical hardware doesn't just remove the exact reproducibility of a result, but can also undermine its qualitative reproducibility --- whether due to needing the particular type of hardware, the particular instance of hardware, or even the hardware at a certain point in time (e.g., under certain load conditions).
+These challenges can be especially pernicious in the case of evolutionary studies, where evolving genotypes can adopt strategies that depend on or even exploit unintentional features of their virtual environment \cite{Thompson1997,Lehman2020}.
+
 \input{fig/best-effort.tex}
 
-TODO introduction.
+However, incorporating best-effort relaxations need not involve arbitrary \textit{laissez-faire} impacts on reproducibility and bias.
+The scope of what aspects of a computation are relaxed, and bounds on the relaxation, can be enforced.
+For instance, in the case of the \textit{inferential observability} paradigm, a distinction is drawn between data collection and the underlying computation (Figure \ref{moreno:fig:best-effort}).
+While it is still possible for unexpected bias to creep in if simulation conditions systematically influence the pattern of data that is collected, this scope  generally more conservative because it is generallu possible to know the distribution of data that was collected (and often to have a well-founded outline of the data that was not) because collected data do not have a causal effect on later outcomes of the simulation and instead pertain only to the analysis and inference conducted \textit{post hoc}, it is generally more straightforward to account for the effects of potential best-effort variation on the underlying simulation.
+Likewise, even if best-effort relaxations are allowed into the underlying core computation, it is possible to pick and choose the aspects to target that are less likely to be sensitive to noise.
+
+Where relaxations are allowed, an obvious step to mitigate potential downsides from best-effort relaxations is to establish runtime instrumentation (Figure \ref{moreno:fig:best-effort}) to measure runtime conditions experienced.
+Figure \ref{moreno:fig:best-effort} lists a few possible (non-exhaustive) quality-of-service metrics that can be collected inexpensively.
+We monitor five aspects of real-time behavior, which we refer to as quality of service metrics \cite{karakus2017quality},
+\begin{itemize}
+  \item wall-time simulation update rate (``simstep period''),
+  \item simulation-time message latency,
+  \item wall-time message latency,
+  \item steadiness of message inflow (``delivery clumpiness''), and
+  \item delivery failure rate.
+\end{itemize}
+(Formal definitions for these metrics follow in Section \ref{moreno:sec:case1}.)
+Based on these measurements, it is possible to tune simulation configuration such that quality of service remains within acceptable bounds, screen for systematic correlations between quality of service and simulation outcomes, provide a more informed interpretation for the nature of the computation actually being accomplished, and report conditions alongside findings to improve qualitative reproducibility.
+
+To examine the trade-offs of best-effort high-performance computing for digital evolution might arise in practice, and how rigorous instrumentation can help quantify these benefits and mitagate downsides, we will examine two case studies --- reported next.
+
+In the first case study, we use our proposed metrics to examine the best-effort characteristics of multiprocessing-based best-effort framework to examine how its performance and quality-of-service scale and the robustness to hardware anomaly.
+In the second case study, we look at these strategies in action on the cerebras wafer-scale engine, and show how data collection and instrumentation can be used to flag and mitigate potential sources of bias.
