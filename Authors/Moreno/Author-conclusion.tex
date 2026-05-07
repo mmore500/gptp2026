@@ -6,6 +6,29 @@ Indeed, longstanding and productive exchange has existed between evolution \text
 While experimental approaches to the study of evolution have gained substantial traction \cite{TODO}, simulation approaches have enabled study designs infeasible to observe on human timescales or otherwise difficult to engineer \cite{wiser2013long,Stroud2025}.
 
 As demonstrated across our two case studies, best-effort strategies represent a promising remedy to contend with scaling challenges in conducting digital evolution work among higher processor counts and working within the constraints of an emerging next-generation AI/ML hardware accelerator device.
+% We found that the best-effort approach significantly increases performance at high CPU count.
+% This finding was consistent across the communication-intensive graph coloring benchmark and the computation-intensive digital evolution benchmark.
+% The computation-heavy digital evolution benchmark yielded the strongest scaling efficiency, achieving at 64 processes 92\% the update-rate of single-process execution.
+% We observed the greatest relative speedup under distributed communication-heavy workloads --- about $7.8\times$ on the graph coloring benchmark.
+% In the case of the graph coloring benchmark, we found that best-effort communication can help achieve tangibly better solution quality within a fixed time constraint.
+% Because real-time volatility affects the outcome of computation under the best-effort model, raw execution speed performance does not suffice to fully understand the consequences of the best-effort communication model.
+% In order to characterize the real-time dynamics under the best-effort model, we designed and measured a suite of quality of service metrics: simstep period, simstep latency, wall-time latency, delivery failure rate, and delivery clumpiness.
+% We performed several experiments to validate and characterize these metrics.
+% Comparing quality of service between multithreading and multiprocessing, we found that multithreading had lower runtime overhead cost but that multiprocessing reduced delivery erraticity, curbing especially extreme poor quality of service outlier events.
+% We found better quality of service, especially with respect to latency, for processes occupying the same node.
+% Finally, varying the ratio of computational work to communication, we found lower communication intensity associated with less volatile quality of service.
+% In order for best-effort communication to succeed in facilitating scale-up, median quality of service must stabilize with increasing CPU count.
+% Put another way, best-effort communication cannot succeed at scale if communication quality tends toward complete degradation.
+% In Section \ref{sec:weak-scaling}, we used weak scaling experiments to test the effect of scale-up on quality of service at 8, 64, and 256 processes.
+% Under a lower communication-intensivity task parameterization, we found that all median quality of service metrics were stable when scaling from 64 to 256 processes.
+% Under maximal communication intensivity, we found in one case that median simstep period degraded from around \SI{80}{\micro\second} to around \SI{85}{\micro\second}.
+% In another case, median message delivery failure rate increased from around 7\% to around 9\%.
+% Such minor --- and, in most cases, nil --- degradation in median quality of service despite maximal communication intensivity bodes well for the viability of best-effort communication at scale.
+% Resilience is a second major motivating factor for best-effort computing.
+% In another promising result, we found that the presence of an apparently faulty compute node did not degrade median performance or quality of service.
+% Despite extreme quality of service degradation measured among that node and its clique, collective performance and quality of service remained steady.
+% In effect, the best-effort approach successfully decoupled global performance from the worst performer.
+% Such so-called ``straggler effects'' plague traditional approaches to large-scale high-performance computing \cite{aktacs2019straggler}, so avoiding them is a major boon.
 In the first case study incorporating best-effort communication on MPI multiprocessing across traditional CPU-based HPC nodes, we saw that
 \begin{enumerate}
 \item best-effort communication and synchronization improve scaling efficiency for both communication-heavy workloads and compute-heavy problems with heterogenous workloads;

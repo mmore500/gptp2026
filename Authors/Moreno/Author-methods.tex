@@ -20,3 +20,39 @@ As with other next-generation AI/ML accelerator platforms, work on WSE must acco
 \subsection{Hereditary Stratigraphy}
 
 \cite{singhvi2025scalable,moreno2024structured,moreno2025testing}
+
+\subsection{Benchmarking Experiments} \label{moreno:sec:methods-code-data-reproducibility-benchmarking-experiments}
+
+Benchmarking experiments were performed on Michigan State University's High Performance Computing Center, a cluster of hundreds of heterogeneous x86 nodes linked with InfiniBand interconnects.
+For multithread experiments, benchmarks for each thread count were collected from the same node.
+For multiprocess experiments, each process was assigned to a distinct node in order to ensure results were representative of performance in a distributed context.
+All multiprocess benchmarks were recorded from the same collection of nodes.
+Hostnames are recorded for each benchmark data point.
+For an exact accounting of hardware architectures used, these hostnames can be crossreferenced with a table included with the data that summarizes the cluster's node configurations.
+
+Code for the distributed graph coloring benchmark is available at \url{https://github.com/mmore500/conduit} under \\ \texttt{demos/channel\_selection}.
+Code for the digital evolution simulation benchmark is available at \url{https://github.com/mmore500/dishtiny}.
+Exact versions of software used are recorded with each benchmark data point.
+Data is available via the Open Science Framework at \url{https://osf.io/7jkgp/} \citep{foster2017open}.
+Notebook code for all reported statistics and data visualizations is available at \url{https://hopth.ru/ci}.
+
+\subsection{Quality of Service Experiments}
+
+Quality of service experiments were carried out on Michigan State University's High Performance Computing Center lac cluster, consisting of 28-core Intel(R) Xeon(R) CPU E5-2680 v4 \@ 2.40GHz nodes.
+All statistical comparisons are performed between observations from the same job allocation.
+(Except in the case where intranode and internode configurations were compared, where experiments were performed on separate allocations using comparable nodes on the same cluster.)
+
+Benchmarking experiments described in Section \ref{moreno:sec:methods-code-data-reproducibility-benchmarking-experiments} used a send/receive buffer size of 2.
+However, due to the high communication intensity of the graph coloring problem with just one simulation element per CPU, quality of service experiments required a larger buffer size of 64 to maintain runtime stability.
+In early work developing the Conduit library, we discovered that real-time messaging channels can enter a destabilizing positive feedback spiral when incoming messages take longer to handle (e.g., skip past or read) than sending messages.
+Under such conditions, when a process exchanging messages from a partner process experiences a delay it sends fewer messages to that partner process.
+Due to fewer incoming messages, the partner process can update more rapidly, increasing incoming message load on the delayed process.
+This effect can snowball the partnership intended for even, two-way message exchange into effectively a unilateral producer-consumer relationship where (potentially unbounded) work piles up on the consumer.
+To interrupt such a scenario, we use the bulk message pull call \verb|MPI_Testsome| to ensure fast message consumption under backlogged conditions.
+So, receiver workload remains closer to constant under high traffic situations (instead of having to pull messages down one-by-one).
+Larger receive buffer size, as configured for the quality of service experiments, increases the effectiveness of the bulk message consumption countermeasure.
+
+Code for the distributed graph coloring benchmark is available at \url{https://github.com/mmore500/conduit} under \\ \texttt{demos/channel\_selection}.
+Exact versions of software used are recorded with each benchmark data point.
+Data is available via the Open Science Framework at \url{https://osf.io/72k5n/} \citep{foster2017open}.
+Notebook code for all reported statistics is available at \url{https://hopth.ru/cj}.
