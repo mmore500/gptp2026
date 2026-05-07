@@ -30,19 +30,19 @@ In the second case study incorporating best-effort strategies into the memory- a
 % Even with the current generation CS-2 hardware, HPC applications clustering 24 WSE chips to reach a PE count of 35 million have been reported \citep{ltaief2023scaling}.
 % Although we do not explore multi-chip clustering in this proposal, this possibility affords potential for our proposed research direction to enable still-larger orders-of-magnitude springboarding of PDES/ABMS capabilities.
 
-The 3rd generation Cerebras WSE is a $755 \times 1{\small,}170$ mesh of 880{\small,}000 networked compute cores (Processing Elements or PEs; Figure \ref{moreno:fig:TODO}).
+The 3rd generation Cerebras WSE is a $755 \times 1{\small,}170$ mesh of 880{\small,}000 networked compute cores (Processing Elements or PEs; Figure \ref{moreno:fig:wse:types}).
 PEs execute independently, and use specialized on-chip routing to stream 32-bit messages between neighbors with single-cycle latency.
-Each PE has 48kb of private on-chip memory with fast single-cycle read/write access [15].
+Each PE has 48kb of private on-chip memory with fast single-cycle read/write access \cite{buitrago2021neocortex}.
 PEs support standard CPU-like control flow, in addition to vectorized integer and floating-point operations.
 
-In addition to deep learning frameworks (e.g., TensorFlow), Cerebras provides a full-featured Software Development Kit (SDK) [16] for general-purpose HPC [17,18].
+In addition to deep learning frameworks (e.g., TensorFlow), Cerebras provides a full-featured Software Development Kit (SDK) \cite{selig2022cerebras} for general-purpose HPC \cite{jacquelin2022scalable,rocki2020fast}.
 The WSE device is programmed on a per-PE basis using the Cerebras Software Language (CSL).
 CSL organizes code within an event-driven framework, with the programmer defining tasks to be triggered in response to signals exchanged between—and within—PEs.
 Task handling occurs via hardware-level microthreading that supports cooperative concurrency.
 
 Existing WSE projects simulating hypermutator dynamics and evolutionary epidemiology positions our lab for success.
 Local software development leverages Cerebras’ hardware emulator, which allows CSL code to run in Linux desktop environments.
-In addition, we will leverage our existing in-house CSL library for WSE evolution simulations [19]—as well as in-house utilities for unit testing CSL in continuous integration and type-rich experiment configuration [20].
+In addition, we will leverage our existing in-house CSL library for WSE evolution simulations \cite{moreno2025wseasyncga}—as well as in-house utilities for unit testing CSL in continuous integration and type-rich experiment configuration \cite{moreno2026compconf}.
 Our work also benefits  from a strong two-way relationship exchanging hardware advice and feedback with PSC Neocortex (an NSF ACCESS WSE provider) and Cerebras engineering staff.
 As with other next-generation AI/ML accelerator platforms, work on WSE must account for scarce on-device memory (48kb per core), extreme decentralization (direct communication only among local neighbors), and restricted host-device connectivity (only at grid perimeter).
 Thus, translating HPC to these platforms requires software design directly informed by hardware.
@@ -60,15 +60,15 @@ For such application-oriented evolutionary computation, phylogenetic information
 Digital simulations also serve as a useful testbed for bioinformatics methodologies, as ground truth conditions may be configured directly \cite{daudey2024aevol,haller2023slim}.
 The ultimate goal of building these ancestry trees is to provide visibility into large-scale evolution experiments running on the WSE.
 Structural composition of ancestry trees can reveal key evolutionary dynamics, such as discovery of beneficial mutations (adaptation).
-Notably, in this domain, phylogeny data underpins core metrics for measuring ongoing system change \cite{dolsonMODESToolboxMeasurements2019}.
-In the bioinformatics testbed domain, which also makes heavy use of phylogeny data, limitations of simulation scale can obscure the relationships of population size and sampling density with sensitivity and accuracy \cite{moreno2025extending,TODO}.
+Notably, in this domain, phylogeny data underpins core metrics for measuring ongoing system change \cite{dolson2019modes}.
+In the bioinformatics testbed domain, which also makes heavy use of phylogeny data, limitations of simulation scale can obscure the relationships of population size and sampling density with sensitivity and accuracy \cite{moreno_extending_2025}.
 
 To address challenges storing and moving data on WSE, we have adopted strategies inspired by real-world experiments that assume data collection is expensive, limited, and non-deterministic.
 Robust existing methods and statistics for such ``inferential observability'' in field and lab biology make evolution simulations an ideal testbed for applications in HPC.
 
-Our approach to tracking ancestry (i.e., phylogenies) on WSE illustrates inferential observability in action. Rather than exhaustively tracking all parent-child relationships, we adopt an approach akin to how biologists reconstruct ancestry by comparing DNA sequences. Inspired by synthetic biologists [22], we use genome barcoding with single-bit markers to shrink memory footprint as low as 96 bits per organism [23–25].
+Our approach to tracking ancestry (i.e., phylogenies) on WSE illustrates inferential observability in action. Rather than exhaustively tracking all parent-child relationships, we adopt an approach akin to how biologists reconstruct ancestry by comparing DNA sequences. Inspired by synthetic biologists \cite{masuyama2019dna}, we use genome barcoding with single-bit markers to shrink memory footprint as low as 96 bits per organism \cite{moreno2022hstrat,moreno2022hereditary,moreno2025testing}.
 This ``hereditary stratigraphy'' approach supports sparse, flexible device-to-host sampling tailored to experimental objectives—for instance, collected through time or only the final time point.
-Existing work has successfully scaled to 1 billion sampled/1 quadrillion total taxa [26] and proven robust to transient interruptions and even full faults, both of which become inevitable in large-scale computing (Figure \ref{moreno:fig:TODO}).
+Existing work has successfully scaled to 1 billion sampled/1 quadrillion total taxa \cite{singhvi2025scalable} and proven robust to transient interruptions and even full faults, both of which become inevitable in large-scale computing (Figure \ref{moreno:fig:wse:timeseries}).
 
 For instance, we are pursuing ongoing methods development for tracking ancestry (i.e., phylogenies) in evolution simulations using strategies akin to how biologists reconstruct ancestry by comparing DNA sequences — rather than exhaustively tracking all parent-child relationships.
 
