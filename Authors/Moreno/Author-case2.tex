@@ -30,7 +30,7 @@ In the second case study incorporating best-effort strategies into the memory- a
 % Even with the current generation CS-2 hardware, HPC applications clustering 24 WSE chips to reach a PE count of 35 million have been reported \citep{ltaief2023scaling}.
 % Although we do not explore multi-chip clustering in this proposal, this possibility affords potential for our proposed research direction to enable still-larger orders-of-magnitude springboarding of PDES/ABMS capabilities.
 
-The 3rd generation Cerebras WSE is a $755 \times 1{\small,}170$ mesh of 880{\small,}000 networked compute cores (Processing Elements or PEs; Figure \ref{moreno:fig:wse:types}).
+The 3rd generation Cerebras WSE is a $755 \times 1{\small,}170$ mesh of 880{\small,}000 networked compute cores (Processing Elements or PEs; Figure \ref{moreno:fig:wse:architecture}).
 PEs execute independently, and use specialized on-chip routing to stream 32-bit messages between neighbors with single-cycle latency.
 Each PE has 48kb of private on-chip memory with fast single-cycle read/write access \cite{buitrago2021neocortex}.
 PEs support standard CPU-like control flow, in addition to vectorized integer and floating-point operations.
