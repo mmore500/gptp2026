@@ -247,17 +247,33 @@ jobs:
       - name: Build LaTeX document
         run: |
           trap 'cat paper/*.log || true >> "$GITHUB_OUTPUT"' EXIT
-          make -C paper
+          make -C paper draft
       - name: Prepare deploy directory
         run: |
           mkdir -p deploy
           cp paper/*-draft.pdf deploy/
-          echo "<html><body><a href="$(ls deploy)">Download Manuscript Draft [PDF]</a></body></html>" > deploy/index.html
+          manuscript_pdf="$(cd deploy && ls *-manuscript-draft.pdf)"
+          supplement_pdf="$(cd deploy && ls *-supplement-draft.pdf)"
+          combined_pdf="$(cd deploy && ls *-draft.pdf | grep -v -- '-manuscript-draft.pdf' | grep -v -- '-supplement-draft.pdf')"
+          cat > deploy/index.html <<EOF
+          <html><body>
+          <ul>
+            <li><a href="${combined_pdf}">Download Manuscript Draft [PDF]</a></li>
+            <li><a href="${manuscript_pdf}">Download Manuscript Draft (manuscript only) [PDF]</a></li>
+            <li><a href="${supplement_pdf}">Download Supplement Draft [PDF]</a></li>
+          </ul>
+          </body></html>
+          EOF
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: manuscript
           path: paper/*-draft.pdf
+      - name: Upload supplement artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: supplement
+          path: paper/*-supplement-draft.pdf
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
