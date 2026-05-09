@@ -2,54 +2,33 @@
 
 \input{fig/wse.tex}
 
-In the second case study incorporating best-effort strategies into the memory- and bandwidth-constrained Cerebras Wafer-Scale Engine, we found that
-\begin{enumerate}
-\item inferential observability strategies, inspired by techniques biologists use to study the evolutionary history of biological organisms, allow us to overcome limitations in data volume and stochasticity to usefully capture evolutionary history (phylogeny reconstruction);
-\item inferential observability, combined with quality-of-service tracking, allow us to detect and correct potential biasing factors arising from assymetries in directional migration rates; and
-\item inferential observability allows us to easily workaround hardware faults causing corruption of data exported from a subset of the Wafer-Scale Engine by simply excluding it.
-\end{enumerate}
-
-\subsection{Cerebras Wafer-Scale Engine Architecture}
-
-% The WSE comprises a networked grid of independently executing compute cores (Processing Elements or PEs).
-% Each PE contains specialized message-handling infrastructure, which routes tagged 32-bit packets to neighboring PEs and/or to be processed locally, according to a programmed rule set.
-% Each PE is equipped with 48kb of private on-chip memory, which can be accessed within a single clock cycle;
-% communication to neighboring PEs, too, incurs low latency \citep{buitrago2021neocortex}.
-% PEs provide faculties for standard arithmetic and flow-control operations, as well as vectorized 32- and 16-bit integer and floating-point operations.
-% As Cerebras' driving market area is AI/ML, their product provides extensive integration frameworks for deep learning (e.g., TensorFlow).
-% However, they have also been active in applications to general-purpose HPC \citep{jacquelin2022scalable,rocki2020fast}, and have opened the full capabilities of the platform to outside developers through their Software Development Kit (SDK) \citep{selig2022cerebras}.
-% The WSE device is programmed by providing ``kernel'' code, written in the Cerebras Software Language (CSL), to be executed on each PE.
-% This language's programming model purposefully reflects underlying capabilities and particularities of the WSE architecture.
-% CSL organizes code within an event-driven framework, with the programmer defining tasks to be triggered in response to wavelet activation signals exchanged between --- and within --- PEs.
-% Scheduling of active tasks occurs via hardware-level microthreading, which allows some level of concurrency.
-% Special faculties are provided for asynchronous send-receive operations that exchange contiguous or temporally-allotted buffer data between PEs.
-% This Cerebras SDK includes a hardware emulator, providing means to compile and test CSL code from any Linux desktop environment, regardless of hardware access.
-% Cerebras' current hardware offering is the CS-2 device, which offers 850,000 PEs and boasts a peak performance of 7.5 PetaFLOPs at 16-bit precision \citep{lie2023cerebras}.
-% This model will shortly be succeeded by the CS-3, which implements nearly the same architectural model but with an increase of PE count to 900,000 and a few other spec bumps \citep{moore2024cerebras}.
-% Notably, the CS-3 architecture boosts support for clustering, allowing interconnection of potentially thousands of WSE chips.
-% Even with the current generation CS-2 hardware, HPC applications clustering 24 WSE chips to reach a PE count of 35 million have been reported \citep{ltaief2023scaling}.
-% Although we do not explore multi-chip clustering in this proposal, this possibility affords potential for our proposed research direction to enable still-larger orders-of-magnitude springboarding of PDES/ABMS capabilities.
-
 The 3rd generation Cerebras WSE is a $755 \times 1{\small,}170$ mesh of 880{\small,}000 networked compute cores (Processing Elements or PEs; Figure \ref{moreno:fig:wse:architecture}).
 PEs execute independently, and use specialized on-chip routing to stream 32-bit messages between neighbors with single-cycle latency.
+In the context of digital evolution, this architecutre is a natural fit for island model schemes, where each PE hosts an independent subpopulation.
 Each PE has 48kb of private on-chip memory with fast single-cycle read/write access \cite{buitrago2021neocortex}.
 PEs support standard CPU-like control flow, in addition to vectorized integer and floating-point operations.
-
-In addition to deep learning frameworks (e.g., TensorFlow), Cerebras provides a full-featured Software Development Kit (SDK) \cite{selig2022cerebras} for general-purpose HPC \cite{jacquelin2022scalable,rocki2020fast}.
-The WSE device is programmed on a per-PE basis using the Cerebras Software Language (CSL).
-CSL organizes code within an event-driven framework, with the programmer defining tasks to be triggered in response to signals exchanged between—and within—PEs.
-Task handling occurs via hardware-level microthreading that supports cooperative concurrency.
-
-Existing WSE projects simulating hypermutator dynamics and evolutionary epidemiology positions our lab for success.
-Local software development leverages Cerebras’ hardware emulator, which allows CSL code to run in Linux desktop environments.
-In addition, we will leverage our existing in-house CSL library for WSE evolution simulations \cite{moreno2024wse} --- as well as in-house utilities for unit testing CSL in continuous integration and type-rich experiment configuration \cite{moreno2026compconf}.
-Our work also benefits  from a strong two-way relationship exchanging hardware advice and feedback with PSC Neocortex (an NSF ACCESS WSE provider) and Cerebras engineering staff.
 As with other next-generation AI/ML accelerator platforms, work on WSE must account for scarce on-device memory (48kb per core), extreme decentralization (direct communication only among local neighbors), and restricted host-device connectivity (only at grid perimeter).
-Thus, translating HPC to these platforms requires software design directly informed by hardware.
+(Further detail on WSE Architecture overview is provided in our supplement \cite{moreno_2026_trust}.)
+% Thus, translating HPC to these platforms requires software design directly informed by hardware.
 
-\subsection{Inferential Observability Strategy for Phylogenetic History}
+As a second case study, we investigate how best-effort strategies can be used to try to work within the constraints imposed by this hardware, to allow visibility into larger-scale digital evolution work conducted on the chip.
+In our experiments, each PE hosted an independent subpopulation, introducing the challenge of tracking evolution spread across the PEs, with migrations stitching the independent subplopulations into one massively-distributed meta-population spread across the chip.
+As with other applications on the WSE, on-device memory and host--device bandwidth are kehy limitations --- not all data can be kept, and not all data can be transmitted.
+In this setting, it is particularly important for instrumentation to be lightweight --- resources used for instrumentation (e.g.,) memory, bandwidth) directly competes with memory used to increase population size and bandwidth that is useful for facilitting on-device migrations.
 
-The structure of evolutionary ancestry relationships arising in phylogenies is a cornerstone of inquiry in modern evolutionary biology \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lenski2003evolutionary}.
+To explore this challenge, we focus on one particul type of historical information specific to, and critical to, evolutionary studies \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lenski2003evolutionary}: phylogeny, which we briefly review.
+
+% In the second case study incorporating best-effort strategies into the memory- and bandwidth-constrained Cerebras Wafer-Scale Engine, we found that
+% \begin{enumerate}
+% \item inferential observability strategies, inspired by techniques biologists use to study the evolutionary history of biological organisms, allow us to overcome limitations in data volume and stochasticity to usefully capture evolutionary history (phylogeny reconstruction);
+% \item inferential observability, combined with quality-of-service tracking, allow us to detect and correct potential biasing factors arising from assymetries in directional migration rates; and
+% \item inferential observability allows us to easily workaround hardware faults causing corruption of data exported from a subset of the Wafer-Scale Engine by simply excluding it.
+% \end{enumerate}
+
+
+\subsection{Phylogenetic Structure and Applications}
+
+% The structure of evolutionary ancestry relationships arising in phylogenies is a cornerstone of inquiry in modern evolutionary biology .
 % Phylogenetic analysis is integral to much of evolution research, whether conducted \textit{in vivo} or \textit{in silico} \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lewinsohnStatedependentEvolutionaryModels2023a,lenski2003evolutionary}.
 In addition to tracing the history of notable evolutionary events such as extinctions or evolutionary innovations \cite{TODO}, phylogenetic analysis has allowed characterization of more general questions about the underlying mode and tempo of evolution \cite{Moreno2025ecology}.
 Classically, these analyses have been applied to investigation of species-level macroevolutionary dynamics revolving around speciation and extinction rates; however, population- and organism-level dynamics can also be inferred, such as the spread of beneficial mutations within a population or fitness parameters like growth rate and probability of survival \cite{genthon2023cell, levy2015quantitative,stadler2013recovering,moreno2023toward,lewinsohnStatedependentEvolutionaryModels2023a}. %TODO instantaneous fitness paper
@@ -58,24 +37,53 @@ Such scenarios arise in clinical and public health fields, managing therapy-resi
 Notable objective-oriented contexts arise also in computing, where evolution can be leveraged as an optimization algorithm.
 For such application-oriented evolutionary computation, phylogenetic information can be used directly in guiding evolution toward desired outcomes \cite{lalejini2024phylogeny,lalejini2024runtime,murphy2008simple,burke2003increased}, but also indirectly to provide diagnostics for choosing appropriate configuration and parameterizations \cite{hernandez2022can,shahbandegan2022untangling}.
 Digital simulations also serve as a useful testbed for bioinformatics methodologies, as ground truth conditions may be configured directly \cite{daudey2024aevol,haller2023slim}.
-The ultimate goal of building these ancestry trees is to provide visibility into large-scale evolution experiments running on the WSE.
+
+Our ultimate goal of building these ancestry trees is to provide visibility into large-scale evolution experiments running on the WSE.
 Structural composition of ancestry trees can reveal key evolutionary dynamics, such as discovery of beneficial mutations (adaptation).
 Notably, in this domain, phylogeny data underpins core metrics for measuring ongoing system change \cite{dolson2019modes}.
 In the bioinformatics testbed domain, which also makes heavy use of phylogeny data, limitations of simulation scale can obscure the relationships of population size and sampling density with sensitivity and accuracy \cite{moreno2025extending,TODO}.
+
+\subsection{Best-effort Strategy is Robust to Incomplete Data...}
 
 To address challenges storing and moving data on WSE, we have adopted strategies inspired by real-world experiments that assume data collection is expensive, limited, and non-deterministic.
 Robust existing methods and statistics for such ``inferential observability'' in field and lab biology make evolution simulations an ideal testbed for applications in HPC.
 
 Our approach to tracking ancestry (i.e., phylogenies) on WSE illustrates inferential observability in action. Rather than exhaustively tracking all parent-child relationships, we adopt an approach akin to how biologists reconstruct ancestry by comparing DNA sequences. Inspired by synthetic biologists \cite{Masuyama2019}, we use genome barcoding with single-bit markers to shrink memory footprint as low as 96 bits per organism \cite{moreno2022hstrat,moreno2022hereditary,moreno2025testing}.
 This ``hereditary stratigraphy'' approach supports sparse, flexible device-to-host sampling tailored to experimental objectives—for instance, collected through time or only the final time point.
-Existing work has successfully scaled to 1 billion sampled/1 quadrillion total taxa \cite{singhvi2025scalable} and proven robust to transient interruptions and even full faults, both of which become inevitable in large-scale computing (Figure \ref{moreno:fig:wse:TODO}).
 
-For instance, we are pursuing ongoing methods development for tracking ancestry (i.e., phylogenies) in evolution simulations using strategies akin to how biologists reconstruct ancestry by comparing DNA sequences — rather than exhaustively tracking all parent-child relationships.
+In recent work with WSE, we have proven out the viability of this approach in scaling to 1 billion sampled/1 quadrillion total taxa \cite{singhvi2025scalable}.
+However, this approach is flexible with respect to the number of taxa sampled, and can even be used down to a single pair of genomes alone to estimate their relatedness history.
+This fleixibility allows for prioritization of bandwidth for device-to-hust transfers and also with on-device migration during runtime based on project priorities.
+With memory footprint reasonably as low as 64 bits per tracked genome, such a simulation could be done that uses a lightweight, fixed-size footprint at runtime and simply builds a phylogeny fromm the end-state population \cite{TODO}.
+
+Likewise, if samples from across runtime are desired, because the data reqwuired is flexible, transfers can be conducted asynchronously without imposing slowdown on the rest of the comutation.
+Using this strategy, in fact, it is possible to receive more data than is actually needed.
+As such, for example when we were creating the billion-tip phylogenies, the transfer rate was such that we actually only kept around TODO\% of transffered genomes and discarded tghe rest to economize on storage, memory, and avoid overwhelming our downstream analyses(Figure \ref{moreno:fig:wse:TODO})
+
+\subsection{... Including from Hardware Faults}
+
+Another benefit in being flexible as to needed data is tolerance to hardware faults.
+While individual processor cores, under current silicon-based technologies, are generally highly reliable, where computational work involves hundreds of thousands or millions of corresponding parts, hardware failures become inevietable --- particularly when hardware is subject to round the clock thermal loadd under data center conditions.
+
+The Cerebras Wafer-Scale Engine is no exception.
+In fact, this is an essential consideration in its manufacturing process --- because so many processors are printed onto a single chip, it is inevietable that some will be unusable due to manufacturing defects.
+Therefore, the manufacturing process for the Wafer-Scale Engine instead involves printing more cores than are needed, and then using tests to exclude those that are defective and route around them \cite{TODO}.
+Likewise, at runtime, strain on the hardware is significant --- in order to house the chip, a special suspension is needed to allow the chip to physically expand and contract within its housing based on thermal status \cite{TODO}.
+
+As such, and analogous to other HPC hardware, it is therefore not surprising to encounter apparent hardware failures in deployment.
+When working with the CS-3 chip available to us under our allocation, we noted that after a certain date it began to impose bit-flip corruption into output data, which we confirmed through parity-check instrumentation.
+Parity-check instrumentation confirmed that this apparent corruption was specific to the device-host transfer and localized to a single row on the chip, not affecting the integrity of on-device data (Figure \ref{moreno:fig:wse:TODO}).
+That is, the integrity of underlying simulation was not impinged --- only our ability to collect complete information from the chip.
+Simply excluding the small fraction of potentially-corrupt data allowed our experiments testing the spatial structure of reconstruted phylogenies (i.e., where organissms are physically sampled from on the chip) to continue without interruption.
+
+While the localized nature of this hardware fault allowed us to readily differentiate valid and invalid data, more general resilience to such faults could be accomplished with high confidence and low cost by using a checksum technique.
+If elements of the compute pool that report dasta keep a running checksum across reported data, and then send in their end-state checksum, stored dasta can be audited against the final checksum and any collections of dasta from a compute element with invalid checksums can simply be excluded.
 
 \subsection{Directional Migration Bias}
 
-TODO
-
-\subsection{Incomplete Data}
-
-TODO
+Finally, we resurface the theme of measuring quality-of-service metrics to identify potential biasing factors in a best-effort computation (Section \ref{moreno:sec:case1}).
+Collecting spatial phylogeny dasta helped to flag an asymmetry in our island-model evolving population.
+Specifically, under neutral evolutionary conditions, we saw that lineages appeared biased towards migrating from bottom to top across the chip (Figure \ref{moreno:fig:wse:TODO}).
+Inspection of directional message counts confirmed that, indeed, directional asymmetry existed in the migration rates between islands (\ref{moreno:fig:wse:TODO}).
+Having identified this bias, and noted that it could have a mild, but detectable systematic large-scale effect on evolution, we were able to tak e action to ameliorate this.
+In this case, symmetry in directional migration rates could be rectified fon a simple manner --- without invoking global synchronization --- by simply restricting the send rate of each PE to its neighbor to the slowest among neighbors.
