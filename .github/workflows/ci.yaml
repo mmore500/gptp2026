@@ -31,3 +31,10 @@ jobs:
           name: main-pdf
           path: main.pdf
           if-no-files-found: warn
+      - name: Upload supplement PDF artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: supplement-pdf
+          path: supplement.pdf
+          if-no-files-found: warn
