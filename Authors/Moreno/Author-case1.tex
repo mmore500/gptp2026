@@ -2,416 +2,187 @@
 
 \input{fig/cpu.tex}
 
-In the first case study incorporating best-effort communication on MPI multiprocessing across traditional CPU-based HPC nodes, we saw that
-\begin{enumerate}
-\item best-effort communication and synchronization improve scaling efficiency for both communication-heavy workloads and compute-heavy problems with heterogenous workloads;
-\item quality of service metrics scale stably with processor count;
-\item in a benchmark problem with an objective solution quality score, the trade-off between quality-of-service and efficiency was such that best-effort approaches were able to produce higher-quality solutions within an alloted runtime;
-\item quality of service metrics were able to flag potential biasing artifacts, such as emergent producer-consumer imbalances; and
-\item quality of service metrics flagged an anomolous laggard node, and allowed us to determine that quality of service and performance nonetheless remained stable across the computation.
-\end{enumerate}
+As a first case study, we examine best-effort infrastructure designed to support digital evolution experiments exploring the evolution of multicellularity \cite{moreno2019toward}.
+A fully bottom-up approach to such experiments requires sufficient simulation capacity for individual cells to support an emergent meta-population of multicellular collectives; further, because rich cell-cell interactions and behaviors are critical to these experiments, workload per cell is high.
+As such, parallel acceleration of individual replicates is important in this use case for tractable experiments.
 
-The Message Passing Interface (MPI) standard \cite{gropp1996high} represents the mainstay for high-performance computing applications.
-This standard exposes communication primitives directly to the end user.
-MPI's nonblocking communication primitives, in particular, are sufficient to program distributed computations with relaxed synchronization requirements.
-Although it's explicit, the imperative nature of the MPI protocols enables precise control over execution; unfortunately it also poses significant expense in terms of programmability.
-This cost manifests in terms of reduced programmer productivity and software quality, while increasing domain knowledge requirements and the effort required to tune for performance due to program brittleness \cite{gu2019comparative, tang2014mpi}.
+DISHTINY simulates a fixed-size toroidal grid populated by digital cells controlled by SignalGP event-driven linear genetic programs \cite{lalejini2018evolving}.
+Cells can sense attributes of their immediate neighbors, can communicate with those neighbors through arbitrary message passing, and can interact with neighboring cells cooperatively or competitively.
+For use as a compute-intensive benchmark we assign 3{\small,}600 cells to each thread or process.
+Besides for cell-cell interactions, this in effect operates as an island model algorithm \cite{bennett1999building}, with spatial structure both within and between island populations.
+Full details of the DISHTINY simulation are available in \cite{moreno2021exploring}.
 
-In response to programmability concerns, many frameworks have arisen to offer useful parallel and distributed programming abstractions.
-Task-based frameworks such as Charm++ \cite{kale1993charm++}, Legion \cite{bauer2012legion}, Cilk \cite{blumofe1996cilk}, and Threading Building Blocks (TBB) \cite{reinders2007intel} describe the dependency relationships among computational tasks and associated data and rely on an associated runtime to automatically schedule and manage execution.
-These frameworks assume a deterministic relationship between tasks.
-In a similar vein, programming languages and extensions like Unified Parallel C (UPC) \cite{el2006upc} and Chapel \cite{chamberlain2007parallel} rely on programmers to direct execution, but equip them with powerful abstractions, such as global shared memory.
-However, Chapel's memory model explicitly forbids data races and UPC ultimately relies on a barrier model for data transfer.
+An alternate approach to evolving large populations might be an island model, where Conduit-based messaging channels would be used solely to exchange genomes between otherwise independent populations .
+However, we chose to instead parallelize DISHTINY as a unified spatial realm in order to enable parent-offspring interaction and leave the door open for future work with multicells that exceed the scope of an individual thread or process.
 
-To bridge these shortcomings, we employ a new software framework, the Conduit C++ Library for Best-Effort High Performance Computing \cite{moreno2021conduit}.
-The Conduit library provides tools to perform best-effort communication in a flexible, intuitive interface and uniform inter-operation of serial, parallel, and distributed modalities.
-Although Conduit currently implements distributed functionality via MPI intrinsics, in future work we will explore lower-level protocols like InfiniBand Unreliable Datagrams \cite{kashyap2006ip, koop2007high}.
+This particular project focused on targeting CPU-based HPC infrastructure, which is traditionally orchestrated through the Message Passing Interface (MPI) standard \cite{gropp1996high}, which exposes communication for inter- and intra-node multi-processing.
+For this project, MPI's nonblocking communication were orchestrated through the Conduit library, a C++ library abstraction layer \cite{moreno2021conduit}.
+This library is one among many frameworks have arisen to offer useful parallel and distributed programming abstractions, including task-based frameworks \cite{kale1993charm++,bauer2012legion,blumofe1996cilk,reinders2007intel} or domain-specific programming languages \cite{el2006upc,chamberlain2007parallel}.
+However, these frameworks assume a deterministic relationship between tasks or otherwise forbid data races.
 
 Here, we present a set of on-hardware experiments to empirically characterize Conduit's best-effort communication model.
-In order to survey across workload profiles, we tested performance under both a communication-intensive graph coloring solver and a compute-intensive artificial life simulation.
+In order to survey across workload profiles, we supplemented digital evolution tests with a compute-intensive artificial life simulation with tests leveraging a communication-intensive graph coloring solver.
+Under this solver, nodes begin by randomly choosing a color if a conflicting neighbor is detected \cite{leith2012wlan}.
+These nodes were arranged in a two-dimensional grid topology where each node had three possible colors and four neighbors.
+Solution error was measured as the number of graph color conflicts remaining at the end of the benchmark.
+Our benchmarks focus on weak scalability, using a fixed problem size of 2{\small,}048 graph nodes per thread or process.
 
-First, we determine whether best-effort communication strategies can benefit performance compared to the traditional perfect communication model.
-We considered two measures of performance: computational steps executed per unit time and solution quality achieved within a fixed-duration run window.
+Futher details for benchmark workloads are included in Supplemental Material \cite{moreno_2026_trust}.
 
-We compare the best-effort and perfect-computation strategies across processor counts, expecting to see the marginal benefit from best-effort communication increase at higher processor counts.
+% MPI's nonblocking communication primitives, in particular, are sufficient to program distributed computations with relaxed synchronization requirements.
+% Although it's explicit, the imperative nature of the MPI protocols enables precise control over execution; unfortunately it also poses significant expense in terms of programmability.
+% This cost manifests in terms of reduced programmer productivity and software quality, while increasing domain knowledge requirements and the effort required to tune for performance due to program brittleness \cite{gu2019comparative, tang2014mpi}.
+
+% \begin{enumerate}
+% \item best-effort communication and synchronization improve scaling efficiency for both communication-heavy workloads and compute-heavy problems with heterogenous workloads;
+% \item quality of service metrics scale stably with processor count;
+% \item in a benchmark problem with an objective solution quality score, the trade-off between quality-of-service and efficiency was such that best-effort approaches were able to produce higher-quality solutions within an alloted runtime;
+% \item quality of service metrics were able to flag potential biasing artifacts, such as emergent producer-consumer imbalances; and
+% \item quality of service metrics flagged an anomolous laggard node, and allowed us to determine that quality of service and performance nonetheless remained stable across the computation.
+% \end{enumerate}
+
+First, we sought to determine whether best-effort communication strategies can benefit performance compared to the traditional perfect communication model.
+We considered two measures of performance: computational steps executed per unit time and, for the graph-coloring problem, solution quality achieved within a fixed-duration run window.
 We focus on weak scaling, growing overall problem size proportional to processor count.
-Put another way, we hold problem size per processor constant.
-\unskip\footnote{
-As opposed to strong scaling, where the problem size is held fixed while processor count increases.
-}
+(Put another way, we hold problem size per processor constant.)
+% \unskip\footnote{
+% As opposed to strong scaling, where the problem size is held fixed while processor count increases.
+% }
 This approach prevents interference from shifts in processes' workload profiles in observation of the effects of scaling up processor count.
+We focus on multiprocessing, and to test under the most difficult conditions we assign each process to a distinct node.
 
-To survey across hardware configurations, we tested scaling CPU count via threading on a single node and scaling CPU count via multiprocessing with each process assigned to a distinct node.
-In addition to a fully best-effort mode and a perfect communication mode, we also tested two intermediate, partially synchronized modes: one where the processor pool completed a global barrier (i.e., they aligned at a synchronization point) at predetermined, rigidly scheduled timepoints and another where global barriers occurred on a rolling basis spaced out by fixed-length delays from the end of the last synchronization.
-\unskip\footnote{
-Our motivation for these intermediate synchronization modes was interest in the effect of clearing any potentially-unbounded accumulation of message backlogs on laggard processes.
-}
-
-Second, we sought to more closely characterize variability in message dispatch, transmission, and delivery under the best-effort model.
-Unlike perfect communication, real-time volatility affects the outcome of computation under the best-effort model.
-Because real-time processing speed degradations and message latency or loss alters inputs to simulation elements, characterizing the distribution of these phenomena across processing components and over time is critical to understanding the actual computation being performed.
-For example, consistently faster execution or lower messaging latency for some subset of processing elements could violate uniformity or symmetry assumptions within a simulation.
-It is even possible to imagine reciprocal interactions between real-time best-effort dynamics and simulation state.
-In the case of a positive feedback loop, the magnitude of effects might become extreme.
-For example, in artificial life scenarios, agents may evolve strategies that selectively increase messaging traffic so as to encumber neighboring processing elements or even cause important messages to be dropped.
-
-In an initial set of experiments, we use the graph coloring problem to test this suite of quality of service metrics across runtime conditions expected to strongly influence them.
-We compare
-\begin{itemize}
-  \item increasing compute workload per simulation update step,
-  \item within-node versus between-node process placement, and
-  \item multithreading versus multiprocessing.
-\end{itemize}
-We perform these experiments using a graph coloring solver configured to maximize communication relative to computation (i.e., just one simulation element per CPU) in order to maximize sensitivity of quality of service to the runtime manipulations.
-
-Finally, we extend our understanding of performance scaling from the preceding experiments by analyzing how each quality of service metric fares as problem size and processor count grow together, a ``weak scaling'' experiment.
+Second, we sought to more closely characterize variability in message dispatch, transmission, and delivery under the best-effort model using the quality-of-service metrics proposed in Section \ref{moreno:sec:introduction}.
+In particular, we extend our understanding of performance scaling from the preceding experiments by analyzing how each quality of service metric fares as problem size and processor count grow together, a ``weak scaling'' experiment.
 This analysis would detect a scenario where raw performance remains stable under weak scaling, but quality of service (and, therefore, potentially quality of computation) degrades.
 
-It is possible to measure these metrics at instantaneous snapshots, or to aggregate over the entirety of the runtime.
+
+% Unlike perfect communication, real-time volatility affects the outcome of computation under the best-effort model.
+% Because real-time processing speed degradations and message latency or loss alters inputs to simulation elements, characterizing the distribution of these phenomena across processing components and over time is critical to understanding the actual computation being performed.
+% For example, consistently faster execution or lower messaging latency for some subset of processing elements could violate uniformity or symmetry assumptions within a simulation.
+% It is even possible to imagine reciprocal interactions between real-time best-effort dynamics and simulation state.
+% In the case of a positive feedback loop, the magnitude of effects might become extreme.
+% For example, in artificial life scenarios, agents may evolve strategies that selectively increase messaging traffic so as to encumber neighboring processing elements or even cause important messages to be dropped.
+
+% In an initial set of experiments, we use the graph coloring problem to test this suite of quality of service metrics across runtime conditions expected to strongly influence them.
+% We compare
+% \begin{itemize}
+%   \item increasing compute workload per simulation update step,
+%   \item within-node versus between-node process placement, and
+%   \item multithreading versus multiprocessing.
+% \end{itemize}
+% We perform these experiments using a graph coloring solver configured to maximize communication relative to computation (i.e., just one simulation element per CPU) in order to maximize sensitivity of quality of service to the runtime manipulations.
 
 \subsection{Calculating Proposed Metrics}
 
-\subsection{Quality of Service Metrics} \label{sec:quality-of-service-metrics}
+In this section, we outline quality-of-service metrics considered in our analysis.
+A more complete description is provided in Supplemental Material \cite{moreno_2026_trust}.
+For the purposes of these metrics, we assume that simulations proceed in an iterative fashion with alternating compute and communication cycles.
+Metrics are collected across a ``snapshot'' window --- here, we focus on aggregations over runtime; however, brief point-in-time snapshots are also possible.
 
-The best-effort communication model eschews effort to insulate computation from real-time message delivery dynamics.
-Because these dynamics are difficult to predict \textit{a priori} and can bias computation, thorough, empirical runtime measurements are necessary to understand results of such computation.
-To this end, we developed a suite of quality of service metrics.
-Figure \ref{moreno:fig:cpu:TODO} provides space-time diagrams illustrating the metrics presented in this section.
-
-For the purposes of these metrics, we assume that simulations proceed in an iterative fashion with alternating compute and communication phases.
-For short, we refer to a single compute-communication cycle as a ``simstep.''
-We derive formulas for metrics in terms of independent observations preceding and succeeding a ``snapshot'' window, during which the simulation and any associated best-effort communication proceeds unimpeded.
-Snapshot observations are taken at one minute intervals over the course of each of our replicate experiments.
-The following section, \ref{moreno:fig:cpu:TODO}, details the experimental apparatus used to generate quality of service metrics reported in this work.
-
-\subsubsection{Simstep Period} \label{moreno:sec:simstep-period-metric}
-
-We calculate the amount of wall-time elapsed per simulation update cycle (``Simstep Period'') during a snapshot window as
-\begin{align*}
-\frac{
-  \mathrm{update\,count\,after} - \mathrm{update\,count\,before}
-}{
-  \mathrm{walltime\,after} - \mathrm{walltime\,before}
-}.
-\end{align*}
-Figure \ref{moreno:fig:cpu:TODO} compares a scenario with low simstep period to a scenario with a higher simstep period.
-
-\subsubsection{Simstep Latency} \label{moreno:sec:wall-time-latency-metric}
-
-This metric reports the number of simulation iterations that elapse between message dispatch and message delivery.
-Figure \ref{moreno:fig:cpu:TODO} compares a scenario with low latency to a scenario with a higher latency.
-
-To prevent interfering effects of imperfect clock synchronization, we estimate one-way wall-time latency from a round-trip measure.
-As part of our instrumentation, each simulation element maintains an independent zero-initialized ``touch counter'' for each neighbor simulation element it communicates with.
-Dispatched messages are bundled with the current value of the touch counter associated with the target element.
-Every message received sets the corresponding touch counter to $1 + \mathrm{bundled\,touch\,count}$.
-In this manner, the touch counter increments by two for each successful round trip completed.
-(Because simulation elements are arranged as a toroidal mesh in all experiments, interaction between simulation elements is always reciprocal.)
-
-We therefore calculate one-way latency during a snapshot window as,
-\begin{align*}
-  \frac{
-    \mathrm{update\,count\,after} - \mathrm{update\,count\,before}
-  }{
-    \min\Big( \mathrm{ touch\,count\,after } - \mathrm{ touch\,count\,before }, 1 \Big)
-  }.
-\end{align*}
-Note that, in the case where no touches elapse, we bound our latency measure to snapshot duration.
-
-%TODO reference @rodsan's derivation and proof
-
-\subsubsection{Wall-time Latency} \label{moreno:sec:simulation-time-latency-metric}
-
-Wall-time latency is closely related to simstep latency, simply denominating in elapsed real time instead of elapsed simulation steps.
-To calculate wall-time latency we apply a conversion to simstep latency based on simstep period,
-\begin{align*}
-  \mathrm{simstep\,latency} \times \mathrm{simstep\,period}.
-\end{align*}
-
-This metric directly tells the real-time performance of message transmission.
-Although it directly follows from the interaction between simstep period and wall-time latency, it complements simstep latency's convenient interpretation in terms of potential simulation mechanics (e.g., simulation elements tending to see data from two updates ago versus from ten).
-
-In addition to simstep latency, Figure \ref{moreno:fig:cpu:TODO} is also representative of wall-time latency --- simply interpreting the $y$ axis in terms of wall-time instead of elapsed simulation updates.
-
-\subsubsection{Delivery Failure Rate} \label{moreno:sec:delivery-failure-rate-metric}
-
-Delivery failure rate measures the fraction of messages sent that are dropped.
-The only condition where messages are dropped is when a send buffer fills.
-(Under the existing MPI-based implementation, messages that queue on the send buffer are guaranteed for delivery.)
-So, we can calculate
-\begin{align*}
-  \frac{
-    \mathrm{successful\,send\,count\,after} - \mathrm{successful\,send\,count\,before}
-  }{
-    \mathrm{attempted\,send\,count\,after} - \mathrm{attempted\,send\,count\,before}
-  }.
-\end{align*}
-
-\subsubsection{Delivery Clumpiness} \label{moreno:sec:delivery-clumpiness-metric}
-
-Delivery clumpiness quantifies the extent to which message arrival is consolidated to a subset of message pull attempts.
-That is, the extent to which independently dispatched messages arrive in batches rather than as an even stream.
-
-If messages all arrive in independent pull attempts, then clumpiness will be zero.
-At the point where the pigeonhole principle applies (i.e., $\mathrm{num\,arriving\,messages} >= \mathrm{num\,pull\,attempts}$), clumpiness will also be zero so long as every pull attempt is laden.
-If all messages arrive during a single pull attempt, then clumpiness will approach 1.
-
-We formulate clumpiness as the complement of steadiness.
-(Reporting clumpiness provides a lower-is-better interpretation consistent with the rest of the quality of service metrics.)
-Steadiness, in turn, stems from three component statistics,
-\begin{align*}
-\mathrm{num\,laden\,pulls\,elapsed} =& \mathrm{laden\,pull\,count\,after} \\
-  &- \mathrm{laden\,pull\,count\,before} \\
-\mathrm{num\,messages\,received} =& \mathrm{message\,count\,after} \\
-  &- \mathrm{message\,count\,before} \\
-\mathrm{num\,pulls\,attempted} =& \mathrm{pull\,attempt\,count\,after} \\
-  &- \mathrm{pull\,attempt\,count\,before}
-.
-\end{align*}
-
-Here, we refer to pull attempts that successfully retrieve a message as ``laden.''
-
-We combine $\mathrm{num\,messages\,received}$ and $\mathrm{num\,pulls\,attempted}$ to derive,
-\begin{align*}
-  \mathrm{num\,opportunities\,for\,laden\,pulls} = \\
-   \min\Big(\mathrm{num\,messages\,received}, \mathrm{num\,pulls\,attempted}\Big).
-\end{align*}
-
-Then, to calculate steadiness,
-\begin{align*}
-  \frac{
-    \mathrm{num\,laden\,pulls\,elapsed}
-  }{
-    \mathrm{num\,opportunities\,for\,laden\,pulls}
-  }.
-\end{align*}
-
-Delivery clumpiness follows as $1 - \mathrm{steadiness}$.
-Figure \ref{moreno:fig:cpu:TODO} compares a scenario with low clumpiness to a scenario with higher clumpiness.
-
-\subsection{Benchmark Workloads}
-
-\subsubsection{Digital Evolution Benchmark}
-
-The digital evolution benchmark runs the DISHTINY (DIStributed Hierarchical Transitions in Individuality) artificial life framework.
-This system is designed to study major transitions in evolution, events where lower-level organisms unite to form a self-replicating entity.
-The evolution of multicellularity and eusociality exemplify such transitions.
-Previous work with DISHTINY has explored methods for selecting traits characteristic of multicellularity such as reproductive division of labor, resource sharing within kin groups, resource investment in offspring, and adaptive apoptosis \cite{moreno2019toward}.
-
-DISHTINY simulates a fixed-size toroidal grid populated by digital cells.
-Cells can sense attributes of their immediate neighbors, can communicate with those neighbors through arbitrary message passing, and can interact with neighboring cells cooperatively through resource sharing or competitively through antagonistic competition to spawn daughter cells into limited space.
-This cell behavior is controlled by SignalGP event-driven linear genetic programs \cite{lalejini2018evolving}.
-Full details of the DISHTINY simulation are available in \cite{moreno2021exploring}.
-
-We use Conduit-based messaging channels to manage all interactions between neighboring cells.
-Conduit models messaging channels as independent objects.
-However, support is provided for behind-the-scenes consolidation of communication along these channels between pairs of processes.
-Pooling joins together exactly one message per messaging channel to create a fixed-size consolidated message.
-Aggregation joins together arbitrarily many messages per channel to create a variable-size consolidated message.
-
-During a computational update, each cell advances its internal state and pushes information about its current state to neighbor cells.
-Several independent messaging layers handle disparate aspects of cell-cell interaction, including
-\begin{itemize}
-  \item Cell spawn messages, which contain variable-length genomes (seeded at 100 12-byte instructions with a hard cap of 1000 instructions). These are handled every 16 updates and use Conduit's built-in aggregation support for inter-process transfer.
-  \item Resource transfer messages, consisting of a 4-byte float value. These are handled every update and use Conduit's built-in pooling support for inter-process transfer.
-  \item Cell-cell communication messages, consisting of arbitrarily many 20-byte packets dispatched by genetic program execution. These are handled every 16 updates and use Conduit's built-in aggregation support for inter-process transfer.
-  \item Environmental state messages, consisting of a 216-byte struct of data. These are handled every 8 updates and use Conduit's built-in pooling support for inter-process transfer.
-  \item Multicellular kin-group size detection messages, consisting of a 16-byte bitstring. These are handled every update and use Conduit's built-in pooling support for inter-process transfer.
-\end{itemize}
-
-Implementing all cell-cell interaction via Conduit-based messaging channels allows the simulation to be parallelized down to the granularity, potentially, of individual cells.
-These messaging channels allow cells to communicate using the same interface whether they are placed within the same thread, across different threads, or across different processes.
-However, in practice, for this benchmarking we assign 3600 cells to each thread or process.
-Because all cell-cell interactions occur via Conduit-based messaging channels, logically-neighboring cells can interact fully whether or not they are located on the same thread or process (albeit with potential irregularities due to best-effort limitations).
-An alternate approach to evolving large populations might be an island model, where Conduit-based messaging channels would be used solely to exchange genomes between otherwise independent populations \cite{bennett1999building}.
-However, we chose to instead parallelize DISHTINY as a unified spatial realm in order to enable parent-offspring interaction and leave the door open for future work with multicells that exceed the scope of an individual thread or process.
-
-\subsubsection{Graph Coloring Benchmark}
-
-The graph coloring benchmark employs a graph coloring algorithm designed for distributed WLAN channel selection \cite{leith2012wlan}.
-In this algorithm, nodes begin by randomly choosing a color.
-Each computational update, nodes test for any neighbor with the same color.
-If and only if a conflicting neighbor is detected, nodes randomly select another color.
-The probability of selecting each possible color is stored in an array associated with each node.
-Before selecting a new color, the stored probability of selecting the current (conflicting) color is decreased by a multiplicative factor $1 - b$.
-We used $b=0.1$, as suggested by Leith et al.
-Tandem adjustments increase the probability of selecting all other channels.
-Regardless of whether their color changed, nodes always transmit their current color to their neighbors.
-
-Our benchmarks focus on weak scalability, using a fixed problem size of 2{\small,}048 graph nodes per thread or process.
-These nodes were arranged in a two-dimensional grid topology where each node had three possible colors and four neighbors.
-We implement the algorithm with a single Conduit communication layer carrying graph color as an unsigned integer.
-We used Conduit's built-in pooling feature to consolidate color information into a single MPI message between pairs of communicating processes each update.
-We performed five replicates, each with a five second simulation runtime.
-Solution error was measured as the number of graph color conflicts remaining at the end of the benchmark.
+\begin{enumerate}
+\item \textbf{Update Time}: amount of wall-time elapsed per simulation compute/communication cycle averaged across a snapshot window (Figure \ref{moreno:fig:cpu:TODO});
+\item \textbf{Update-Latency}: number of simulation cycles that elapse between message dispatch and message delivery, calculated from a round-trip measure to avoid clock synchronization interference (Figure \ref{moreno:fig:cpu:TODO});
+\item \textbf{Time-Latency}: product of update rate and update-latency, directly tells the real-time performance of message transmission (Figure \ref{moreno:fig:cpu:TODO}).
+\item \textbf{Drop Fraction}: fraction of messages sent that are dropped (e.g., when a send buffer fills; Figure \ref{moreno:fig:cpu:TODO}); and
+\item \textbf{Delivery Bunching}: the extent to which message arrival is consolidated to arrive in batches, rather than as an even stream.
+\end{enumerate}
 
 \subsection{Scaling Efficiency and Solution Quality}
 
 Best-effort communication and synchronization improve scaling efficiency for both communication-heavy workloads and compute-heavy problems with heterogenous workloads.
 In a benchmark problem with an objective solution quality score, the trade-off between quality-of-service and efficiency was such that best-effort approaches were able to produce higher-quality solutions within an alloted runtime.
-
-\subsection{Performance: Multiprocess Benchmarks}
-\label{sec:multiprocess-benchmarks}
-
-Next, we tested how performance on the graph coloring and digital evolution benchmarks fared when scaling with fully independent processes located on different hardware nodes.
+We tested how performance on the graph coloring and digital evolution benchmarks fared when scaling with fully independent processes located on different hardware nodes.
 
 Figure \ref{moreno:fig:cpu:TODO} shows per-CPU algorithm update rate for the graph coloring benchmark at 1, 4, 16, and 64 processes.
-Unlike the multithreaded benchmark, multiprocess graph coloring exhibits consistent update-rate performance across process counts under asynchronicity mode 4, where inter-CPU communication is entirely disabled.
+Multiprocess graph coloring exhibits consistent update-rate performance across process counts under the independent-execution control, where inter-CPU communication is entirely disabled.
 This matches the unsurprising expectation that, indeed, with comparable hardware a single process should exhibit the same mean performance as any number of completely decoupled processes.
-
-At 64 processes, best-effort asynchronicity mode 3 with the graph coloring benchmark exhibits about 63\% the update-rate performance of single-process execution.
-This represents a $7.8\times$ speedup compared to fully-synchronous mode 0.
-Indeed, best-effort mode 3 enables significantly better per-CPU update rates at 4, 16, and 64 processes ($p < 0.05$, non-overlapping 95\% confidence intervals).
-
-Likewise, shown in Figure \ref{moreno:fig:cpu:TODO}, best-effort asynchronicity mode 3 yields significantly better graph-coloring results within the allotted time at 4, 16, and 64 processes ($p < 0.05$, non-overlapping 95\% confidence intervals).
-Interestingly, partial-synchronization modes 1 and 2 exhibited highly inconsistent solution quality performance at 16 and 64 process count benchmarks.
-Fixed-timepoint barrier sync (mode 2) had particularly poor performance at 64 processes (note the log-scale axis).
-We suspect this was caused by a race condition where workers would assign sync points to different fixed points based on slightly different startup times (i.e., process 0 syncs at seconds 0, 1, 2... while process 1 syncs at seconds 1, 2, 3..).
+At 64 processes, with best-effort asynchronicity the graph coloring benchmark exhibits about 63\% the update-rate performance of single-process execution.
+This represents a $7.8\times$ speedup compared to full-synchronicity, significantly better at 4, 16, and 64 processes ($p < 0.05$, bootstrap test).
+Likewise, shown in Figure \ref{moreno:fig:cpu:TODO}, best-effort asynchronicity yields significantly better graph-coloring results within the allotted time at 4, 16, and 64 processes ($p < 0.05$, bootstrap test).
 
 Figure \ref{moreno:fig:cpu:TODO} presents per-CPU algorithm update rate for the digital evolution benchmark at 1, 4, 16, and 64 processes.
 Relative performance fares well at high process counts under this relatively computation-heavy workload.
 With 64 processes, fully best-effort simulation retains about 92\% the update rate performance of single-process simulation.
 This represents a $2.1\times$ speedup compared to the fully-synchronous run mode 0.
-Best-effort mode 3 significantly outperforms the per-CPU update rate of fully-synchronous mode 0 at process counts 16 and 64 ($p < 0.05$, non-overlapping 95\% confidence intervals).
+Best-effort mode significantly outperforms fully-synchronous mode at both 16 and 64 processes ($p < 0.05$, bootstrap test).
 
 \subsection{Quality-of-Service Scaling}
 
-\subsection{Quality of Service: Weak Scaling}
-\label{sec:weak-scaling}
-
-Sections \ref{sec:multiprocess-benchmarks} and \ref{sec:multithread-benchmarks} showed how best-effort communication could improve application performance, particularly when scaling up processor count.
 Multiprocess performance scales well under the best-effort approach, with overlapping performance estimate intervals for 16 and 64 processor counts on both surveyed benchmark problems.
-
 This section aims to flesh out a more holistic picture of the effects of increasing processor count on best-effort computation by considering a comprehensive suite of quality of service metrics.
 Our particular interest is in which, if any, aspects of quality of service degrade under larger processing pools.
 
 To address these questions, we performed weak scaling experiments on 16, 64, and 256 processes using the graph coloring benchmark.
-To broaden the survey, we tested scaling with different numbers of processors allocated per node and different numbers of simulation elements assigned per processor.
+% To broaden the survey, we tested scaling with different numbers of processors allocated per node and different numbers of simulation elements assigned per processor.
 
-For the first variable, we tested scaling on allocations with each processor hosted on an independent node and allocations where each node hosted an average of four processors.
-This allowed us to examine how quality of service fared in homogeneous network conditions, where all communication between processes was inter-node, compared to heterogeneous conditions, where some inter-process communication was inter-node and some was intra-node.
+% For the first variable, we tested scaling on allocations with each processor hosted on an independent node and allocations where each node hosted an average of four processors.
+% This allowed us to examine how quality of service fared in homogeneous network conditions, where all communication between processes was inter-node, compared to heterogeneous conditions, where some inter-process communication was inter-node and some was intra-node.
 
-For the second variable, we tested with 2{\small,}048 simulation elements (``simels'') per processor (consistent with the benchmarking experiments performed in Sections \ref{sec:multiprocess-benchmarks} and \ref{sec:multithread-benchmarks}) and just one simulation element per processor.
-This allowed us to vary the amount of computational work performed per process.
+% For the second variable, we tested with 2{\small,}048 simulation elements (``simels'') per processor (consistent with the benchmarking experiments performed in Sections \ref{sec:multiprocess-benchmarks} and \ref{sec:multithread-benchmarks}) and just one simulation element per processor.
+% This allowed us to vary the amount of computational work performed per process.
 
-\subsubsection{Simstep Period}
+\subsubsection{Update Time}
 
-Supplementary Figures \ref{fig:weak-scaling-distribution-simstep-period-inlet-ns} and \ref{fig:weak-scaling-distribution-simstep-period-outlet-ns} survey the distributions of simstep periods observed within snapshot windows.
-Across process counts, simstep period registers around \SI{80}{\micro\second} with one simel per CPU and around \SI{200}{\micro\second} with 2{\small,}048 simels per CPU.
-However, on heterogeneous allocations (4 CPUs per node) this metric is more variable between snapshots.
-Outlier observations range up to around 10ms with 2{\small,}048 simels per CPU.
-With 1 simel per CPU, outlying values fell upwards of 100ms.
-% Outlier observations range up to around 10ms with 2{\small,}048 simels per CPU and up to slightly less than 100ms inlet / 4s outlet with 1 simel.
+Figure \ref{moreno:fig:cpu:TODO} shows the distribution of walltime update rates observed --- across process counts, around 200 microseconds.
+We performed an ordinary least squares (OLS) regression to test how mean update time changed with processor count.
+In all cases, update time increased significantly with processor count from 16 to 64 to 256 CPUs.
+Between 64 and 256 processes, however, update time instead decreased.
+Median update time exhibited the same relationships with processor count, tested with quartile regression.
 
-% \input{fig/weak-scaling/regression-ols/simstep-period-inlet-ns.tex}
+% Thus, simstep period quality of service is stable in scaling from 64 to 256 processes.
 
-We performed an ordinary least squares (OLS) regression to test how mean simstep period changed with processor count.
-In all cases except one simel per CPU with four CPUs per node, mean simstep period increased significantly with processor count from 16 to 64 to 256 CPUs.
-However, from 64 to 256 processors mean simstep period only increased significantly with one simel per CPU per node.
-Between 64 and 256 processes, mean simstep period actually decreased significantly for runs with 2{\small,}048 simels per CPU.
-Figure \ref{fig:weak-scaling-regression-ols-simstep-period-inlet-ns} and Supplementary Figure \ref{fig:weak-scaling-regression-ols-simstep-period-outlet-ns} visualize reported OLS regressions.
-Supplementary Tables \ref{tab:weak-scaling-simstep-period-inlet-ns-regression-ols} and \ref{tab:weak-scaling-simstep-period-outlet-ns-regression-ols} provide numerical details on reported OLS regressions.
+\subsubsection{Update-Latency}
 
-Median simstep period exhibited the same relationships with processor count, tested with quartile regression.
-Supplementary Figures \ref{fig:weak-scaling-regression-quantile-simstep-period-inlet-ns} and \ref{fig:weak-scaling-regression-quantile-simstep-period-outlet-ns} visualize corresponding quartile regressions.
-Supplementary Tables \ref{tab:weak-scaling-simstep-period-inlet-ns-regression-quantile} and \ref{tab:weak-scaling-simstep-period-outlet-ns-regression-quantile} report numerical details on those quartile regressions.
+For the graph coloring benchmark, update-latency sits around 1.2 updates.
+However, at 256 processes, outliers arose up to almost 8{\small,}000 update simstep latency.
+Over 16, 64, and 256 processes, OLS regression indicates mean simstep latency increased with process count.
+However, median latency did not increase with process count, tested via quartile regression.
 
-Except for the extreme case of one simel per CPU and one CPU per node, simstep period quality of service is stable in scaling from 64 to 256 processes.
+\subsubsection{Time-Latency}
 
-\subsubsection{Walltime Latency}
+Walltime latency sits at 2ms.
+At 256 processes, outliers of more than 10s occur.
 
-Walltime latency sits at around \SI{500}{\micro\second} for one-simel runs and around 2ms for 2{\small,}048-simel runs.
-However, variability is greater for heterogeneous (four CPUs per node) allocations.
-Extreme outliers of up to almost 100ms inlet/2s outlet occur in four CPUs per node, one-simel runs.
-In 256 process, 2{\small,}048-simel, one CPU per node runs, outliers of more than 10s occur.
-Supplementary Figures \ref{fig:weak-scaling-distribution-latency-walltime-inlet-ns} and \ref{fig:weak-scaling-distribution-latency-walltime-outlet-ns} show the distribution of walltime latencies observed across run conditions.
-
-We performed OLS regressions to test how mean walltime latency changed with processor count.
-Over 16, 64, and 256 processes, mean walltime latency increased significantly with processor count only with 2{\small,}048 simels per CPU.
-Between 64 and 256 processes, mean walltime latency increased significantly with processor count only for one CPU per node with 2{\small,}048 simels per CPU.
-Supplementary Figures \ref{fig:weak-scaling-regression-ols-latency-walltime-inlet-ns} and Figure \ref{fig:weak-scaling-regression-ols-latency-walltime-outlet-ns} show these regressions.
-Supplementary Tables \ref{tab:weak-scaling-latency-walltime-inlet-ns-regression-ols} and \ref{tab:weak-scaling-latency-walltime-outlet-ns-regression-ols} provide numerical details.
-
-% \input{fig/weak-scaling/regression-quantile/latency-walltime-inlet-ns.tex}
-
-Next, we performed quantile regressions to test how processor count affected median walltime latency.
+We performed OLS regressions to test how mean time-latency changed with processor count.
+Over 16, 64, and 256 processes, mean time-latency increased significantly with processor count only with 2{\small,}048 simels per CPU.
+By contrast, median time-latency was stable across processor counts (quartile regression).
 Over 16, 64, and 256 processes, median walltime latency increased significantly only with 4 CPUs per node and 2{\small,}048 simels per CPU.
 Over 64 and 256 processes, there was no significant relationship between processor count and median walltime latency under any condition.
-Figure \ref{fig:weak-scaling-regression-quantile-latency-walltime-inlet-ns} and Supplementary Figure \ref{fig:weak-scaling-regression-quantile-latency-walltime-outlet-ns} show regression results.
-Supplementary Tables \ref{tab:weak-scaling-latency-walltime-inlet-ns-regression-quantile} and \ref{tab:weak-scaling-latency-walltime-outlet-ns-regression-quantile} provide numerical details.
 
-\subsubsection{Simstep Latency}
+\subsubsection{Drop Fraction}
 
-Simstep latency sits around 7 updates for runs with one simel per CPU and around 1.2 updates for runs with 2{\small,}048 simels per CPU.
-For runs with one simel per CPU, outlier snapshot windows reach up to 50 updates under homogeneous allocations and up to almost 100 updates under heterogeneous allocations.
-The 2{\small,}048 simels per CPU, one CPU per node, 256 process condition exhibited outliers of up to almost 8{\small,}000 update simstep latency.
-Supplementary Figures \ref{fig:weak-scaling-distribution-latency-simsteps-inlet} and \ref{fig:weak-scaling-distribution-latency-simsteps-outlet} show the distribution of simstep latencies observed across run conditions.
+Typical delivery failure rate was near zero.
+However, outlier delivery failure rates of up to 0.7 were observed at 256 processes.
+% Supplementary Figure \ref{fig:weak-scaling-distribution-delivery-failure-rate} shows the distribution of delivery failure rates observed across run conditions.
+Mean delivery failure rate increased significantly between 64 and 256 processes.
+However, the median delivery failure rate remained stable across processor counts.
 
-Over 16, 64, and 256 processes, mean simstep latency increased with process count only under 1 CPU per node, 2{\small,}048 simel per CPU conditions.
-The same was true over just 64 to 256 processes.
-Supplementary Figures \ref{fig:weak-scaling-regression-ols-latency-simsteps-inlet} and \ref{fig:weak-scaling-regression-ols-latency-simsteps-outlet} show the OLS regressions performed, with
-Supplementary Tables \ref{tab:weak-scaling-latency-simsteps-inlet-regression-ols} and \ref{tab:weak-scaling-latency-simsteps-outlet-regression-ols} providing numerical details.
+\subsubsection{Delivery Bunching}
 
-% \input{fig/weak-scaling/regression-quantile/latency-simsteps-inlet.tex}
-
-For median simstep latency, however, there was no condition where latency increased significantly with process count.
-Figure \ref{fig:weak-scaling-regression-quantile-latency-simsteps-inlet} and Supplementary Figure \ref{fig:weak-scaling-regression-quantile-latency-simsteps-outlet} show the quantile regressions performed, with Supplementary Tables \ref{tab:weak-scaling-latency-simsteps-inlet-regression-quantile} and \ref{tab:weak-scaling-latency-simsteps-outlet-regression-quantile} providing numerical details.
-
-\subsubsection{Delivery Clumpiness}
-
-For one-simel-per-CPU runs, median delivery clumpiness registered between 0.8 and 0.6.
-On 2{\small,}048-simel-per-CPU runs, median delivery clumpiness was lower at around 0.4.
-Supplementary Figure \ref{fig:weak-scaling-distribution-delivery-clumpiness}
-shows the distribution of delivery clumpiness values observed across run conditions.
-
-% \input{fig/weak-scaling/regression-ols/delivery-clumpiness.tex}
-
-Using OLS regression, we found no evidence of mean clumpiness worsening with increased process count.
-In fact, over 16, 64, and 256 processes clumpiness significantly decreased with process count in all conditions except four CPUs per node with 2{\small,}048 simels per CPU.
-Figure \ref{fig:weak-scaling-regression-ols-delivery-clumpiness} and Supplementary Table \ref{tab:weak-scaling-delivery-clumpiness-regression-ols} detail regressions performed to test the relationship between mean clumpiness and process count.
-
-Median delivery clumpiness exhibited the same relationships with processor count, tested with quartile regression.
-Supplementary Figure \ref{fig:weak-scaling-regression-quantile-delivery-clumpiness} and Supplementary Table \ref{tab:weak-scaling-delivery-clumpiness-regression-quantile} detail regressions between median clumpiness and process count.
-
-\subsubsection{Delivery Failure Rate}
-
-Typical delivery failure rate was near zero, except with one simel per CPU and four CPUs per node where median delivery failure rate was approximately 0.1.
-However, outlier delivery failure rates of up to 0.7 were observed with 1 CPU per node, 2{\small,}048 simels per CPU, and 256 processes.
-Outlier delivery failure rates of up to 0.2 were observed with 4 CPUs per node, 2{\small,}048 simels per CPU, and 256 processes.
-Supplementary Figure \ref{fig:weak-scaling-distribution-delivery-failure-rate} shows the distribution of delivery failure rates observed across run conditions.
-
-Mean delivery failure rate increased significantly between 64 and 256 processes with 1 CPU per node and 2{\small,}048 simels per CPU as well as with 4 CPUs per node and 1 simel per CPU.
-However, the median delivery failure rate only increased significantly with processor count with 4 CPUs per node and 1 simel per CPU.
-
-% \input{fig/weak-scaling/regression-quantile/delivery-failure-rate.tex}
-
-Supplementary Figure \ref{fig:weak-scaling-regression-ols-delivery-failure-rate} and Supplementary Table \ref{tab:weak-scaling-delivery-failure-rate-regression-ols} detail the OLS regression testing mean delivery failure rate against processor count.
-Figure \ref{fig:weak-scaling-regression-quantile-delivery-failure-rate} and Supplementary Table \ref{tab:weak-scaling-delivery-failure-rate-regression-quantile} detail the quantile regression testing median delivery failure rate against processor count.
-
-\subsection{Produer-Consumer Imbalance}
-
-Quality of service metrics were able to flag potential biasing artifacts, such as emergent producer-consumer imbalances.
+Median delivery bunchiness was around 0.4, meaning TODO.
+Using OLS regression, we found no evidence of mean bunching worsening with increased process count.
+In fact, over 16, 64, and 256 processes bunchiness significantly decreased with process count (both mean and median regressions).
 
 \subsection{Quality of Service: Faulty Hardware}
 \label{moreno:sec:with-lac-417-vs-sans-lac-417}
 
 % \input{fig/with-lac-417-vs-sans-lac-417/with-lac-417-vs-sans-lac-417.tex}
-
-The extreme magnitude of outliers for metrics reported in Section \ref{sec:weak-scaling} prompted further investigation of the conditions under which these outliers arose.
+The extreme magnitude of outliers observed in 256-process allocations prompted further investigation of the conditions under which these outliers arose.
 Closer inspection revealed that the most extreme outliers were all associated with snapshots on a single node: lac-417.
+So, we performed further tests acquiring two separate 256 process allocations on the lac cluster: one including lac-417 and one excluding lac-417.
 
-So, we acquired two separate 256 process allocations on the lac cluster: one including lac-417 and one excluding lac-417.
-
-Supplementary Figures \ref{fig:with-lac-417-vs-sans-lac-417-distribution-simstep-period-inlet-ns}, \ref{fig:with-lac-417-vs-sans-lac-417-distribution-simstep-period-outlet-ns}, \ref{fig:with-lac-417-vs-sans-lac-417-distribution-latency-simsteps-inlet}, \ref{fig:with-lac-417-vs-sans-lac-417-distribution-latency-simsteps-outlet}, \ref{fig:with-lac-417-vs-sans-lac-417-distribution-latency-walltime-inlet-ns}, \ref{fig:with-lac-417-vs-sans-lac-417-distribution-latency-walltime-outlet-ns}, \ref{fig:with-lac-417-vs-sans-lac-417-distribution-delivery-clumpiness}, and \ref{fig:with-lac-417-vs-sans-lac-417-distribution-delivery-failure-rate} compare the distributions of quality of service metrics between allocations with and without lac-417.
+Figure \ref{moreno:fig:cpu:TODO} compare the distributions of quality of service metrics between allocations with and without lac-417.
 Extreme outliers are present exclusively in the lac-417 allocation for walltime latency, simstep latency, and delivery failure rate.
 Otherwise, the metrics' distributions across snapshots are very similar between allocations.
-
-Supplementary Figures \ref{fig:with-lac-417-vs-sans-lac-417-regression-simstep-period-inlet-ns}, \ref{fig:with-lac-417-vs-sans-lac-417-regression-simstep-period-outlet-ns}, \ref{fig:with-lac-417-vs-sans-lac-417-regression-latency-simsteps-inlet}, \ref{fig:with-lac-417-vs-sans-lac-417-regression-latency-simsteps-outlet}, \ref{fig:with-lac-417-vs-sans-lac-417-regression-latency-walltime-inlet-ns}, \ref{fig:with-lac-417-vs-sans-lac-417-regression-latency-walltime-outlet-ns}, \ref{fig:with-lac-417-vs-sans-lac-417-regression-delivery-clumpiness}, \ref{fig:with-lac-417-vs-sans-lac-417-regression-delivery-clumpiness}, and
-\ref{fig:with-lac-417-vs-sans-lac-417-regression-delivery-failure-rate} chart OLS and quantile regressions of quality of service metrics on job composition.
-Mean walltime latency, simstep latency, and delivery failure rate are all significantly greater with lac-417.
-Surprisingly, mean simstep period is significantly longer without lac-417.
+Mean update-latency, time-latency, and delivery failure rate are all significantly greater with lac-417.
+Surprisingly, though, update time is significantly shorter with lac-417.
 
 However, there is no significant difference in median value for any quality of service metric between allocations including or excluding lac-417.
 This stability of metric medians within allocations containing lac-417 --- which have significantly different means due to outlier values induced by the presence of lac-417 --- demonstrates how the best-effort system maintains overall quality of service stability despite defective or degraded components.
 
-Supplementary Tables \ref{tab:with-lac-417-vs-sans-lac-417-ordinary-least-squares-regression} and \ref{tab:with-lac-417-vs-sans-lac-417-quantile-regression} provide numerical details on regressions reported above.
+\subsection{Produer-Consumer Imbalance}
+
+In addition to anamolous hardware, quality of service metrics can flag potential more widespread asymmetries emerging in best-effort systems.
+For instance, under communication-heavy TODO conditions, we observed a significant negative correlation between incoming and outgoing message rates (Figure \ref{moreno:fig:cpu:TODO}).
+This pattern could indicate emergent producer-consumerimbalances between processors, where certain processors become bogged down processing the incoming message payload from other processes that they are able to send fewer messages, allowing the partner process to continue sending messages at a high rate --- a self-reinforcing imbalance that can arise when processing incoming messages has comparable or greater cost than sending them.
+Such correlation, however, did not arise under TODO conditions.

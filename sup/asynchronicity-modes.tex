@@ -23,3 +23,5 @@ We included this mode to isolate the impact on performance of communication betw
 In this run mode for the graph coloring benchmark, all calls to send messages between processes or threads were skipped (except after the benchmark concluded, when assessing solution quality).
 Because of its larger footprint, incorporating logic into the digital evolution simulation to disable all inter-thread and inter-process messaging was impractical.
 Instead, we launched multiple instances of the simulation as fully-independent processes and measured performance of each.
+
+For succinctness, reported experiments focus on asynchronicity modes 0, 3, 4.

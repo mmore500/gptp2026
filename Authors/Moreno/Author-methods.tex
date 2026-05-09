@@ -4,11 +4,11 @@ TODO methods.
 
 \subsection{Software and Data Availability} \label{moreno:sec:software}
 
-Simulation code, configuration files, and batch scripts for this work are available via Zenodo at \url{TODO}.
-Postprocessing scripts and executable notebooks for this work are hosted separately at \url{TODO}.
-Data and supplemental materials are available via the Open Science Framework \url{TODO} \cite{foster2017open}.
+Supplemental materials are available via the Open Science Framework \url{https://osf.io/pcu9x} \cite{foster2017open,moreno_2026_trust}.
+Data for Section \ref{moreno:sec:case1} is available via the Open Science Framework at \url{https://osf.io/72k5n} \citep{foster2017open}.
+TODO \ref{moreno:sec:case2}.
 
-This project benefited significantly from open-source scientific software \cite{2020SciPy-NMeth,harris2020array,reback2020pandas,mckinney-proc-scipy-2010,waskom2021seaborn,hunter2007matplotlib,moreno2023teeplot,yang2025downstream,moreno2021signalgp,vostinar2024empirical,moreno2022hstrat,moreno2022best}.
+This project benefited significantly from open-source scientific software \cite{2020SciPy-NMeth,harris2020array,reback2020pandas,mckinney-proc-scipy-2010,waskom2021seaborn,hunter2007matplotlib,moreno2023teeplot,yang2025downstream,moreno2021signalgp,vostinar2024empirical,moreno2022hstrat,moreno2022best,moreno2024wse}.
 
 \subsection{Wafer-Scale Engine}
 
@@ -51,8 +51,3 @@ This effect can snowball the partnership intended for even, two-way message exch
 To interrupt such a scenario, we use the bulk message pull call \verb|MPI_Testsome| to ensure fast message consumption under backlogged conditions.
 So, receiver workload remains closer to constant under high traffic situations (instead of having to pull messages down one-by-one).
 Larger receive buffer size, as configured for the quality of service experiments, increases the effectiveness of the bulk message consumption countermeasure.
-
-Code for the distributed graph coloring benchmark is available at \url{https://github.com/mmore500/conduit} under \\ \texttt{demos/channel\_selection}.
-Exact versions of software used are recorded with each benchmark data point.
-Data is available via the Open Science Framework at \url{https://osf.io/72k5n/} \citep{foster2017open}.
-Notebook code for all reported statistics is available at \url{https://hopth.ru/cj}.
