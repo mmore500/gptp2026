@@ -124,6 +124,78 @@ def peek_data(longitudinal_df, snapshot_df, wrangle_instrumentation_longform):
     return (data,)
 
 
+@app.cell
+def _(data):
+    data["Hostname"].unique()
+    return
+
+
+@app.cell
+def _(data, pd):
+    data_ = data.copy().reset_index(drop=True)
+    data_["indexx"] = data_.index
+    df_long = data_.melt(
+        id_vars=[
+            "Instrumentation",
+            "Multiprocessing",
+            "indexx",
+            "Execution Instance UUID",
+            "Hostname",
+        ],
+        value_vars=[
+            "Messages Received Per Second",
+            "Messages Sent Per Second",
+        ],
+        var_name="Message Type",
+        value_name="Count Per Second",
+    )
+    df_long["Type"] = pd.Categorical(
+        df_long["Message Type"].replace(
+            {
+                "Messages Sent Per Second": "Sent        ",
+                "Messages Received Per Second": "        Recv",
+            },
+        ),
+        categories=["        Recv", "Sent        "],
+        ordered=True,
+    )
+    return (df_long,)
+
+
+@app.cell
+def _():
+    palette = {
+        "lac-361": "#EFB743",
+        "lac-221": "#E72F52",
+        "lac-220": "#0D95D0",
+    }
+    return (palette,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Helpers
+    """
+    )
+    return
+
+
+@app.cell
+def _(plt):
+    # # adapted from https://stackoverflow.com/a/47381719/17332200
+    def bottom_offset(self, bboxes, bboxes2):
+        pad = (
+            plt.rcParams["xtick.major.size"] + plt.rcParams["xtick.major.pad"]
+        )
+        self.offsetText.set(va="top", ha="left")
+        _oy = self.axes.bbox.ymin - pad * self.figure.dpi / 72.0
+        self.offsetText.set_position((1, _oy))
+
+    return (bottom_offset,)
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(
@@ -135,7 +207,7 @@ def _(mo):
 
 
 @app.cell
-def _(data, pathlib, plt, sns, tp, types):
+def _(bottom_offset, data, pathlib, plt, sns, tp, types):
     with tp.teed(
         sns.lmplot,
         data=data[data["Instrumentation"] == "Longitudinal"],
@@ -144,44 +216,115 @@ def _(data, pathlib, plt, sns, tp, types):
         hue="Multiprocessing",
         teeplot_show=True,
         teeplot_subdir=pathlib.Path(__file__).stem,
-    ) as g:
-        ax = g.axes.flat[0]
+    ) as _g:
+        _ax = _g.axes.flat[0]
         sns.move_legend(
-            g,
+            _g,
             "lower center",
             bbox_to_anchor=(0.5, 1),
             ncol=2,
             title=None,
             frameon=False,
         )
-        g.set(xlabel="Sent per Second", ylabel="Recv per Second")
-        g.set(xlim=(0, None), ylim=(0, None))
-        g.figure.set_size_inches(5, 2)
-        ax.set_aspect("equal", adjustable="box")
+        _g.set(xlabel="Sent per Second", ylabel="Recv per Second")
+        _g.set(xlim=(0, None), ylim=(0, None))
+        _g.figure.set_size_inches(5, 2)
+        _ax.set_aspect("equal", adjustable="box")
         plt.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
-        ax.axline((0, 0), (1, 1), color="k", ls=":")
-        ax.xaxis.get_offset_text().offset_text_position = "top"
+        _ax.axline((0, 0), (1, 1), color="k", ls=":")
+        _ax.xaxis.get_offset_text().offset_text_position = "top"
 
         # adapted from https://stackoverflow.com/a/47381719/17332200
-        pad = (
-            plt.rcParams["xtick.major.size"] + plt.rcParams["xtick.major.pad"]
+        _ax.xaxis._update_offset_text_position = types.MethodType(
+            bottom_offset, _ax.xaxis
         )
-
-        def bottom_offset(self, bboxes, bboxes2):
-            bottom = self.axes.bbox.ymin
-            self.offsetText.set(va="top", ha="left")
-            oy = bottom - pad * self.figure.dpi / 72.0
-            self.offsetText.set_position((1, oy))
-
-        ax.xaxis._update_offset_text_position = types.MethodType(
-            bottom_offset, ax.xaxis
-        )
-
     return
 
 
 @app.cell
-def _():
+def _(bottom_offset, data, pathlib, plt, sns, tp, types):
+    with tp.teed(
+        sns.lmplot,
+        data=data[data["Instrumentation"] == "Longitudinal"],
+        x="Messages Received Per Second",
+        y="Num Try Puts Attempted",
+        hue="Multiprocessing",
+        teeplot_show=True,
+        teeplot_subdir=pathlib.Path(__file__).stem,
+    ) as _g:
+        _ax = _g.axes.flat[0]
+        sns.move_legend(
+            _g,
+            "lower center",
+            bbox_to_anchor=(0.5, 1),
+            ncol=2,
+            title=None,
+            frameon=False,
+        )
+        _g.set(xlabel="Updates Elapsed", ylabel="Recv per Second")
+        _g.set(xlim=(0, None), ylim=(0, None))
+        _g.figure.set_size_inches(5, 2)
+        plt.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
+        _ax.xaxis.get_offset_text().offset_text_position = "top"
+        _ax.xaxis._update_offset_text_position = types.MethodType(
+            bottom_offset, _ax.xaxis
+        )
+    return
+
+
+@app.cell
+def _(df_long, palette, pathlib, plt, sns, tp):
+    with tp.teed(
+        sns.relplot,
+        data=df_long[df_long["Instrumentation"] == "Longitudinal"],
+        x="Type",
+        y="Count Per Second",
+        col="Multiprocessing",
+        style="indexx",
+        hue="Hostname",
+        alpha=0.5,
+        kind="line",
+        legend=False,
+        palette=palette,
+        teeplot_show=True,
+        teeplot_subdir=pathlib.Path(__file__).stem,
+    ) as _g:
+        _ax = _g.axes.flat[0]
+        _g.set_titles(template="{col_name}")
+        _g.set(ylim=(0, None), ylabel="Message per Sec", xlabel=None)
+        plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+        _g.figure.set_size_inches(3, 2)
+        _ax.yaxis.get_offset_text().set_x(-0.2)
+    return
+
+
+@app.cell
+def _(data, palette, pathlib, plt, sns, tp):
+    data["Updates per Second"] = 1 / data["Simstep Period Inlet (s)"]
+    with tp.teed(
+        sns.catplot,
+        data=data[
+            (data["Instrumentation"] == "Longitudinal")
+            & (data["Multiprocessing"] == "Internode")
+        ],
+        y="Updates per Second",
+        hue="Hostname",
+        x="Hostname",
+        kind="box",
+        legend=False,
+        notch=True,
+        order=["lac-221", "lac-220"],
+        palette=palette,
+        teeplot_show=True,
+        teeplot_subdir=pathlib.Path(__file__).stem,
+    ) as _g:
+        _ax = _g.axes.flat[0]
+        _g.set_titles(template="{col_name}")
+        _g.set(ylabel="Updates per Sec", xlabel=None)
+        plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+        _g.figure.set_size_inches(1, 2)
+        _ax.yaxis.get_offset_text().set_x(-0.2)
+        _ax.set_xticklabels(["lac\n221", "lac\n220"])
     return
 
 
