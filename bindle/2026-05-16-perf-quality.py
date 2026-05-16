@@ -210,7 +210,7 @@ def _(cliffs_delta, filtered_procs, pd, scipy_stats):
 
 
 @app.cell
-def _(filtered_procs, mpl, np, pathlib, plt, sns, target_y, tp, va):
+def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
     with tp.teed(
         sns.relplot,
         data=filtered_procs,
@@ -247,15 +247,15 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, target_y, tp, va):
                 )
 
                 _target_y = max(_y.max(), _y.min() * 1.3, _y.min() + 0.7)
-                _ax.hlines(_, 1, 64, color="gray", ls=":", alpha=0.5)
+                _ax.hlines(_target_y, 1, 64, color="gray", ls=":", alpha=0.5)
 
                 _pct_change = ((_y[3] - _y[0]) / abs(_y[0])) * 100
                 _va = {True: "bottom", False: "top"}[
-                    target_y < np.mean(_ax.get_ylim())
+                    _target_y < np.mean(_ax.get_ylim())
                 ]
                 _ax.text(
                     x=1,
-                    y=target_y
+                    y=_target_y
                     + np.ptp(_ax.get_ylim())
                     * {"bottom": 0.05, "top": -0.05}[_va],
                     s=f"|+{_pct_change:.0f}%{_signif1}",
@@ -268,12 +268,12 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, target_y, tp, va):
 
                 _pct_change = ((_y[3] - _y[2]) / abs(_y[2])) * 100
                 _va = "bottom"
-                # _ax.hlines(target_y + np.ptp(_ax.get_ylim()) * 0, 16, 64, color="beige", ls="--")
+                # _ax.hlines(_target_y + np.ptp(_ax.get_ylim()) * 0, 16, 64, color="beige", ls="--")
                 _ax.text(
                     x=16,
-                    y=target_y
+                    y=_target_y
                     + np.ptp(_ax.get_ylim())
-                    * {"bottom": 0.05, "top": -0.05}[va],
+                    * {"bottom": 0.05, "top": -0.05}[_va],
                     s=f"|+{_pct_change:.0f}%{_signif2}",
                     alpha=1.0,
                     color="gray",
