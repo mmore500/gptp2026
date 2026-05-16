@@ -536,7 +536,6 @@ def _(filtered_procs, mpl, pathlib, pd, plt, sns, tp):
         teeplot_subdir=pathlib.Path(__file__).stem,
         teeplot_outattrs={"viz": "perf-quality-combined"},
         teeplot_outinclude=["viz"],
-        teeplot_figsize=(9, 2),
         teeplot_transparent=False,
     ) as _g:
         for _ax in _g.axes.flat:
@@ -559,6 +558,7 @@ def _(filtered_procs, mpl, pathlib, pd, plt, sns, tp):
 
         _g.set(ylim=(0, None))
         _g.set(xscale="log")
+        _g.figure.set_size_inches(9, 2)
         _g.set_titles(col_template="{col_name}", row_template="")
         plt.subplots_adjust(hspace=0.3)
 
