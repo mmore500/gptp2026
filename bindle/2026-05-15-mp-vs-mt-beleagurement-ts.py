@@ -57,10 +57,10 @@ def delimit_prep_data(mo):
 
 @app.cell
 def _(requests):
-    with open("/tmp/4ys9v", "wb") as fp:
+    with open("/tmp/aum7w", "wb") as fp:
         fp.write(
             requests.get(
-                "https://osf.io/download/4ys9v", allow_redirects=True
+                "https://osf.io/download/aum7w", allow_redirects=True
             ).content,
         )
     return
