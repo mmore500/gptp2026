@@ -7,7 +7,6 @@ app = marimo.App(width="full")
 @app.cell
 def import_std():
     import pathlib
-    import types
 
     return (pathlib,)
 
