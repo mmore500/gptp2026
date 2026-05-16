@@ -471,7 +471,7 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
             if _i == 0:
                 _ax.set_title(
                     {
-                        0: "Graph Color Soln Quality",
+                        0: "Graph Color Solution Error",
                     }[_i],
                     fontsize=11,
                 )
@@ -504,7 +504,7 @@ def _(filtered_procs, mpl, pathlib, pd, plt, sns, tp):
             {
                 "executable": "channel_selection",
                 "metric": "conflicts per cpu",
-                "panel": "Graph Color Soln Quality",
+                "panel": "Graph Color Solution Error",
             },
         ]
     )
@@ -513,7 +513,7 @@ def _(filtered_procs, mpl, pathlib, pd, plt, sns, tp):
     _col_order = [
         "Digital Evo Walltime (ns)",
         "Graph Color Walltime (ns)",
-        "Graph Color Soln Quality",
+        "Graph Color Solution Error",
     ]
 
     with tp.teed(
