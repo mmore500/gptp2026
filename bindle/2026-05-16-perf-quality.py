@@ -316,6 +316,9 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
 
         _g.axes[0, 0].set_ylabel("Best\nEffort")
         _g.axes[1, 0].set_ylabel("Global\nSync")
+
+        for _ax in _g.axes[-1, :]:
+            _ax.set_xlabel("Num Processes")
     return
 
 
@@ -480,6 +483,9 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
 
         _g.axes[0, 0].set_ylabel("Best\nEffort")
         _g.axes[1, 0].set_ylabel("Global\nSync")
+
+        for _ax in _g.axes[-1, :]:
+            _ax.set_xlabel("Num Processes")
     return
 
 
