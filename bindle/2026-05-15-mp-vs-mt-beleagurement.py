@@ -16,6 +16,7 @@ def import_std():
 def import_pkg():
     import marimo as mo
     from matplotlib import pyplot as plt
+    import more_itertools as mit
     import pandas as pd
     import requests
     from scipy import stats as scipy_stats
@@ -30,6 +31,10 @@ def import_pkg():
 
 @app.cell
 def _():
+    from conduitpylib.viz import _get_defaults as cfg
+
+    from conduitpylib.viz import beleaguerment_facetplot, beleaguerment_regplot
+
     from conduitpylib.wrangle import (
         retrieve_and_prepare_delta_dataframes,
         wrangle_instrumentation_longform,
@@ -74,13 +79,9 @@ def delimit_prep_data(mo):
 @app.cell
 def describe_data(pd, requests, retrieve_and_prepare_delta_dataframes):
     def apply(df: pd.DataFrame) -> pd.DataFrame:
-        def row_distiller(row):
-            return {
-                k: v
-                for k, v in row.items()
-                if k in ("Num Nodes", "Num Processes")
-            }
-
+        row_distiller = lambda row: {
+            k: v for k, v in row.items() if k in ("Num Nodes", "Num Processes")
+        }
         df["Multiprocessing"] = df.apply(
             lambda row: {
                 frozenset(
