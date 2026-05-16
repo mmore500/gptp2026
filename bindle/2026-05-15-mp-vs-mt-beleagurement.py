@@ -294,7 +294,7 @@ def _(df_long, palette, pathlib, plt, sns, tp):
         x="Type",
         y="Count Per Second",
         col="Multiprocessing",
-        col_order=["dummy", "Internode"],
+        col_order=["", "Internode"],
         style="indexx",
         hue="Hostname",
         alpha=0.5,
