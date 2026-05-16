@@ -16,13 +16,17 @@ def import_std():
 def import_pkg():
     import marimo as mo
     from matplotlib import pyplot as plt
+    import more_itertools as mit
     import pandas as pd
     import requests
+    from scipy import stats as scipy_stats
     import seaborn as sns
+    import statsmodels.api as sm
+    import statsmodels.formula.api as smf
     from teeplot import teeplot as tp
     from watermark import watermark
 
-    return mo, pd, plt, requests, sns, tp, watermark
+    return mo, pd, plt, requests, scipy_stats, sm, smf, sns, tp, watermark
 
 
 @app.cell
@@ -141,6 +145,8 @@ def _(data, pd):
             "indexx",
             "Execution Instance UUID",
             "Hostname",
+            "proc",
+            "Replicate",
         ],
         value_vars=[
             "Messages Received Per Second",
@@ -273,13 +279,22 @@ def _(bottom_offset, data, pathlib, plt, sns, tp, types):
 
 
 @app.cell
+def _(data):
+    replicates = data[data["Messages Received Per Second"] > 2e5]["Replicate"]
+    replicates
+    return
+
+
+@app.cell
 def _(df_long, palette, pathlib, plt, sns, tp):
+    df_long["special"] = df_long["Replicate"].isin([1, 4, 6, 9])
     with tp.teed(
         sns.relplot,
         data=df_long[df_long["Instrumentation"] == "Longitudinal"],
         x="Type",
         y="Count Per Second",
         col="Multiprocessing",
+        col_order=["dummy", "Internode"],
         style="indexx",
         hue="Hostname",
         alpha=0.5,
@@ -290,6 +305,20 @@ def _(df_long, palette, pathlib, plt, sns, tp):
         teeplot_subdir=pathlib.Path(__file__).stem,
     ) as _g:
         _ax = _g.axes.flat[0]
+        sns.lineplot(
+            data=df_long[
+                (df_long["Instrumentation"] == "Longitudinal")
+                & (df_long["Multiprocessing"] == "Intranode")
+            ],
+            x="Type",
+            y="Count Per Second",
+            style="indexx",
+            hue="special",
+            alpha=0.5,
+            ax=_ax,
+            legend=False,
+            palette=["#EFB743", "#A1331C"],
+        )
         _g.set_titles(template="{col_name}")
         _g.set(ylim=(0, None), ylabel="Message per Sec", xlabel=None)
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
@@ -299,14 +328,32 @@ def _(df_long, palette, pathlib, plt, sns, tp):
 
 
 @app.cell
-def _(data, palette, pathlib, plt, sns, tp):
+def _(data, sm, smf):
+    _data = data[
+        (data["Instrumentation"] == "Longitudinal")
+        & (data["Multiprocessing"] == "Intranode")
+    ]
+    _data["received"] = _data["Messages Received Per Second"]
+    _data["sent"] = _data["Messages Sent Per Second"]
+
+    _model = smf.glm(
+        formula="sent ~ received", data=_data, family=sm.families.Gaussian()
+    ).fit()
+
+    print(_model.summary())
+    return
+
+
+@app.cell
+def _(data, mo, palette, pathlib, plt, scipy_stats, sns, tp):
     data["Updates per Second"] = 1 / data["Simstep Period Inlet (s)"]
+    _data = data[
+        (data["Instrumentation"] == "Longitudinal")
+        & (data["Multiprocessing"] == "Internode")
+    ]
     with tp.teed(
         sns.catplot,
-        data=data[
-            (data["Instrumentation"] == "Longitudinal")
-            & (data["Multiprocessing"] == "Internode")
-        ],
+        data=_data,
         y="Updates per Second",
         hue="Hostname",
         x="Hostname",
@@ -325,6 +372,37 @@ def _(data, palette, pathlib, plt, sns, tp):
         _g.figure.set_size_inches(1, 2)
         _ax.yaxis.get_offset_text().set_x(-0.2)
         _ax.set_xticklabels(["lac\n221", "lac\n220"])
+
+    _pivot = _data.pivot(
+        index="Execution Instance UUID",
+        columns="Hostname",
+        values="Updates per Second",
+    )
+
+    for x in [
+        _pivot,
+        scipy_stats.wilcoxon(_pivot["lac-221"], _pivot["lac-220"]),
+    ]:
+        mo.output.append(x)
+    return
+
+
+@app.cell
+def _(data, sm, smf):
+    _data = data[
+        (data["Instrumentation"] == "Longitudinal")
+        & (data["Multiprocessing"] == "Internode")
+    ]
+    _data["received"] = _data["Messages Received Per Second"]
+    _data["sent"] = _data["Messages Sent Per Second"]
+
+    _model = smf.glm(
+        formula="sent ~ received + C(Hostname)",
+        data=_data,
+        family=sm.families.Gaussian(),
+    ).fit()
+
+    print(_model.summary())
     return
 
 
