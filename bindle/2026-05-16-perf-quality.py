@@ -538,11 +538,64 @@ def _(filtered_procs, mpl, pathlib, pd, plt, sns, tp):
         teeplot_outinclude=["viz"],
         teeplot_transparent=False,
     ) as _g:
-        for _ax in _g.axes.flat:
+        # annotations transferred from the two upstream per-metric figures;
+        # flat order is row-major over (row=async mode, col=panel)
+        _signif_grid = [
+            ("**", "n.s."),
+            ("***", "n.s."),
+            ("n.s.", "n.s."),
+            ("***", "***"),
+            ("***", "***"),
+            ("***", "***"),
+        ]
+        for _i, (_ax, (_signif1, _signif2)) in enumerate(
+            zip(_g.axes.flat, _signif_grid)
+        ):
+            _panel = _col_order[_i % len(_col_order)]
             for _line in _ax.lines:
                 _x, _y = _line.get_xydata().T
                 _ax.fill_between(
                     _x, _y.min(), _y, color=_line.get_color(), alpha=0.2
+                )
+
+                if _panel == "Graph Color Solution Error":
+                    _target_y = max(_y.max(), _y.min() + 10)
+                else:
+                    _target_y = max(
+                        _y.max(), _y.min() * 1.3, _y.min() + 0.7
+                    )
+                _ax.hlines(_target_y, 1, 64, color="gray", ls=":", alpha=0.5)
+
+                _pct_change = ((_y[3] - _y[0]) / abs(_y[0])) * 100
+                _va = {True: "bottom", False: "top"}[
+                    _target_y < np.mean(_ax.get_ylim())
+                ]
+                _ax.text(
+                    x=1,
+                    y=_target_y
+                    + np.ptp(_ax.get_ylim())
+                    * {"bottom": 0.05, "top": -0.05}[_va],
+                    s=f"|+{_pct_change:.0f}%{_signif1}",
+                    alpha=1.0,
+                    color="gray",
+                    ha="left",
+                    fontsize=9,
+                    va=_va,
+                )
+
+                _pct_change = ((_y[3] - _y[2]) / abs(_y[2])) * 100
+                _va = "bottom"
+                _ax.text(
+                    x=16,
+                    y=_target_y
+                    + np.ptp(_ax.get_ylim())
+                    * {"bottom": 0.05, "top": -0.05}[_va],
+                    s=f"|+{_pct_change:.0f}%{_signif2}",
+                    alpha=1.0,
+                    color="gray",
+                    ha="left",
+                    fontsize=9,
+                    va=_va,
                 )
 
         _g.map_dataframe(
