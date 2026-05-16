@@ -490,7 +490,7 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
 
 
 @app.cell
-def _(filtered_procs, mpl, pathlib, pd, plt, sns, tp):
+def _(filtered_procs, mpl, np, pathlib, pd, plt, sns, tp):
     _long = filtered_procs.melt(
         id_vars=["ncpus", "asynchronicity mode", "executable"],
         value_vars=["Update Walltime (ms)", "conflicts per cpu"],
@@ -567,9 +567,7 @@ def _(filtered_procs, mpl, pathlib, pd, plt, sns, tp):
                 if _panel == "Graph Color Solution Error":
                     _target_y = max(_y.max(), _y.min() + 10)
                 else:
-                    _target_y = max(
-                        _y.max(), _y.min() * 1.3, _y.min() + 0.7
-                    )
+                    _target_y = max(_y.max(), _y.min() * 1.3, _y.min() + 0.7)
                 _ax.hlines(_target_y, 1, 64, color="gray", ls=":", alpha=0.5)
 
                 _pct_change = ((_y[3] - _y[0]) / abs(_y[0])) * 100
