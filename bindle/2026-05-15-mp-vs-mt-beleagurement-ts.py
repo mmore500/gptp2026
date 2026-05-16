@@ -68,7 +68,7 @@ def _(requests):
 
 @app.cell
 def _(pd):
-    data = pd.read_csv("/tmp/aum7w", compression="gzip")
+    data = pd.read_csv("/tmp/4ys9v", compression="gzip")
     data
     return (data,)
 
