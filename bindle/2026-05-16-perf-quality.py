@@ -308,8 +308,8 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
             if i < 2:
                 _ax.set_title(
                     {
-                        0: "Digital Evo Walltime (ns)",
-                        1: "Graph Color Walltime (ns)",
+                        0: "Digital Evo Walltime (ms)",
+                        1: "Graph Color Walltime (ms)",
                     }[i],
                     fontsize=11,
                 )
@@ -502,12 +502,12 @@ def _(filtered_procs, mpl, pathlib, pd, plt, sns, tp):
             {
                 "executable": "dishtiny",
                 "metric": "Update Walltime (ms)",
-                "panel": "Digital Evo Walltime (ns)",
+                "panel": "Digital Evo Walltime (ms)",
             },
             {
                 "executable": "channel_selection",
                 "metric": "Update Walltime (ms)",
-                "panel": "Graph Color Walltime (ns)",
+                "panel": "Graph Color Walltime (ms)",
             },
             {
                 "executable": "channel_selection",
@@ -519,8 +519,8 @@ def _(filtered_procs, mpl, pathlib, pd, plt, sns, tp):
     _long = _long.merge(_panels, on=["executable", "metric"])
 
     _col_order = [
-        "Digital Evo Walltime (ns)",
-        "Graph Color Walltime (ns)",
+        "Digital Evo Walltime (ms)",
+        "Graph Color Walltime (ms)",
         "Graph Color Solution Error",
     ]
 
