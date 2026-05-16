@@ -33,6 +33,8 @@ click==8.3.3
     #   keyname
     #   marimo
     #   uvicorn
+cliffs-delta==1.0.0
+    # via -r requirements.in
 comm==0.2.3
     # via ipykernel
 contourpy==1.3.2
@@ -166,7 +168,7 @@ msgspec==0.21.1
     # via marimo
 mypy-extensions==1.1.0
     # via black
-narwhals==2.21.0
+narwhals==2.21.2
     # via marimo
 nb-clean==2.4.0
     # via -r requirements.in
