@@ -7,6 +7,7 @@ app = marimo.App(width="full")
 @app.cell
 def import_std():
     import pathlib
+    import types
 
     return (pathlib,)
 
@@ -477,6 +478,99 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
                     }[_i],
                     fontsize=11,
                 )
+
+        _g.axes[0, 0].set_ylabel("Best\nEffort")
+        _g.axes[1, 0].set_ylabel("Global\nSync")
+    return
+
+
+@app.cell
+def _(filtered_procs, mpl, pathlib, pd, plt, sns, tp):
+    _long = filtered_procs.melt(
+        id_vars=["ncpus", "asynchronicity mode", "executable"],
+        value_vars=["Update Walltime (ms)", "conflicts per cpu"],
+        var_name="metric",
+        value_name="value",
+    )
+    _panels = pd.DataFrame(
+        [
+            {
+                "executable": "dishtiny",
+                "metric": "Update Walltime (ms)",
+                "panel": "Digital Evo Walltime (ns)",
+            },
+            {
+                "executable": "channel_selection",
+                "metric": "Update Walltime (ms)",
+                "panel": "Graph Color Walltime (ns)",
+            },
+            {
+                "executable": "channel_selection",
+                "metric": "conflicts per cpu",
+                "panel": "Graph Color Soln Quality",
+            },
+        ]
+    )
+    _long = _long.merge(_panels, on=["executable", "metric"])
+
+    _col_order = [
+        "Digital Evo Walltime (ns)",
+        "Graph Color Walltime (ns)",
+        "Graph Color Soln Quality",
+    ]
+
+    with tp.teed(
+        sns.relplot,
+        data=_long,
+        x="ncpus",
+        y="value",
+        col="panel",
+        col_order=_col_order,
+        hue="executable",
+        row="asynchronicity mode",
+        row_order=[3, 0],
+        err_style=None,
+        facet_kws=dict(margin_titles=True, sharey="col"),
+        kind="line",
+        legend=False,
+        teeplot_show=True,
+        teeplot_subdir=pathlib.Path(__file__).stem,
+        teeplot_outattrs={"viz": "perf-quality-combined"},
+        teeplot_outinclude=["viz"],
+        teeplot_figsize=(9, 2),
+        teeplot_transparent=False,
+    ) as _g:
+        for _ax in _g.axes.flat:
+            for _line in _ax.lines:
+                _x, _y = _line.get_xydata().T
+                _ax.fill_between(
+                    _x, _y.min(), _y, color=_line.get_color(), alpha=0.2
+                )
+
+        _g.map_dataframe(
+            sns.lineplot,
+            x="ncpus",
+            y="value",
+            color="k",
+            errorbar="sd",
+            err_style="bars",
+            legend=False,
+            lw=0,
+        )
+
+        _g.set(ylim=(0, None))
+        _g.set(xscale="log")
+        _g.set_titles(col_template="{col_name}", row_template="")
+        plt.subplots_adjust(hspace=0.3)
+
+        for _i, _ax in enumerate(_g.axes.flat):
+            _ax.minorticks_off()
+            _ax.get_xaxis().set_major_formatter(mpl.ticker.ScalarFormatter())
+            _ax.set_xticks([1, 4, 16, 64])
+            _ax.set_ylabel("")
+
+        for _ax in _g.axes[0, :]:
+            _ax.set_title(_ax.get_title(), fontsize=11)
 
         _g.axes[0, 0].set_ylabel("Best\nEffort")
         _g.axes[1, 0].set_ylabel("Global\nSync")
