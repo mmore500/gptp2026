@@ -413,14 +413,12 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
                 )
 
                 _target_y = max(_y.max(), _y.min() + 10)
-                print(_target_y)
                 _ax.hlines(_target_y, 1, 64, color="gray", ls=":", alpha=0.5)
 
                 _pct_change = ((_y[3] - _y[0]) / abs(_y[0])) * 100
                 _va = {True: "bottom", False: "top"}[
                     _target_y < np.mean(_ax.get_ylim())
                 ]
-                print(np.ptp(_ax.get_ylim()))
                 _ax.text(
                     x=1,
                     y=_target_y
