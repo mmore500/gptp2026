@@ -248,7 +248,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
     def _pvalue_to_sig(p, baseline, treatment):
         if p > 0.05:
             return "n.s."
-        sign = "+" if np.median(treatment) >= np.median(baseline) else "-"
+        sign = "+" if np.median(treatment) >= np.median(baseline) else "−"
         if p < 0.001:
             return f"{sign}***"
         elif p < 0.01:
@@ -257,15 +257,23 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             return f"{sign}*"
 
     _sig_palette = {
-        "-***": "#01665e",
-        "-**": "#5ab4ac",
-        "-*": "#c7eae5",
-        "n.s.": "lightgray",
-        "+*": "#fdae61",
-        "+**": "#f46d43",
         "+***": "#d73027",
+        "+**": "#f46d43",
+        "+*": "#fdae61",
+        "n.s.": "lightgray",
+        "−*": "#c7eae5",
+        "−**": "#5ab4ac",
+        "−***": "#01665e",
     }
-    _sig_full_order = ["-***", "-**", "-*", "n.s.", "+*", "+**", "+***"]
+    _sig_full_order = [
+        "+***",
+        "+**",
+        "+*",
+        "n.s.",
+        "−*",
+        "−**",
+        "−***",
+    ]
 
     for (_cpus, _simels), _cond_df in _data_all.groupby(
         ["Cpus Per Node", "Num Simels Per Cpu"]
