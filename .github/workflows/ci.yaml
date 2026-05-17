@@ -30,7 +30,7 @@ jobs:
       - name: Build LaTeX document
         run: |
           trap 'cat *.log || true >> "$GITHUB_OUTPUT"' EXIT
-          make
+          make draft
       - name: Prepare deploy directory
         run: |
           mkdir -p deploy
@@ -41,6 +41,11 @@ jobs:
         with:
           name: manuscript
           path: ${{ github.event.repository.name }}-draft.pdf
+      - name: Upload supplement artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: supplement
+          path: ${{ github.event.repository.name }}-supplement-draft.pdf
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
