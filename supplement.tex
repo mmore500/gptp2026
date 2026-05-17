@@ -4,7 +4,11 @@
 % Basic info about your document: a4 paper, 11pt font size, article style.
 % Comments start with '%'.
 
-\usepackage{graphicx} % Enables adding figures
+\ifdefined\nofake
+  \usepackage{graphicx}
+\else
+  \usepackage[demo]{graphicx} % placeholder boxes when bindle/ data unavailable
+\fi
 \usepackage{subcaption} % Enables figures side-by-side
 \usepackage{booktabs} % Makes nicer tables
 \usepackage{geometry} % Let's you adjust the margins
@@ -48,6 +52,8 @@
   \input{sup/asynchronicity-modes}
   \input{sup/qos-metrics}
   \input{sup/wse-arch}
+
+  \clearpage
   \section{Supplementary Figures}
   \input{fig/weak-scaling}
 \end{document} % Don't forget this last one.
