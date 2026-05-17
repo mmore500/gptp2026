@@ -13,8 +13,8 @@ def import_std():
 
 @app.cell
 def import_pkg():
-    from matplotlib import pyplot as plt
     import marimo as mo
+    from matplotlib import pyplot as plt
     import numpy as np
     import pandas as pd
     import requests
@@ -28,9 +28,7 @@ def import_pkg():
 
 @app.cell
 def _():
-    from conduitpylib.wrangle import (
-        retrieve_and_prepare_delta_dataframes,
-    )
+    from conduitpylib.wrangle import retrieve_and_prepare_delta_dataframes
 
     return (retrieve_and_prepare_delta_dataframes,)
 
@@ -245,22 +243,27 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
         },
     )
 
-    def _pvalue_to_sig(p):
-        if p < 0.001:
-            return "***"
-        elif p < 0.01:
-            return "**"
-        elif p <= 0.05:
-            return "*"
-        else:
+    def _pvalue_to_sig(p, baseline, treatment):
+        if p > 0.05:
             return "n.s."
+        sign = "+" if np.median(treatment) >= np.median(baseline) else "-"
+        if p < 0.001:
+            return f"{sign}***"
+        elif p < 0.01:
+            return f"{sign}**"
+        else:
+            return f"{sign}*"
 
     _sig_palette = {
+        "-***": "#01665e",
+        "-**": "#5ab4ac",
+        "-*": "#c7eae5",
         "n.s.": "lightgray",
-        "*": "#fdae61",
-        "**": "#f46d43",
-        "***": "#d73027",
+        "+*": "#fdae61",
+        "+**": "#f46d43",
+        "+***": "#d73027",
     }
+    _sig_full_order = ["-***", "-**", "-*", "n.s.", "+*", "+**", "+***"]
 
     for (_cpus, _simels), _cond_df in _data_all.groupby(
         ["Cpus Per Node", "Num Simels Per Cpu"]
@@ -280,7 +283,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             else:
                 try:
                     _, _p = scipy_stats.mannwhitneyu(_baseline, _treatment)
-                    _sig = _pvalue_to_sig(_p)
+                    _sig = _pvalue_to_sig(_p, _baseline, _treatment)
                 except ValueError:
                     _sig = "n.s."
             _mask = (
@@ -291,7 +294,8 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             _cond_df.loc[_mask, "Significance"] = _sig
 
         _hue_order = [
-            _s for _s in ["n.s.", "*", "**", "***"]
+            _s
+            for _s in _sig_full_order
             if _s in _cond_df["Significance"].unique()
         ]
         with tp.teed(
