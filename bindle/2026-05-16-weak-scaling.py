@@ -275,6 +275,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
         "−***",
     ]
 
+    _stats_rows = []
     for (_cpus, _simels), _cond_df in _data_all.groupby(
         ["Cpus Per Node", "Num Simels Per Cpu"]
     ):
@@ -288,6 +289,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
                 _grp["Num Processes"] == 256, "Value"
             ].to_numpy()
             _n = min(len(_baseline), len(_treatment))
+            _p = np.nan
             if _n < 1:
                 _sig = "n.s."
             else:
@@ -302,6 +304,26 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
                 & (_cond_df["Num Processes"] == 256)
             )
             _cond_df.loc[_mask, "Significance"] = _sig
+            _med_b = np.median(_baseline) if len(_baseline) else np.nan
+            _med_t = np.median(_treatment) if len(_treatment) else np.nan
+            _pct = (
+                (_med_t - _med_b) / _med_b * 100
+                if _med_b not in (0, np.nan) and not np.isnan(_med_b)
+                else np.nan
+            )
+            _stats_rows.append(
+                {
+                    "Cpus Per Node": _cpus,
+                    "Num Simels Per Cpu": _simels,
+                    "Metric": _metric.replace("\n", " "),
+                    "Kind": _kind,
+                    "Median 64": _med_b,
+                    "Median 256": _med_t,
+                    "% Change": _pct,
+                    "p-value": _p,
+                    "Significance": _sig,
+                }
+            )
 
         _hue_order = [
             _s
@@ -361,6 +383,9 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
                 markerscale=3,
                 handletextpad=0.1,
             )
+
+    stats_df = pd.DataFrame(_stats_rows)
+    stats_df
     return
 
 
