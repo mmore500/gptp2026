@@ -56,8 +56,11 @@
 \makeatother
 
 \usepackage{makeidx}         % allows index generation
-\usepackage{graphicx}        % standard LaTeX graphics tool
-                             % when including figure files
+\ifdefined\nofake
+  \usepackage{graphicx}      % standard LaTeX graphics tool
+\else
+  \usepackage[demo]{graphicx}% placeholder boxes when bindle/ data unavailable
+\fi
 \usepackage[bottom]{footmisc}% places footnotes at page bottom
 \usepackage{multicol}        % used for the two-column index
 \usepackage{multirow}
