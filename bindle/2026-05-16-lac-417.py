@@ -323,7 +323,7 @@ def _(
         kind="strip",
         linewidth=1,
         margin_titles=True,
-        marker="+",
+        marker="x",
         edgecolor="teal",
         s=10,
         sharey=False,
@@ -372,15 +372,16 @@ def _(
         },
     )
 
-    def _pvalue_to_sig(p):
-        if p < 0.001:
-            return "***"
-        elif p < 0.01:
-            return "**"
-        elif p <= 0.05:
-            return "*"
-        else:
+    def _pvalue_to_sig(p, baseline, treatment):
+        if p > 0.05:
             return "n.s."
+        sign = "+" if np.median(treatment) >= np.median(baseline) else "−"
+        if p < 0.001:
+            return f"{sign}***"
+        elif p < 0.01:
+            return f"{sign}**"
+        else:
+            return f"{sign}*"
 
     _data_combined["Significance"] = "n.s."
     _res = []
@@ -394,7 +395,7 @@ def _(
         _n = min(len(_baseline), len(_treatment))
         try:
             _, _p = scipy_stats.wilcoxon(_baseline[:_n], _treatment[:_n])
-            _sig = _pvalue_to_sig(_p)
+            _sig = _pvalue_to_sig(_p, _baseline[:_n], _treatment[:_n])
         except ValueError:  # all zeros
             _sig = "n.s."
 
@@ -407,10 +408,13 @@ def _(
         _res.append(dict(metric=_metric, kind=_kind, p=_p, sig=_sig))
 
     _sig_palette = {
+        "+***": "#d73027",
+        "+**": "#f46d43",
+        "+*": "#fdae61",
         "n.s.": "lightgray",
-        "*": "#fdae61",
-        "**": "#f46d43",
-        "***": "#d73027",
+        "−*": "#c7eae5",
+        "−**": "#5ab4ac",
+        "−***": "#01665e",
     }
 
     with tp.teed(
@@ -429,13 +433,21 @@ def _(
         order=["Base\nline", "With\nlac-417"],
         y="Value",
         hue="Significance",
-        hue_order=["n.s.", "***"],
+        hue_order=[
+            "+***",
+            "+**",
+            "+*",
+            "n.s.",
+            "−*",
+            "−**",
+            "−***",
+        ],
         palette=_sig_palette,
         clip_on=False,
         kind="strip",
         linewidth=1,
         margin_titles=True,
-        marker="+",
+        marker="x",
         s=10,
         sharey=False,
         dodge=False,
