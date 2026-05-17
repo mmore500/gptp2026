@@ -290,6 +290,10 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             )
             _cond_df.loc[_mask, "Significance"] = _sig
 
+        _hue_order = [
+            _s for _s in ["n.s.", "*", "**", "***"]
+            if _s in _cond_df["Significance"].unique()
+        ]
         with tp.teed(
             sns.catplot,
             data=_cond_df,
@@ -306,7 +310,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             order=[64, 256],
             y="Value",
             hue="Significance",
-            hue_order=["n.s.", "*", "**", "***"],
+            hue_order=_hue_order,
             palette=_sig_palette,
             clip_on=False,
             kind="strip",
@@ -326,10 +330,6 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             _g.figure.set_size_inches(9, 2.2)
             _g.set_titles(col_template="{col_name}", row_template="{row_name}")
             _g.set(ylim=(0, None), xlabel="Num Processes", ylabel="")
-            _g.figure.suptitle(
-                f"Cpus Per Node = {_cpus}, Num Simels Per Cpu = {_simels}",
-                y=1.05,
-            )
             plt.subplots_adjust(hspace=0.2, wspace=0.2)
             for _ax in _g.axes.flat:
                 _ax.ticklabel_format(style="sci", axis="y", scilimits=(-4, 3))
