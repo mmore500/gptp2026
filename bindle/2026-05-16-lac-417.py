@@ -13,8 +13,8 @@ def import_std():
 
 @app.cell
 def import_pkg():
-    from matplotlib import pyplot as plt
     import marimo as mo
+    from matplotlib import pyplot as plt
     import numpy as np
     import pandas as pd
     import requests
@@ -28,17 +28,9 @@ def import_pkg():
 
 @app.cell
 def _():
-    from conduitpylib.utils import (
-        consolidate_merge,
-        count_outliers,
-        count_nonoutliers,
-        count_proportion_outliers,
-    )
-
     from conduitpylib.wrangle import (
         find_treat_idx_mapped_col,
         retrieve_and_prepare_delta_dataframes,
-        wrangle_world_sums,
     )
 
     return find_treat_idx_mapped_col, retrieve_and_prepare_delta_dataframes
