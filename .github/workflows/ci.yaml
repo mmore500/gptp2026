@@ -34,7 +34,7 @@ jobs:
       - name: Build supplement
         run: |
           trap 'cat tex/*.log || true >> "$GITHUB_OUTPUT"' EXIT
-          cd tex && make supplement.pdf
+          cd tex && latexmk -pdf -interaction=nonstopmode -file-line-error ../supplement.tex
       - name: Prepare deploy directory
         run: |
           mkdir -p deploy
