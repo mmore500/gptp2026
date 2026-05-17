@@ -384,7 +384,7 @@ def _(
             return f"{sign}*"
 
     _data_combined["Significance"] = "n.s."
-    _res = []
+    _stats_rows = []
     for (_metric, _kind), _grp in _data_combined.groupby(["Metric", "Kind"]):
         _baseline = _grp.loc[
             _grp[allocation_idx_mapped_title] == "Base\nline", "Value"
@@ -393,6 +393,7 @@ def _(
             _grp[allocation_idx_mapped_title] == "With\nlac-417", "Value"
         ].to_numpy()
         _n = min(len(_baseline), len(_treatment))
+        _p = np.nan
         try:
             _, _p = scipy_stats.wilcoxon(_baseline[:_n], _treatment[:_n])
             _sig = _pvalue_to_sig(_p, _baseline[:_n], _treatment[:_n])
@@ -405,7 +406,24 @@ def _(
             & (_data_combined[allocation_idx_mapped_title] == "With\nlac-417")
         )
         _data_combined.loc[_mask, "Significance"] = _sig
-        _res.append(dict(metric=_metric, kind=_kind, p=_p, sig=_sig))
+        _med_b = np.median(_baseline) if len(_baseline) else np.nan
+        _med_t = np.median(_treatment) if len(_treatment) else np.nan
+        _pct = (
+            (_med_t - _med_b) / _med_b * 100
+            if _med_b not in (0, np.nan) and not np.isnan(_med_b)
+            else np.nan
+        )
+        _stats_rows.append(
+            {
+                "Metric": _metric.replace("\n", " "),
+                "Kind": _kind,
+                "Median Baseline": _med_b,
+                "Median With lac-417": _med_t,
+                "% Change": _pct,
+                "p-value": _p,
+                "Significance": _sig,
+            }
+        )
 
     _sig_palette = {
         "+***": "#d73027",
@@ -416,6 +434,19 @@ def _(
         "−**": "#5ab4ac",
         "−***": "#01665e",
     }
+    _hue_order = [
+        _s
+        for _s in [
+            "+***",
+            "+**",
+            "+*",
+            "n.s.",
+            "−*",
+            "−**",
+            "−***",
+        ]
+        if _s in _data_combined["Significance"].unique()
+    ]
 
     with tp.teed(
         sns.catplot,
@@ -433,15 +464,7 @@ def _(
         order=["Base\nline", "With\nlac-417"],
         y="Value",
         hue="Significance",
-        hue_order=[
-            "+***",
-            "+**",
-            "+*",
-            "n.s.",
-            "−*",
-            "−**",
-            "−***",
-        ],
+        hue_order=_hue_order,
         palette=_sig_palette,
         clip_on=False,
         kind="strip",
@@ -474,6 +497,9 @@ def _(
             markerscale=3,
             handletextpad=0.1,
         )
+
+    stats_df = pd.DataFrame(_stats_rows)
+    stats_df
     return
 
 
