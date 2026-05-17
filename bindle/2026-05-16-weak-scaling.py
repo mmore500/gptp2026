@@ -328,7 +328,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             kind="strip",
             linewidth=1,
             margin_titles=True,
-            marker="+",
+            marker="x",
             s=10,
             sharey=False,
             dodge=False,
