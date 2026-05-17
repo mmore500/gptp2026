@@ -7,32 +7,23 @@ app = marimo.App(width="full")
 @app.cell
 def import_std():
     import pathlib
-    import warnings
 
     return (pathlib,)
 
 
 @app.cell
 def import_pkg():
-    from iterdub import iterdub as ib
-    from iterpop import iterpop as ip
-    from keyname import keyname as kn
     from matplotlib import pyplot as plt
-    import matplotlib
-    from nbmetalog import nbmetalog as nbm
     import marimo as mo
     import numpy as np
     import pandas as pd
     import requests
-    from scipy import stats
+    from scipy import stats as scipy_stats
     import seaborn as sns
-    from slugify import slugify
-    import statsmodels.api as sm
-    import statsmodels.formula.api as smf
     from teeplot import teeplot as tp
     from watermark import watermark
 
-    return mo, np, pd, plt, requests, sns, tp, watermark
+    return mo, np, pd, plt, requests, scipy_stats, sns, tp, watermark
 
 
 @app.cell
@@ -336,12 +327,12 @@ def _(
         order=["Base\nline", "With\nlac-417"],
         y="Value",
         clip_on=False,
-        color="gray",
+        color="teal",
         kind="strip",
         linewidth=1,
         margin_titles=True,
         marker="+",
-        edgecolor="gray",
+        edgecolor="teal",
         s=10,
         sharey=False,
         teeplot_show=True,
@@ -358,6 +349,127 @@ def _(
         for _ax in _g.axes[1, :].flat:
             _ax.set_ylim(1.6 * np.array(_ax.get_ylim()))
         sns.despine(fig=_g.figure, bottom=True)
+    return
+
+
+@app.cell
+def _(
+    allocation_idx_mapped_title,
+    data_max,
+    data_median,
+    np,
+    pathlib,
+    pd,
+    plt,
+    scipy_stats,
+    sns,
+    tp,
+):
+    _data_combined = pd.concat(
+        [data_max, data_median], ignore_index=True
+    ).replace(
+        {
+            allocation_idx_mapped_title: {0: "Base\nline", 1: "With\nlac-417"},
+            "Metric": {
+                "Simstep Period Outlet (ms)": "Update Walltime\n(ms)",
+                "Latency Simsteps Outlet": "Latency\n(updates)",
+                "Latency Walltime Outlet (ms)": "Latency\n(ms)",
+                "Delivery Clumpiness": "Bunching",
+                "Delivery Failure Rate": "Message\nDrop Rate",
+            },
+        },
+    )
+
+    def _pvalue_to_sig(p):
+        if p < 0.001:
+            return "***"
+        elif p < 0.01:
+            return "**"
+        elif p <= 0.05:
+            return "*"
+        else:
+            return "n.s."
+
+    _data_combined["Significance"] = "n.s."
+    _res = []
+    for (_metric, _kind), _grp in _data_combined.groupby(["Metric", "Kind"]):
+        _baseline = _grp.loc[
+            _grp[allocation_idx_mapped_title] == "Base\nline", "Value"
+        ].to_numpy()
+        _treatment = _grp.loc[
+            _grp[allocation_idx_mapped_title] == "With\nlac-417", "Value"
+        ].to_numpy()
+        _n = min(len(_baseline), len(_treatment))
+        try:
+            _, _p = scipy_stats.wilcoxon(_baseline[:_n], _treatment[:_n])
+            _sig = _pvalue_to_sig(_p)
+        except ValueError:  # all zeros
+            _sig = "n.s."
+
+        _mask = (
+            (_data_combined["Metric"] == _metric)
+            & (_data_combined["Kind"] == _kind)
+            & (_data_combined[allocation_idx_mapped_title] == "With\nlac-417")
+        )
+        _data_combined.loc[_mask, "Significance"] = _sig
+        _res.append(dict(metric=_metric, kind=_kind, p=_p, sig=_sig))
+
+    _sig_palette = {
+        "n.s.": "lightgray",
+        "*": "#fdae61",
+        "**": "#f46d43",
+        "***": "#d73027",
+    }
+
+    with tp.teed(
+        sns.catplot,
+        data=_data_combined,
+        col="Metric",
+        col_order=[
+            "Update Walltime\n(ms)",
+            "Latency\n(ms)",
+            "Latency\n(updates)",
+            "Message\nDrop Rate",
+            "Bunching",
+        ],
+        row="Kind",
+        x=allocation_idx_mapped_title,
+        order=["Base\nline", "With\nlac-417"],
+        y="Value",
+        hue="Significance",
+        hue_order=["n.s.", "***"],
+        palette=_sig_palette,
+        clip_on=False,
+        kind="strip",
+        linewidth=1,
+        margin_titles=True,
+        marker="+",
+        s=10,
+        sharey=False,
+        dodge=False,
+        teeplot_show=True,
+        teeplot_subdir=pathlib.Path(__file__).stem,
+    ) as _g:
+        _g.figure.set_size_inches(9, 2)
+        _g.set_titles(col_template="{col_name}", row_template="{row_name}")
+        _g.set(ylim=(0, None), xlabel="", ylabel="")
+        plt.subplots_adjust(hspace=0.2, wspace=0.2)
+        for _ax in _g.axes.flat:
+            _ax.ticklabel_format(style="sci", axis="y", scilimits=(-4, 3))
+            _ax.yaxis.get_offset_text().set_x(-0.25)
+            _ax.yaxis.get_offset_text().set_y(0.5)
+        for _ax in _g.axes[1, :].flat:
+            _ax.set_ylim(1.6 * np.array(_ax.get_ylim()))
+        sns.despine(fig=_g.figure, bottom=True)
+        sns.move_legend(
+            _g,
+            loc="center right",
+            bbox_to_anchor=(1.04, 0.5),
+            frameon=False,
+            title=None,
+            markerscale=3,
+            handletextpad=0.1,
+        )
     return
 
 
