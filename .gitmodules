@@ -27,11 +27,12 @@
 	url = https://github.com/mmore500/gptp2026.git
 	branch = bindle-2026-05-16-perf-quality.py
 	shallow = true
-[submodule "tex"]
-	path = tex
-	url = https://github.com/mmore500/gptp2026.git
-	branch = tex
 [submodule "bindle/bindle-2026-05-16-weak-scaling"]
 	path = bindle/bindle-2026-05-16-weak-scaling
 	url = https://github.com/mmore500/gptp2026.git
 	branch = bindle-2026-05-16-weak-scaling.py
+	shallow = true
+[submodule "tex"]
+	path = tex
+	url = https://github.com/mmore500/gptp2026.git
+	branch = tex
