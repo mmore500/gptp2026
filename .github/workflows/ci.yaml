@@ -39,7 +39,8 @@ jobs:
         run: |
           mkdir -p deploy
           cp ${{ github.event.repository.name }}-draft.pdf deploy/
-          echo '<html><body><a href="${{ github.event.repository.name }}-draft.pdf">Download Manuscript Draft [PDF]</a></body></html>' > deploy/index.html
+          cp tex/supplement.pdf deploy/${{ github.event.repository.name }}-supplement-draft.pdf
+          echo '<html><body><p><a href="${{ github.event.repository.name }}-draft.pdf">Download Manuscript Draft [PDF]</a></p><p><a href="${{ github.event.repository.name }}-supplement-draft.pdf">Download Supplement Draft [PDF]</a></p></body></html>' > deploy/index.html
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
