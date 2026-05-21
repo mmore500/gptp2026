@@ -15,8 +15,9 @@
 }%
 \end{minipage}%
 \begin{minipage}{0.7\linewidth}
-\subfigure[\footnotesize sampling-based observation strategy]{
+\subfigure[\footnotesize sampling-based observation strategy for evolutionary history]{
   \includegraphics[width=\linewidth]{img/wse-phylogeny}
+  \label{moreno:fig:wse:phylogeny}
 }
 \end{minipage}
 
@@ -27,7 +28,7 @@
 % https://github.com/mmore500/hstrat-synthesis/blob/8e34ac63dd20ede894354760bc9519027f6baecd/binder/teeplots/2026-03-18-260225-btqc-lineage-pure-s00-dsamp/cmap%3Dbcyr%2Bregime%3Dpure%2Bseed%3D0%2Bviz%3Ddraw-cscatter%2Bx%3Dx%2By%3Dy%2Bext%3D.png
 % https://github.com/mmore500/hstrat-synthesis/blob/8e34ac63dd20ede894354760bc9519027f6baecd/binder/teeplots/2026-03-18-260225-btqc-lineage-pure-s00-dsamp/invert%3Dxy%2Blayout%3Dvertical%2Bregime%3Dpure-mask%2Bseed%3D0%2Bviz%3Ddraw-ctree%2Bx%3Dx%2By%3Dy%2Bext%3D.png
 \subfigure[\footnotesize influence of ``upwards'' migration bias on lineage histories under netutral evolution]{
-    \label{moreno:fig:wse:components}
+    \label{moreno:fig:wse:bias}
   \includegraphics[width=\linewidth]{img/wse-bias}
 }
 
@@ -43,7 +44,12 @@
 \caption{
 \textbf{Accelerator-based HPC Case Study.}
 \footnotesize
-TODO
+Wafer-Scale Engine (WSE) architecture consists of independently-executing processing elements (PEs), arranged in a grid lattice (panel \ref{moreno:fig:wse:architecture}).
+To accomodate constraints in host-device communication and on-device memory (48kB), observation of lineage histories was conducted using a best-effort approach --- making use of structured markers to estimate relatedness between sparsely sampled genomes (panel \ref{moreno:fig:wse:phylogeny}).
+Such a strategy gracefully tolerates missing data, such as a localized corruption fault in device-to-host transfer arising in one piece of WSE-3 hardware (panel \ref{moreno:fig:wse:fault}).
+Best-effort relaxation is extended to migration between per-PE subpopulations, which are conducted asynchronously.
+Before correction, a small directional bias in migration detectably influenced long-term lineage histories (panel \ref{moreno:fig:wse:bias}).
+In experiments exploring the evolution of hypermutator traits, where expected duration was not known \textit{a priori}, time series records of local hypermutator prevalence were curated on a best-effort within a fixed per-PE memory budget using a generalized ring-buffer stragegy (panel \ref{moreno:fig:wse:timeseries}; video animation at \url{https://hopth.ru/ej}).
 }
 \label{moreno:fig:wse}
 \end{figure}
