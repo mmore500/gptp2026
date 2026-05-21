@@ -2,10 +2,10 @@
 
 \input{fig/cpu.tex}
 
-Evolutionary transitions in individuality, such as multicellularity and eusociality, are broadly considered as a key facet of the surprising constructive power of biological evolution \cite{taylor2016open}.
-Digital evolution experiments offer a uniquely tractable opportunity to examine how these events can unfold.
+Evolutionary transitions in individuality, such as multicellularity and eusociality, are broadly considered as a key facet of biological evolution's surprising constructive power \cite{taylor2016open}.
+Digital evolution experiments offer a uniquely tractable opportunity to examine how these transitions can unfold.
 Such experiments, however, can become computationally intense: life history of each multicell encompasses an independent subpopulation of replicators --- possibly themselves carrying out hegerogenous, interaction-intensive developmental, physiological, and ecological processes.
-Infrastructure for such experiments therefore provides a germane testbed  to explore HPC methods for digital evolution.
+Infrastructure for such experiments therefore provides a germane testbed to explore HPC methods for digital evolution.
 
 As a first case study, we test the performance characteristics of a best-effort multiprocessing framework developed to support the DISHTINY project (DIStributed Heirarchical Transitions in INdividualitY) \cite{moreno2019toward}.
 This system tracks a fixed-capacity population of digital cells distributed across a toroidal grid, which can sense attributes of their immediate neighbors, communicate with those neighbors through message passing, and interact with neighboring cells cooperatively or competitively \cite{moreno2021exploring}.
@@ -26,6 +26,7 @@ MPI guarantees delivery of dispatched messages --- network-layer best-effort rel
 Conduit-based profiling experiments investigated four questions (1) can best-effort relazations improve scaling efficiency, (2) can quality of service metrics meaningfully detect runtime irregularities introduced by best-effort relaxation, (3) does median quality of service scale robustly, and (4) is median quality of service robust to individual hardware anamolies at scale?
 
 \subsection{Profiling Experiment Design}
+\label{moreno:sec:case1:design}
 
 In this case study, we use DISHTINY simulations as a vehicle to investigate the performance characteristics of best-effort communication.
 For profiling trials, randomly-initialized populations were evaluated under default conditions over a five-minute execution window.
@@ -49,19 +50,22 @@ As another benefit, this benchmark provides a succinct measure of solution quali
 
 Futher details on benchmark methodology are included with Supplemental Material \cite{moreno_2026_trust}.
 
-\subsection{Calculating Proposed Metrics}
+\subsection{Quality of Service Metrics}
+\label{moreno:sec:case1:metrics}
 
-In this section, we outline quality-of-service metrics considered in our analysis (Figure \ref{moreno:fig:cpu:best-effort-qos}).
-A more complete description is provided in Supplemental Material \cite{moreno_2026_trust}.
-For the purposes of these metrics, we assume that simulations proceed in an iterative fashion with alternating compute and communication cycles.
-Metrics are collected across a ``snapshot'' window --- here, we focus on aggregations over runtime; however, brief point-in-time snapshots are also possible.
+In this section, we outline metrics describing four dimensions of runtime quality of service: throughput, latency, attrition, and bunching (Figure \ref{moreno:fig:cpu:best-effort-qos}).
+To ensure consistent interpretation, all metrics quantify service degradation --- such that higher values indicate worse quality of service.
 
 \begin{enumerate}
-\item \textbf{Throughput}: \textit{update time}, amount of wall-time elapsed per simulation compute/communication cycle averaged across a snapshot window ();
-\item \textbf{Latency}: \textit{update-latency} or \textit{walltime-latency}, duration elapsed between message dispatch and message delivery, calculated from a round-trip measure to avoid clock synchronization interference;
-\item \textbf{Attrition}: \textit{drop fraction}, proportion of messages sent that are dropped (e.g., when a send buffer fills); and
-\item \textbf{Bunching}: \textit{consolidation}, the proportion of possible independent delivery events unrealized due to batching.
+\item \textbf{Throughput}: \textit{update time}, amount of walltime elapsed per update cycle;
+\item \textbf{Latency}: \textit{update-latency} or \textit{walltime-latency}, duration elapsed between message dispatch and delivery, estimated via a round-trip counter;
+\item \textbf{Attrition}: \textit{drop rate}, proportion of messages sent that fail to be delivered; and
+\item \textbf{Bunching}: \textit{consolidation}, the proportion of possible independent delivery events eliminated by batching.
 \end{enumerate}
+
+These metrics may be calculated in aggregate over execution in its entirety, or on an instantaneous basis within shorter `snapshot'' windows.
+For simplicity, we focus on aggregate measures here.
+Formal derivations of these metrics from timestamped instrumentation counter values are provided in Supplemental Material \cite{moreno_2026_trust}.
 
 % MPI's nonblocking communication primitives, in particular, are sufficient to program distributed computations with relaxed synchronization requirements.
 % Although it's explicit, the imperative nature of the MPI protocols enables precise control over execution; unfortunately it also poses significant expense in terms of programmability.
