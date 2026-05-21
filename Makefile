@@ -15,7 +15,7 @@ draft: ${BUILD_DIR}-draft.pdf ${BUILD_DIR}-manuscript-draft.pdf ${BUILD_DIR}-sup
 release: ${BUILD_DIR}.pdf ${BUILD_DIR}-manuscript.pdf ${BUILD_DIR}-supplement.pdf ${BUILD_DIR}.tex
 
 ${BUILD_DIR}.pdf: main.tex
-	BIBINPUTS="tex:." latexmk -pdf -silent \
+	BIBINPUTS="tex:." BSTINPUTS="tex:." latexmk -pdf -silent \
     -jobname=${BUILD_DIR} \
     -pdflatex="pdflatex -interaction=nonstopmode" main.tex
 
@@ -29,7 +29,7 @@ ${BUILD_DIR}-supplement.pdf: ${BUILD_DIR}.pdf
 	pdftk ${BUILD_DIR}.pdf cat $(RELEASE_SUPPLEMENT_PAGE)-end output ${BUILD_DIR}-supplement.pdf
 
 ${BUILD_DIR}-draft.pdf: main.tex
-	BIBINPUTS="tex:." latexmk -pdf -silent \
+	BIBINPUTS="tex:." BSTINPUTS="tex:." latexmk -pdf -silent \
     -jobname=${BUILD_DIR}-draft \
     -pdflatex="pdflatex -interaction=nonstopmode" draft.tex
 
