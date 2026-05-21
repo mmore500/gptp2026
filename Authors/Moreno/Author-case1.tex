@@ -1,33 +1,67 @@
-\section{Cluster-based HPC Case Study} \label{moreno:sec:case1}
+\section{Case Study: Cluster-based HPC} \label{moreno:sec:case1}
 
 \input{fig/cpu.tex}
 
-As a first case study, we examine best-effort infrastructure designed to support digital evolution experiments exploring the evolution of multicellularity \cite{moreno2019toward}.
-A fully bottom-up approach to such experiments requires sufficient simulation capacity for individual cells to support an emergent meta-population of multicellular collectives; further, because rich cell-cell interactions and behaviors are critical to these experiments, workload per cell is high.
-As such, parallel acceleration of individual replicates is important in this use case for tractable experiments.
+Evolutionary transitions in individuality, such as multicellularity and eusociality, are broadly considered as a key facet of the surprising constructive power of biological evolution \cite{taylor2016open}.
+Digital evolution experiments offer a uniquely tractable opportunity to examine how these events can unfold.
+Such experiments, however, can become computationally intense: life history of each multicell encompasses an independent subpopulation of replicators --- possibly themselves carrying out hegerogenous, interaction-intensive developmental, physiological, and ecological processes.
+Infrastructure for such experiments therefore provides a germane testbed  to explore HPC methods for digital evolution.
 
-DISHTINY simulates a fixed-size toroidal grid populated by digital cells controlled by SignalGP event-driven linear genetic programs \cite{lalejini2018evolving}.
-Cells can sense attributes of their immediate neighbors, can communicate with those neighbors through arbitrary message passing, and can interact with neighboring cells cooperatively or competitively.
-For use as a compute-intensive benchmark we assign 3{\small,}600 cells to each thread or process.
-Besides for cell-cell interactions, this in effect operates as an island model algorithm \cite{bennett1999building}, with spatial structure both within and between island populations.
-Full details of the DISHTINY simulation are available in \cite{moreno2021exploring}.
+As a first case study, we test the performance characteristics of a best-effort multiprocessing framework developed to support the DISHTINY project (DIStributed Heirarchical Transitions in INdividualitY) \cite{moreno2019toward}.
+This system tracks a fixed-capacity population of digital cells distributed across a toroidal grid, which can sense attributes of their immediate neighbors, communicate with those neighbors through message passing, and interact with neighboring cells cooperatively or competitively \cite{moreno2021exploring}.
+Under the hood, event-driven linear genetic programs control cell behavior \cite{lalejini2018evolving}.
 
-An alternate approach to evolving large populations might be an island model, where Conduit-based messaging channels would be used solely to exchange genomes between otherwise independent populations .
-However, we chose to instead parallelize DISHTINY as a unified spatial realm in order to enable parent-offspring interaction and leave the door open for future work with multicells that exceed the scope of an individual thread or process.
-
-This particular project focused on targeting CPU-based HPC infrastructure, which is traditionally orchestrated through the Message Passing Interface (MPI) standard \cite{gropp1996high}, which exposes communication for inter- and intra-node multi-processing.
-For this project, MPI's nonblocking communication were orchestrated through the Conduit library, a C++ library abstraction layer \cite{moreno2021conduit}.
+To support multiprocessing, DISHTINY routes all cell-cell interaction through a communication layer implemented by the Conduit library \cite{moreno2021conduit}.
+\unskip\footnote{%
 This library is one among many frameworks have arisen to offer useful parallel and distributed programming abstractions, including task-based frameworks \cite{kale1993charm++,bauer2012legion,blumofe1996cilk,reinders2007intel} or domain-specific programming languages \cite{el2006upc,chamberlain2007parallel}.
 However, these frameworks assume a deterministic relationship between tasks or otherwise forbid data races.
+}
+This multiprocessing framework exposes a best-effort interface backed by Message Passing Interface (MPI) intrinsics \cite{gropp1996high}.
+In the case where two neighboring toroidal grid cells reside on different executing processes, a configurable-capacity send buffer asynchronously dispatches requested cell-cell interactions and updates to local state.
+In the case where send buffer capacity is full, communication may be configured to drop rather than blocking.
+\unskip\footnote{%
+MPI guarantees delivery of dispatched messages --- network-layer best-effort relaxations would involve lower-level protocols like InfiniBand Unreliable Datagrams \cite{kashyap2006ip,koop2007high}.
+}
 
-Here, we present a set of on-hardware experiments to empirically characterize Conduit's best-effort communication model.
-In order to survey across workload profiles, we supplemented digital evolution tests with a compute-intensive artificial life simulation with tests leveraging a communication-intensive graph coloring solver.
-Under this solver, nodes begin by randomly choosing a color if a conflicting neighbor is detected \cite{leith2012wlan}.
-These nodes were arranged in a two-dimensional grid topology where each node had three possible colors and four neighbors.
-Solution error was measured as the number of graph color conflicts remaining at the end of the benchmark.
-Our benchmarks focus on weak scalability, using a fixed problem size of 2{\small,}048 graph nodes per thread or process.
+Conduit-based profiling experiments investigated four questions (1) can best-effort relazations improve scaling efficiency, (2) can quality of service metrics meaningfully detect runtime irregularities introduced by best-effort relaxation, (3) does median quality of service scale robustly, and (4) is median quality of service robust to individual hardware anamolies at scale?
 
-Futher details for benchmark workloads are included in Supplemental Material \cite{moreno_2026_trust}.
+\subsection{Profiling Experiment Design}
+
+In this case study, we use DISHTINY simulations as a vehicle to investigate the performance characteristics of best-effort communication.
+For profiling trials, randomly-initialized populations were evaluated under default conditions over a five-minute execution window.
+Conduit communication was instrumented with counters to track elapsed send, receive, and round-trip touch
+\unskip\footnote{%
+To avoid clock synchronization issues, no cross-process durations timings were taken.
+Instead, runtime instrumentation maintained independent zero-initialized ``touch counters,'' appended to all dispatched messages.
+By incrementing this value upon receipt, it increases by two for each successful round trip completed.
+}
+counts.
+In addition to recording final counter values at completion, once per minute a background thread polled counter values bookending a one-second ``snapshot'' interval.
+
+To reflect workloads typical of island-model evolutionary computation \cite{bennett1999building}, DISHTINY profiling assigned a grid size of 3{\small,}600 cells per process (a widely-used default \cite{ofria2004avida}).
+To efficiency, Conduit was configured to consolidate communication traffic between neighboring processes to bulk transfers once per update cycle.
+This benchmark thus reflects a compute-intensive workload.
+
+To survey communication-intensive workloads, we supplemented DISHTINY trials with a lightweight graph coloring algorithm designed to deconflict WLAN networks \cite{leith2012wlan}.
+Nodes, also arranged in a toroidal lattice, begin with one of three possible randomly-assigned colors.
+In the case of conflict between neighbors, nodes probabilistically self-reassign a new color.
+As another benefit, this benchmark provides a succinct measure of solution quality: the number of remaining same-color neighbors.
+
+Futher details on benchmark methodology are included with Supplemental Material \cite{moreno_2026_trust}.
+
+\subsection{Calculating Proposed Metrics}
+
+In this section, we outline quality-of-service metrics considered in our analysis (Figure \ref{moreno:fig:cpu:best-effort-qos}).
+A more complete description is provided in Supplemental Material \cite{moreno_2026_trust}.
+For the purposes of these metrics, we assume that simulations proceed in an iterative fashion with alternating compute and communication cycles.
+Metrics are collected across a ``snapshot'' window --- here, we focus on aggregations over runtime; however, brief point-in-time snapshots are also possible.
+
+\begin{enumerate}
+\item \textbf{Throughput}: \textit{update time}, amount of wall-time elapsed per simulation compute/communication cycle averaged across a snapshot window ();
+\item \textbf{Latency}: \textit{update-latency} or \textit{walltime-latency}, duration elapsed between message dispatch and message delivery, calculated from a round-trip measure to avoid clock synchronization interference;
+\item \textbf{Attrition}: \textit{drop fraction}, proportion of messages sent that are dropped (e.g., when a send buffer fills); and
+\item \textbf{Bunching}: \textit{consolidation}, the proportion of possible independent delivery events unrealized due to batching.
+\end{enumerate}
 
 % MPI's nonblocking communication primitives, in particular, are sufficient to program distributed computations with relaxed synchronization requirements.
 % Although it's explicit, the imperative nature of the MPI protocols enables precise control over execution; unfortunately it also poses significant expense in terms of programmability.
@@ -71,21 +105,6 @@ This analysis would detect a scenario where raw performance remains stable under
 %   \item multithreading versus multiprocessing.
 % \end{itemize}
 % We perform these experiments using a graph coloring solver configured to maximize communication relative to computation (i.e., just one simulation element per CPU) in order to maximize sensitivity of quality of service to the runtime manipulations.
-
-\subsection{Calculating Proposed Metrics}
-
-In this section, we outline quality-of-service metrics considered in our analysis.
-A more complete description is provided in Supplemental Material \cite{moreno_2026_trust}.
-For the purposes of these metrics, we assume that simulations proceed in an iterative fashion with alternating compute and communication cycles.
-Metrics are collected across a ``snapshot'' window --- here, we focus on aggregations over runtime; however, brief point-in-time snapshots are also possible.
-
-\begin{enumerate}
-\item \textbf{Update Time}: amount of wall-time elapsed per simulation compute/communication cycle averaged across a snapshot window (Figure \ref{moreno:fig:cpu:TODO});
-\item \textbf{Update-Latency}: number of simulation cycles that elapse between message dispatch and message delivery, calculated from a round-trip measure to avoid clock synchronization interference (Figure \ref{moreno:fig:cpu:TODO});
-\item \textbf{Time-Latency}: product of update rate and update-latency, directly tells the real-time performance of message transmission (Figure \ref{moreno:fig:cpu:TODO}).
-\item \textbf{Drop Fraction}: fraction of messages sent that are dropped (e.g., when a send buffer fills; Figure \ref{moreno:fig:cpu:TODO}); and
-\item \textbf{Delivery Bunching}: the extent to which message arrival is consolidated to arrive in batches, rather than as an even stream.
-\end{enumerate}
 
 \subsection{Scaling Efficiency and Solution Quality}
 

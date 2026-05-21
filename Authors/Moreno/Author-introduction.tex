@@ -96,13 +96,12 @@ Likewise, even if best-effort relaxations are allowed into the underlying core c
 
 Where relaxations are allowed, an obvious step to mitigate potential downsides from best-effort relaxations is to establish runtime instrumentation (Figure \ref{moreno:fig:best-effort}) to measure runtime conditions experienced.
 Figure \ref{moreno:fig:best-effort} lists a few possible (non-exhaustive) quality-of-service metrics that can be collected inexpensively.
-We monitor five aspects of real-time behavior, which we refer to as quality of service metrics \cite{karakus2017quality},
+We suggest four of real-time behavior to monitor, with corresponding quality of service metrics \cite{karakus2017quality},
 \begin{itemize}
-  \item wall-time simulation update rate (``simstep period''),
-  \item simulation-time message latency,
-  \item wall-time message latency,
-  \item steadiness of message inflow (``delivery clumpiness''), and
-  \item delivery failure rate.
+  \item throughput,
+  \item latency,
+  \item attrition, and
+  \item bunching.
 \end{itemize}
 (Formal definitions for these metrics follow in Section \ref{moreno:sec:case1}.)
 Based on these measurements, it is possible to tune simulation configuration such that quality of service remains within acceptable bounds, screen for systematic correlations between quality of service and simulation outcomes, provide a more informed interpretation for the nature of the computation actually being accomplished, and report conditions alongside findings to improve qualitative reproducibility.
