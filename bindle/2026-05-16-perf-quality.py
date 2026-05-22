@@ -982,27 +982,27 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
                         clip_on=False,
                     )
 
-        # per-mode error bars (sd) over the data points
-        for _eb_mode, _eb_color in (
-            (0, _darken(_gray, 0.45)),
-            (3, _darken(_green, 0.3)),
-        ):
-            _eb_data = _long[
-                (_long["panel"] == _panel)
-                & (_long["asynchronicity mode"] == _eb_mode)
-            ]
-            sns.lineplot(
-                data=_eb_data,
-                x="ncpus",
-                y="value",
-                ax=_ax,
-                color=_eb_color,
-                errorbar="sd",
-                err_style="bars",
-                err_kws={"capsize": 3},
-                legend=False,
-                lw=0,
-            )
+            # per-mode error bars (sd) over the data points
+            for _eb_mode, _eb_color in (
+                (0, _darken(_gray, 0.45)),
+                (3, _darken(_green, 0.3)),
+            ):
+                _eb_data = _long[
+                    (_long["panel"] == _panel)
+                    & (_long["asynchronicity mode"] == _eb_mode)
+                ]
+                sns.lineplot(
+                    data=_eb_data,
+                    x="ncpus",
+                    y="value",
+                    ax=_ax,
+                    color=_eb_color,
+                    errorbar="sd",
+                    err_style="bars",
+                    err_kws={"capsize": 3},
+                    legend=False,
+                    lw=0,
+                )
 
         _g.set(ylim=(0, None))
         _g.set(xscale="log")
