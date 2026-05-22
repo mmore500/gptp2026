@@ -57,7 +57,7 @@ Futher details on benchmark methodology are included with Supplemental Material 
 \subsection{Quality of Service Metrics}
 \label{moreno:sec:case1:metrics}
 
-In this section, we outline metrics describing four dimensions of runtime quality of service: throughput, latency, attrition, and bunching (Figure \ref{moreno:fig:cpu:best-effort-qos}).
+In this section, we outline metrics describing four dimensions of runtime quality of service: throughput, latency, attrition, and bunching (Figure \ref{moreno:fig:cpu:best-effort:qos}).
 To ensure consistent interpretation, all metrics quantify service degradation --- such that higher values indicate worse quality of service.
 
 \begin{enumerate}
@@ -98,19 +98,25 @@ Per-process problem size remained constant (i.e., weak scaling), to isolate meas
 % % }
 % This approach prevents interference from shifts in processes' workload profiles in observation of the effects of scaling up processor count.
 
-% https://github.com/mmore500/gptp2026/blob/f913e21c5e84b47298e635c77e6932941e655ab7/bindle/2026-05-16-perf-quality.ipynb
+% https://github.com/mmore500/gptp2026/blob/a63f3fd99d22f79fd7a1a137797ad1ef63d4a1d3/bindle/2026-05-16-perf-quality.ipynb
 Best-effort relaxation substantially improved scaling efficiency of the compute-intensive digitial evolution workload.
-Scaling DISHTINY between 1 and 64 processes, best-effort relaxation maintained 92\% efficiency --- significantly better than TODO\% efficiency under synchronous execution (Wilcoxon test, $p<TODO$; leftmost panel of Figure \ref{moreno:fig:cpu:performance}).
-Between 16 and 64 processes, best-effort relaxation maintained stable performance, while synchronous execution degraded TODO\% (Wilcoxon test, $p<TODO$; leftmost panel of Figure \ref{moreno:fig:cpu:performance}).
+% 1/1.08 = 92.5%
+% 1/2.14 = 47%
+Scaling DISHTINY between 1 and 64 processes, best-effort relaxation maintained 92\% efficiency --- significantly better than 47\% efficiency under synchronous execution (Wilcoxon test, $p<0.01$; leftmost panel of Figure \ref{moreno:fig:cpu:performance}).
+% 1/1.51 = 66%
+Between 16 and 64 processes, best-effort relaxation maintained stable performance, while synchronous execution degraded 34\% (Wilcoxon test, $p<0.001$; leftmost panel of Figure \ref{moreno:fig:cpu:performance}).
 Although not highly communication-intensive, asynchronicity substantially benefits this workload, likely by easing imbalances in compute intensity driven by heterogenous genetic program content.
 
 Communication-intenive graph-coloring workloads exhibited similar benefit from best-effort relaxation.
-Between 1 and 64 processes, execution speed degraded 2,060\% under synchronous execution --- while under best-effort evaluation it degraded only 57\% (center panel, Figure \ref{moreno:fig:cpu:performance}).
-Likewise, solution error fared better under best-effort evaluation (31\% vs. 454\% increase; right panel, \ref{moreno:fig:cpu:performance}).
-Scaling between 16 and 64 processes, execution speed and solution error remained stable under best-effort relaxation (TODO), but degraded 266\% and 84\%, respectively, under synchronous evaluation (TODO).
+% 1/21.60 = 4.6%
+% 1/1.57 = 64%
+Between 1 and 64 processes, execution throughput degraded 95\% under synchronous execution --- while under best-effort evaluation it degraded only 36\% (Wilcoxon test, $p < 0.01$; center panel, Figure \ref{moreno:fig:cpu:performance}).
+Likewise, solution error fared better under best-effort evaluation ($1.3\times$ vs. $4.5\times$ increase; right panel, \ref{moreno:fig:cpu:performance}).
+% 1 / 3.66 = 0.27
+Scaling between 16 and 64 processes, execution throughput and solution error remained stable under best-effort relaxation (TODO), but degraded 72\% and $0.8\times$, respectively, under synchronous evaluation (TODO).
 
-Across the board, best-effort relaxation improved efficiency at 64-proces scale: providing $2.1\times$ speedup to compute-intense workload (DISHTINY) and, for a communication-intense workload (graph coloring), $TODO\times$ speedup with TODO\% reduction in solution error.
-In all three cases, improvement tests significant across replicates (Wilcoxon tests, TODO).
+Across the board, best-effort relaxation improved efficiency at 64-process scale: providing $2.1\times$ speedup to compute-intense workload (DISHTINY) and, for a communication-intense workload (graph coloring), $12.5\times$ speedup with 73\% reduction in solution error.
+In all three cases, improvement tests significant across replicates (Wilcoxon tests, $p < 0.01$).
 
 \subsection{Quality of Service Scaling}
 \label{moreno:sec:case1:qos-scaling}
