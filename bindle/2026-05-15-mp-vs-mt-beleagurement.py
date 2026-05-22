@@ -380,6 +380,8 @@ def _(data, mo, palette, pathlib, plt, scipy_stats, sns, tp):
 
     for x in [
         _pivot,
+        _pivot.mean(),
+        _pivot.std(),
         scipy_stats.wilcoxon(_pivot["lac-221"], _pivot["lac-220"]),
     ]:
         mo.output.append(x)
@@ -423,6 +425,8 @@ def _(data, mo, palette, pathlib, plt, scipy_stats, sns, tp):
 
     for _x in [
         _pivot2,
+        _pivot2.mean(),
+        _pivot2.std(),
         scipy_stats.wilcoxon(_pivot2["lac-221"], _pivot2["lac-220"]),
     ]:
         mo.output.append(_x)
