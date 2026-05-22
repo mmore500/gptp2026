@@ -23,7 +23,7 @@ In the case where send buffer capacity is full, communication may be configured 
 MPI guarantees delivery of dispatched messages --- network-layer best-effort relaxations would involve lower-level protocols like InfiniBand Unreliable Datagrams \cite{kashyap2006ip,koop2007high}.
 }
 
-Conduit-based profiling experiments investigated four questions (1) can best-effort relazations improve scaling efficiency, (2) can quality of service metrics meaningfully detect runtime irregularities introduced by best-effort relaxation, (3) does median quality of service scale robustly, and (4) is median quality of service robust to individual hardware anamolies at scale?
+Conduit-based profiling experiments investigated four questions (1) can best-effort relaxations improve scaling efficiency, (2) can quality of service metrics meaningfully detect runtime irregularities introduced by best-effort relaxation, (3) does median quality of service scale robustly, and (4) is median quality of service robust to individual hardware anamolies at scale?
 
 \subsection{Profiling Experiment Design}
 \label{moreno:sec:case1:design}
@@ -48,6 +48,8 @@ Nodes, also arranged in a toroidal lattice, begin with one of three possible ran
 In the case of conflict between neighbors, nodes probabilistically self-reassign a new color.
 As another benefit, this benchmark provides a succinct measure of solution quality: the number of remaining same-color neighbors.
 
+Benchmark and profiling trials were replicated across 10 replicate executions within a given SLURM allocation.
+Within each replicate, performance metrics are reported as a mean across processes; median and maximum are reported for QoS.
 Futher details on benchmark methodology are included with Supplemental Material \cite{moreno_2026_trust}.
 
 \subsection{Quality of Service Metrics}
@@ -63,7 +65,7 @@ To ensure consistent interpretation, all metrics quantify service degradation --
 \item \textbf{Bunching}: \textit{consolidation}, the proportion of possible independent delivery events eliminated by batching.
 \end{enumerate}
 
-These metrics may be calculated in aggregate over execution in its entirety, or on an instantaneous basis within shorter `snapshot'' windows.
+These metrics may be calculated in aggregate over execution in its entirety, or on an instantaneous basis within shorter ``snapshot'' windows.
 For simplicity, we focus on aggregate measures here.
 Formal derivations of these metrics from timestamped instrumentation counter values are provided in Supplemental Material \cite{moreno_2026_trust}.
 
@@ -79,55 +81,34 @@ Formal derivations of these metrics from timestamped instrumentation counter val
 % \item quality of service metrics flagged an anomolous laggard node, and allowed us to determine that quality of service and performance nonetheless remained stable across the computation.
 % \end{enumerate}
 
-First, we sought to determine whether best-effort communication strategies can benefit performance compared to the traditional perfect communication model.
-We considered two measures of performance: computational steps executed per unit time and, for the graph-coloring problem, solution quality achieved within a fixed-duration run window.
-We focus on weak scaling, growing overall problem size proportional to processor count.
-(Put another way, we hold problem size per processor constant.)
-% \unskip\footnote{
-% As opposed to strong scaling, where the problem size is held fixed while processor count increases.
-% }
-This approach prevents interference from shifts in processes' workload profiles in observation of the effects of scaling up processor count.
-We focus on multiprocessing, and to test under the most difficult conditions we assign each process to a distinct node.
+\subsection{Best-effort Scaling Efficiency}
+\label{moreno:sec:case1:scaling-efficiency}
 
-Second, we sought to more closely characterize variability in message dispatch, transmission, and delivery under the best-effort model using the quality-of-service metrics proposed in Section \ref{moreno:sec:introduction}.
-In particular, we extend our understanding of performance scaling from the preceding experiments by analyzing how each quality of service metric fares as problem size and processor count grow together, a ``weak scaling'' experiment.
-This analysis would detect a scenario where raw performance remains stable under weak scaling, but quality of service (and, therefore, potentially quality of computation) degrades.
+To test whether best-effort relaxations can relieve scaling inefficiencies, we compared performance across trials harnessing 1, 4, 16, and 64 processes.
+To simplify analysis, allocations were configured with each process distributed to independent cluster nodes.
+Per-process problem size remained constant (i.e., weak scaling), to isolate measurement of scale-up efficiency.
 
+% We considered two measures of performance: computational steps executed per unit time and, for the graph-coloring problem, solution quality achieved within a fixed-duration run window.
+% We focus on weak scaling, growing overall problem size proportional to processor count.
+% (Put another way, we hold problem size per processor constant.)
+% % \unskip\footnote{
+% % As opposed to strong scaling, where the problem size is held fixed while processor count increases.
+% % }
+% This approach prevents interference from shifts in processes' workload profiles in observation of the effects of scaling up processor count.
 
-% Unlike perfect communication, real-time volatility affects the outcome of computation under the best-effort model.
-% Because real-time processing speed degradations and message latency or loss alters inputs to simulation elements, characterizing the distribution of these phenomena across processing components and over time is critical to understanding the actual computation being performed.
-% For example, consistently faster execution or lower messaging latency for some subset of processing elements could violate uniformity or symmetry assumptions within a simulation.
-% It is even possible to imagine reciprocal interactions between real-time best-effort dynamics and simulation state.
-% In the case of a positive feedback loop, the magnitude of effects might become extreme.
-% For example, in artificial life scenarios, agents may evolve strategies that selectively increase messaging traffic so as to encumber neighboring processing elements or even cause important messages to be dropped.
+% https://github.com/mmore500/gptp2026/blob/f913e21c5e84b47298e635c77e6932941e655ab7/bindle/2026-05-16-perf-quality.ipynb
+Best-effort relaxation substantially improved scaling efficiency of the compute-intensive digitial evolution workload.
+Scaling DISHTINY between 1 and 64 processes, best-effort relaxation maintained 92\% efficiency --- significantly better than TODO\% efficiency under synchronous execution (Wilcoxon test, $p<TODO$; leftmost panel of Figure \ref{moreno:fig:cpu:performance}).
+Between 16 and 64 processes, best-effort relaxation maintained stable performance, while synchronous execution degraded TODO\% (Wilcoxon test, $p<TODO$; leftmost panel of Figure \ref{moreno:fig:cpu:performance}).
+Although not highly communication-intensive, asynchronicity substantially benefits this workload, likely by easing imbalances in compute intensity driven by heterogenous genetic program content.
 
-% In an initial set of experiments, we use the graph coloring problem to test this suite of quality of service metrics across runtime conditions expected to strongly influence them.
-% We compare
-% \begin{itemize}
-%   \item increasing compute workload per simulation update step,
-%   \item within-node versus between-node process placement, and
-%   \item multithreading versus multiprocessing.
-% \end{itemize}
-% We perform these experiments using a graph coloring solver configured to maximize communication relative to computation (i.e., just one simulation element per CPU) in order to maximize sensitivity of quality of service to the runtime manipulations.
+Communication-intenive graph-coloring workloads exhibited similar benefit from best-effort relaxation.
+Between 1 and 64 processes, execution speed degraded 2,060\% under synchronous execution --- while under best-effort evaluation it degraded only 57\% (center panel, Figure \ref{moreno:fig:cpu:performance}).
+Likewise, solution error fared better under best-effort evaluation (31\% vs. 454\% increase; right panel, \ref{moreno:fig:cpu:performance}).
+Scaling between 16 and 64 processes, execution speed and solution error remained stable under best-effort relaxation (TODO), but degraded 266\% and 84\%, respectively, under synchronous evaluation (TODO).
 
-\subsection{Scaling Efficiency and Solution Quality}
-
-Best-effort communication and synchronization improve scaling efficiency for both communication-heavy workloads and compute-heavy problems with heterogenous workloads.
-In a benchmark problem with an objective solution quality score, the trade-off between quality-of-service and efficiency was such that best-effort approaches were able to produce higher-quality solutions within an alloted runtime.
-We tested how performance on the graph coloring and digital evolution benchmarks fared when scaling with fully independent processes located on different hardware nodes.
-
-Figure \ref{moreno:fig:cpu:TODO} shows per-CPU algorithm update rate for the graph coloring benchmark at 1, 4, 16, and 64 processes.
-Multiprocess graph coloring exhibits consistent update-rate performance across process counts under the independent-execution control, where inter-CPU communication is entirely disabled.
-This matches the unsurprising expectation that, indeed, with comparable hardware a single process should exhibit the same mean performance as any number of completely decoupled processes.
-At 64 processes, with best-effort asynchronicity the graph coloring benchmark exhibits about 63\% the update-rate performance of single-process execution.
-This represents a $7.8\times$ speedup compared to full-synchronicity, significantly better at 4, 16, and 64 processes ($p < 0.05$, bootstrap test).
-Likewise, shown in Figure \ref{moreno:fig:cpu:TODO}, best-effort asynchronicity yields significantly better graph-coloring results within the allotted time at 4, 16, and 64 processes ($p < 0.05$, bootstrap test).
-
-Figure \ref{moreno:fig:cpu:TODO} presents per-CPU algorithm update rate for the digital evolution benchmark at 1, 4, 16, and 64 processes.
-Relative performance fares well at high process counts under this relatively computation-heavy workload.
-With 64 processes, fully best-effort simulation retains about 92\% the update rate performance of single-process simulation.
-This represents a $2.1\times$ speedup compared to the fully-synchronous run mode 0.
-Best-effort mode significantly outperforms fully-synchronous mode at both 16 and 64 processes ($p < 0.05$, bootstrap test).
+Across the board, best-effort relaxation improved efficiency at 64-proces scale: providing $2.1\times$ speedup to compute-intense workload (DISHTINY) and, for a communication-intense workload (graph coloring), $TODO\times$ speedup with TODO\% reduction in solution error.
+In all three cases, improvement tests significant across replicates (Wilcoxon tests, TODO).
 
 \subsection{Quality-of-Service Scaling}
 
@@ -186,7 +167,7 @@ Median delivery bunchiness was around 0.4, meaning TODO.
 Using OLS regression, we found no evidence of mean bunching worsening with increased process count.
 In fact, over 16, 64, and 256 processes bunchiness significantly decreased with process count (both mean and median regressions).
 
-\subsection{Quality of Service: Faulty Hardware}
+\subsection{QoS Robustness to Anamolous Hardware}
 \label{moreno:sec:with-lac-417-vs-sans-lac-417}
 
 % \input{fig/with-lac-417-vs-sans-lac-417/with-lac-417-vs-sans-lac-417.tex}
@@ -203,7 +184,8 @@ Surprisingly, though, update time is significantly shorter with lac-417.
 However, there is no significant difference in median value for any quality of service metric between allocations including or excluding lac-417.
 This stability of metric medians within allocations containing lac-417 --- which have significantly different means due to outlier values induced by the presence of lac-417 --- demonstrates how the best-effort system maintains overall quality of service stability despite defective or degraded components.
 
-\subsection{Produer-Consumer Imbalance}
+\subsection{Diagnosis of QoS Asymmetrty}
+\label{moreno:sec:case1:asymmetry}
 
 In addition to anamolous hardware, quality of service metrics can flag potential more widespread asymmetries emerging in best-effort systems.
 For instance, under communication-heavy TODO conditions, we observed a significant negative correlation between incoming and outgoing message rates (Figure \ref{moreno:fig:cpu:TODO}).
