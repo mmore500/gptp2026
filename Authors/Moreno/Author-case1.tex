@@ -44,7 +44,7 @@ To efficiency, Conduit was configured to consolidate communication traffic betwe
 This benchmark thus reflects a compute-intensive workload.
 
 To survey communication-intensive workloads, we supplemented DISHTINY trials with a lightweight graph coloring algorithm designed to deconflict WLAN networks \cite{leith2012wlan}.
-Nodes, also arranged in a toroidal lattice, begin with one of three possible randomly-assigned colors.
+Nodes, also arranged in a toroidal lattice, begin with one of three possible randomly-assigned colors; a problem size of 2{\small,}048 nodes per lattice was used.
 In the case of conflict between neighbors, nodes probabilistically self-reassign a new color.
 As another benefit, this benchmark provides a succinct measure of solution quality: the number of remaining same-color neighbors.
 
@@ -110,13 +110,31 @@ Scaling between 16 and 64 processes, execution speed and solution error remained
 Across the board, best-effort relaxation improved efficiency at 64-proces scale: providing $2.1\times$ speedup to compute-intense workload (DISHTINY) and, for a communication-intense workload (graph coloring), $TODO\times$ speedup with TODO\% reduction in solution error.
 In all three cases, improvement tests significant across replicates (Wilcoxon tests, TODO).
 
-\subsection{Quality-of-Service Scaling}
+\subsection{Quality of Service Scaling}
+\label{moreno:sec:case1:qos-scaling}
 
-Multiprocess performance scales well under the best-effort approach, with overlapping performance estimate intervals for 16 and 64 processor counts on both surveyed benchmark problems.
-This section aims to flesh out a more holistic picture of the effects of increasing processor count on best-effort computation by considering a comprehensive suite of quality of service metrics.
-Our particular interest is in which, if any, aspects of quality of service degrade under larger processing pools.
+Given the benefit of best-effort relaxation to scaling efficiency, we next set out to flesh out a more holistic picture of whether these efficiency gains were accompanied by degraded quality of service.
+For these experiments, comparison was taken between 64- and 256-process allocations, the largest available from our resource provider.
+(On account of original plans to incoporate threading-based trials, performance scaling experiments in Section \ref{moreno:sec:case1:scaling-efficiency} were run only to 64 processes.)
+The graph coloring benchmark problem was chosen to allow trials exercising extreme communication-intensity, relative to compute.
 
-To address these questions, we performed weak scaling experiments on 16, 64, and 256 processes using the graph coloring benchmark.
+Figure \ref{moreno:fig:best-effort:qos} compares quality of service metrics between 64- and 256-process allocations.
+Top row values report the worst quality of service seen at any individual process, per replicate.
+For all reported QoS metrics, more extreme tail values are observed in large process pools (Wilcoxon tests, $p$ annotated).
+Given more samples, it is not surprising to see larger-magnitude outliers --- however, for problem domains sensitive to worst-case degradation, this tendency would prove adverse.
+
+By contrast, median quality of service proves more robust in scaling between 64 and 256 processes (Figure \ref{moreno:fig:best-effort:qos}, bottom row).
+Across metrics, no detectable degradataion in median QoS arises between process pool sizes (Wilcoxon tests, $\alpha = 0.05$).
+In fact, throughput appears to improve TODO\% (Wilcoxon test, $p < 0.001$).
+
+Scaling between 64- and 256-process allocations under even more challenging, communication-intensive conditions (1 graph coloring node per process) produced similar QoS outcomes.
+Extreme tail values of metrics increased across the board, except message attrition; for median values, only throughput detectably degraded with effect size TODO\% (Wilcoxon tests $\alpha = 0.05$, $p$ annotated; Supplementary Figure TODO \cite{moreno_2026_trust}).
+
+% Multiprocess performance scales well under the best-effort approach, with overlapping performance estimate intervals for 16 and 64 processor counts on both surveyed benchmark problems.
+% This section aims to flesh out a more holistic picture of the effects of increasing processor count on best-effort computation by considering a comprehensive suite of quality of service metrics.
+% Our particular interest is in which, if any, aspects of quality of service degrade under larger processing pools.
+
+% To address these questions, we performed weak scaling experiments on 16, 64, and 256 processes using the graph coloring benchmark.
 % To broaden the survey, we tested scaling with different numbers of processors allocated per node and different numbers of simulation elements assigned per processor.
 
 % For the first variable, we tested scaling on allocations with each processor hosted on an independent node and allocations where each node hosted an average of four processors.
@@ -125,47 +143,47 @@ To address these questions, we performed weak scaling experiments on 16, 64, and
 % For the second variable, we tested with 2{\small,}048 simulation elements (``simels'') per processor (consistent with the benchmarking experiments performed in Sections \ref{sec:multiprocess-benchmarks} and \ref{sec:multithread-benchmarks}) and just one simulation element per processor.
 % This allowed us to vary the amount of computational work performed per process.
 
-\subsubsection{Update Time}
+% \subsubsection{Update Time}
 
-Figure \ref{moreno:fig:cpu:TODO} shows the distribution of walltime update rates observed --- across process counts, around 200 microseconds.
-We performed an ordinary least squares (OLS) regression to test how mean update time changed with processor count.
-In all cases, update time increased significantly with processor count from 16 to 64 to 256 CPUs.
-Between 64 and 256 processes, however, update time instead decreased.
-Median update time exhibited the same relationships with processor count, tested with quartile regression.
+% Figure \ref{moreno:fig:cpu:TODO} shows the distribution of walltime update rates observed --- across process counts, around 200 microseconds.
+% We performed an ordinary least squares (OLS) regression to test how mean update time changed with processor count.
+% In all cases, update time increased significantly with processor count from 16 to 64 to 256 CPUs.
+% Between 64 and 256 processes, however, update time instead decreased.
+% Median update time exhibited the same relationships with processor count, tested with quartile regression.
 
-% Thus, simstep period quality of service is stable in scaling from 64 to 256 processes.
+% % Thus, simstep period quality of service is stable in scaling from 64 to 256 processes.
 
-\subsubsection{Update-Latency}
+% \subsubsection{Update-Latency}
 
-For the graph coloring benchmark, update-latency sits around 1.2 updates.
-However, at 256 processes, outliers arose up to almost 8{\small,}000 update simstep latency.
-Over 16, 64, and 256 processes, OLS regression indicates mean simstep latency increased with process count.
-However, median latency did not increase with process count, tested via quartile regression.
+% For the graph coloring benchmark, update-latency sits around 1.2 updates.
+% However, at 256 processes, outliers arose up to almost 8{\small,}000 update simstep latency.
+% Over 16, 64, and 256 processes, OLS regression indicates mean simstep latency increased with process count.
+% However, median latency did not increase with process count, tested via quartile regression.
 
-\subsubsection{Time-Latency}
+% \subsubsection{Time-Latency}
 
-Walltime latency sits at 2ms.
-At 256 processes, outliers of more than 10s occur.
+% Walltime latency sits at 2ms.
+% At 256 processes, outliers of more than 10s occur.
 
-We performed OLS regressions to test how mean time-latency changed with processor count.
-Over 16, 64, and 256 processes, mean time-latency increased significantly with processor count only with 2{\small,}048 simels per CPU.
-By contrast, median time-latency was stable across processor counts (quartile regression).
-Over 16, 64, and 256 processes, median walltime latency increased significantly only with 4 CPUs per node and 2{\small,}048 simels per CPU.
-Over 64 and 256 processes, there was no significant relationship between processor count and median walltime latency under any condition.
+% We performed OLS regressions to test how mean time-latency changed with processor count.
+% Over 16, 64, and 256 processes, mean time-latency increased significantly with processor count only with 2{\small,}048 simels per CPU.
+% By contrast, median time-latency was stable across processor counts (quartile regression).
+% Over 16, 64, and 256 processes, median walltime latency increased significantly only with 4 CPUs per node and 2{\small,}048 simels per CPU.
+% Over 64 and 256 processes, there was no significant relationship between processor count and median walltime latency under any condition.
 
-\subsubsection{Drop Fraction}
+% \subsubsection{Drop Fraction}
 
-Typical delivery failure rate was near zero.
-However, outlier delivery failure rates of up to 0.7 were observed at 256 processes.
-% Supplementary Figure \ref{fig:weak-scaling-distribution-delivery-failure-rate} shows the distribution of delivery failure rates observed across run conditions.
-Mean delivery failure rate increased significantly between 64 and 256 processes.
-However, the median delivery failure rate remained stable across processor counts.
+% Typical delivery failure rate was near zero.
+% However, outlier delivery failure rates of up to 0.7 were observed at 256 processes.
+% % Supplementary Figure \ref{fig:weak-scaling-distribution-delivery-failure-rate} shows the distribution of delivery failure rates observed across run conditions.
+% Mean delivery failure rate increased significantly between 64 and 256 processes.
+% However, the median delivery failure rate remained stable across processor counts.
 
-\subsubsection{Delivery Bunching}
+% \subsubsection{Delivery Bunching}
 
-Median delivery bunchiness was around 0.4, meaning TODO.
-Using OLS regression, we found no evidence of mean bunching worsening with increased process count.
-In fact, over 16, 64, and 256 processes bunchiness significantly decreased with process count (both mean and median regressions).
+% Median delivery bunchiness was around 0.4, meaning TODO.
+% Using OLS regression, we found no evidence of mean bunching worsening with increased process count.
+% In fact, over 16, 64, and 256 processes bunchiness significantly decreased with process count (both mean and median regressions).
 
 \subsection{QoS Robustness to Anamolous Hardware}
 \label{moreno:sec:with-lac-417-vs-sans-lac-417}
