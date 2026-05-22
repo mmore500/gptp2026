@@ -9,7 +9,7 @@
 \vspace{-0.5ex}
 \centering
 \subfigure[\footnotesize comparison of best-effort vs. synchronous performance scaling; higher values worse]{
-  \includegraphics[width=\linewidth]{../bindle/bindle-2026-05-16-perf-quality/bindle/teeplots/2026-05-16-perf-quality/col=panel+hue=executable+kind=line+row=asynchronicity-mode+viz=perf-quality-combined+x=ncpus+y=value+ext=.pdf}
+  \includegraphics[width=\linewidth]{../bindle/bindle-2026-05-16-perf-quality/bindle/teeplots/2026-05-16-perf-quality/col=panel+hue=asynchronicity-mode+kind=line+viz=perf-quality-delta-onerow+x=ncpus+y=value+ext=.pdf}
   \label{moreno:fig:cpu:performance}
 }
 
@@ -40,7 +40,7 @@
 \centering
 \begin{minipage}[t]{0.7\linewidth}
 \vspace{0pt} % Forces the alignment point to the top
-\includegraphics[width=1in,angle=90]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement-ts/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement-ts/hue=special+kind=line+row=special+viz=relplot+x=rank3+y=secs-per-update+ext=.pdf}%
+\includegraphics[width=1in,angle=90]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement-ts/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement-ts/hue=special+kind=line+row=special+viz=relplot+x=rank3+y=ms-per-update+ext=.pdf}%
 \end{minipage}%
 \begin{minipage}[t]{0.28\linewidth}
   \vspace{0pt} % Forces the alignment point to the top
@@ -65,7 +65,7 @@
 \subfigure[\footnotesize internode perf.]{
 \begin{minipage}{0.25\linewidth}
 \centering
-  \includegraphics[height=1in]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement/hue=hostname+kind=box+viz=catplot+x=hostname+y=updates-per-second+ext=.pdf}%
+  \includegraphics[height=1in]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement/hue=hostname+kind=box+viz=catplot+x=hostname+y=ms-per-update+ext=.pdf}%
   \label{moreno:fig:cpu:internode}%
 \end{minipage}
 }%
@@ -75,7 +75,7 @@
 \caption{
 \textbf{Cluster-based HPC Case Study.}
 \footnotesize
-Case study examines digital evolution and graph coloring benchmarks in a CPU-based compute cluster context (panel \ref{moreno:fig:cpu:architecture}).
+Case study examines digital evolution and graph coloring benchmarks in a CPU-based compute cluster context (panel \ref{moreno:fig:cpu:architecture}; errorbars SD).
 In scaling from 1 to 64 nodes (one process per node), best-effort relaxations substantially improve speed; for the graph coloring domain where such a measure is available, solution error also benefits.
 In scaling communication-intensive graph coloring from to 256 processes, median quality of service remains stable --- with the sole exception of throughput rate, which decreased (panel \ref{moreno:fig:cpu:qos-scaling}).
 By contrast, the maximumal magnitude of quality of service disruptions grew; closer inspection revealed extreme disruptions to stem from node \texttt{lac-417}.
