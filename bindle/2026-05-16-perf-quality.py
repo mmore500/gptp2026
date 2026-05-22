@@ -999,6 +999,7 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
                 color=_eb_color,
                 errorbar="sd",
                 err_style="bars",
+                err_kws={"capsize": 3},
                 legend=False,
                 lw=0,
             )
