@@ -171,6 +171,72 @@ def _(group_cols, np, pathlib, pd, plt, result, sns, tp):
 
 
 @app.cell
+def _(group_cols, np, pathlib, pd, plt, result, sns, tp):
+    newdf2 = pd.DataFrame(np.repeat(result.values, 2, axis=0))
+    newdf2.columns = result.columns
+
+    newdf2["rank2"] = newdf2.groupby(group_cols).cumcount() - 2
+
+    newdf2["special"] = newdf2["Replicate"].isin([1, 4, 6, 9])
+
+    newdf2["rank3"] = newdf2["rank2"].replace(
+        {i: (i // 4) * 40 + [0, 8, 9, 39][i % 4] for i in range(25)}
+    )
+
+    newdf2["rp"] = newdf2["Replicate"].astype(str) + newdf2["proc"].astype(str)
+
+    newdf2["Secs per Update"] = 1.0 / newdf2["Updates per Sec"]
+
+    with tp.teed(
+        sns.relplot,
+        data=newdf2[newdf2["SLURM_NNODES"] == 1],
+        x="rank3",
+        y="Secs per Update",
+        row="special",
+        hue="special",
+        row_order=[True, False],
+        errorbar=("pi", 100),
+        kind="line",
+        # estimator=None,
+        sort=True,
+        legend=False,
+        err_kws=dict(alpha=0.4, lw=2),
+        lw=0,
+        palette=["#EFB743", "#A1331C"],
+        teeplot_show=True,
+        teeplot_subdir=pathlib.Path(__file__).stem,
+    ) as _g:
+        _g.set(ylim=(0, None))
+        _g.figure.set_size_inches(3, 2)
+        _g.set_titles("")
+
+        _g.map_dataframe(
+            sns.scatterplot,
+            x="rank3",
+            y="Secs per Update",
+            marker=".",
+            size=0.1,
+            legend=None,
+            color="black",
+        )
+
+        for _ax in _g.axes.flat:
+            for _i in (0, 40, 80, 120, 160, 200):
+                _ax.axvspan(
+                    0 + _i, 8.5 + _i, color="gray", alpha=0.08, zorder=-1
+                )
+
+        plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+        _g.axes.flat[0].set_ylabel("")
+        _g.axes.flat[1].set_ylabel("               Secs per Update")
+
+        _g.set(
+            xlabel="Time", xticklabels=[], xticks=[4, 44, 84, 124, 164, 204]
+        )
+    return
+
+
+@app.cell
 def _():
     return
 
