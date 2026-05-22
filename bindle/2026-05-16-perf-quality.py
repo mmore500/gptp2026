@@ -891,7 +891,7 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
                     _ax.text(
                         _x[-1],
                         _y[-1] + 0.04 * _lines_y[0].max(),
-                        "best effort",
+                        "best\neffort",
                         ha="right",
                         va="bottom",
                         color=_green,
