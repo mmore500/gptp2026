@@ -439,6 +439,25 @@ def _(data, sm, smf):
     _data["sent"] = _data["Messages Sent Per Second"]
 
     _model = smf.glm(
+        formula="sent ~ received",
+        data=_data,
+        family=sm.families.Gaussian(),
+    ).fit()
+
+    print(_model.summary())
+    return
+
+
+@app.cell
+def _(data, sm, smf):
+    _data = data[
+        (data["Instrumentation"] == "Longitudinal")
+        & (data["Multiprocessing"] == "Internode")
+    ]
+    _data["received"] = _data["Messages Received Per Second"]
+    _data["sent"] = _data["Messages Sent Per Second"]
+
+    _model = smf.glm(
         formula="sent ~ received + C(Hostname)",
         data=_data,
         family=sm.families.Gaussian(),
