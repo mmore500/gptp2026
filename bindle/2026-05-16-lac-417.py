@@ -23,6 +23,9 @@ def import_pkg():
     from teeplot import teeplot as tp
     from watermark import watermark
 
+    pd.set_option("display.max_rows", None)
+    pd.set_option("display.max_columns", None)
+
     return mo, np, pd, plt, requests, scipy_stats, sns, tp, watermark
 
 
