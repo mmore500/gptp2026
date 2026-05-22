@@ -62,9 +62,11 @@ def do_watermark(mo, watermark):
 
 @app.cell(hide_code=True)
 def delimit_prep_data(mo):
-    mo.md("""
+    mo.md(
+        """
     ## Prep Data
-    """)
+    """
+    )
     return
 
 
@@ -322,7 +324,8 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
 
 @app.cell(hide_code=True)
 def delimit_besteffort_sync(mo):
-    mo.md("""
+    mo.md(
+        """
     ## Best-Effort vs. Synchronous Comparisons
 
     The tables above compare problem sizes within a fixed asynchronicity
@@ -337,7 +340,8 @@ def delimit_besteffort_sync(mo):
     best-effort mean, so positive values mean synchronous ran slower
     (walltime) or accrued more error (conflicts). A negative `delta`
     likewise indicates lower best-effort values than synchronous.
-    """)
+    """
+    )
     return
 
 
@@ -582,13 +586,15 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
 
 @app.cell(hide_code=True)
 def delimit_besteffort_sync_error(mo):
-    mo.md("""
+    mo.md(
+        """
     ### Best-Effort vs. Synchronous: Graph Coloring Error
 
     Completing the best-effort vs. synchronous comparison with the third
     performance measure: graph coloring solution error (conflicts per
     cpu), reported at each problem size as above.
-    """)
+    """
+    )
     return
 
 
