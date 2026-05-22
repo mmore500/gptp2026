@@ -10,3 +10,6 @@ GIT_EDITOR = "vim"
 [[ports]]
 localPort = 8000
 externalPort = 80
+
+[agent]
+expertMode = false
