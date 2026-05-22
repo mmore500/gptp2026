@@ -224,9 +224,9 @@ def _(group_cols, np, pathlib, pd, plt, result, sns, tp):
         )
 
         for _ax in _g.axes.flat:
-            for i in (0, 40, 80, 120, 160, 200):
+            for _i in (0, 40, 80, 120, 160, 200):
                 _ax.axvspan(
-                    0 + i, 8.5 + i, color="gray", alpha=0.08, zorder=-1
+                    0 + _i, 8.5 + _i, color="gray", alpha=0.08, zorder=-1
                 )
 
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
