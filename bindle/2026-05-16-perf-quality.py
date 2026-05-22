@@ -322,6 +322,101 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
     return
 
 
+@app.cell(hide_code=True)
+def delimit_besteffort_sync(mo):
+    mo.md(
+        """
+    ## Best-Effort vs. Synchronous Comparisons
+
+    The tables above compare problem sizes within a fixed asynchronicity
+    mode. The tables below instead compare the two asynchronicity modes
+    against each other --- best-effort (mode 3) vs. synchronous (mode 0)
+    --- at each problem size, for each performance measure: digital
+    evolution speed, graph coloring speed, and graph coloring error.
+
+    Each row reports a two-sided Wilcoxon signed-rank test (paired by
+    replicate) alongside Cliff's delta, mirroring the scaling tables
+    above. The `%` column gives the synchronous mean relative to the
+    best-effort mean, so positive values mean synchronous ran slower
+    (walltime) or accrued more error (conflicts). A negative `delta`
+    likewise indicates lower best-effort values than synchronous.
+    """
+    )
+    return
+
+
+@app.cell
+def _(cliffs_delta, filtered_procs, pd, scipy_stats):
+    _res = []
+    _data = filtered_procs[filtered_procs["executable"] == "dishtiny"]
+    for _ncpus, _group in _data.groupby("ncpus"):
+        _g1, _g2 = (
+            _group.loc[
+                _group["asynchronicity mode"] == 3, "Update Walltime (ms)"
+            ],
+            _group.loc[
+                _group["asynchronicity mode"] == 0, "Update Walltime (ms)"
+            ],
+        )
+
+        _res.append(
+            {
+                "ncpus": _ncpus,
+                "exec": "dishtiny",
+                "n": len(_group),
+                "%": 100 * (_g2.mean() / _g1.mean() - 1),
+                **dict(
+                    zip(
+                        ["wstat", "p"],
+                        scipy_stats.wilcoxon(
+                            _g1, _g2, alternative="two-sided"
+                        ),
+                    )
+                ),
+                **dict(zip(["delta", "interp"], cliffs_delta(_g1, _g2))),
+            },
+        )
+
+    pd.DataFrame(_res)
+    return
+
+
+@app.cell
+def _(cliffs_delta, filtered_procs, pd, scipy_stats):
+    _res = []
+    _data = filtered_procs[filtered_procs["executable"] == "channel_selection"]
+    for _ncpus, _group in _data.groupby("ncpus"):
+        _g1, _g2 = (
+            _group.loc[
+                _group["asynchronicity mode"] == 3, "Update Walltime (ms)"
+            ],
+            _group.loc[
+                _group["asynchronicity mode"] == 0, "Update Walltime (ms)"
+            ],
+        )
+
+        _res.append(
+            {
+                "ncpus": _ncpus,
+                "exec": "channel_selection",
+                "n": len(_group),
+                "%": 100 * (_g2.mean() / _g1.mean() - 1),
+                **dict(
+                    zip(
+                        ["wstat", "p"],
+                        scipy_stats.wilcoxon(
+                            _g1, _g2, alternative="two-sided"
+                        ),
+                    )
+                ),
+                **dict(zip(["delta", "interp"], cliffs_delta(_g1, _g2))),
+            },
+        )
+
+    pd.DataFrame(_res)
+    return
+
+
 @app.cell
 def _(cliffs_delta, filtered_procs, pd, scipy_stats):
     _res = []
@@ -486,6 +581,56 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
 
         for _ax in _g.axes[-1, :]:
             _ax.set_xlabel("Num Processes")
+    return
+
+
+@app.cell(hide_code=True)
+def delimit_besteffort_sync_error(mo):
+    mo.md(
+        """
+    ### Best-Effort vs. Synchronous: Graph Coloring Error
+
+    Completing the best-effort vs. synchronous comparison with the third
+    performance measure: graph coloring solution error (conflicts per
+    cpu), reported at each problem size as above.
+    """
+    )
+    return
+
+
+@app.cell
+def _(cliffs_delta, filtered_procs, pd, scipy_stats):
+    _res = []
+    _data = filtered_procs[filtered_procs["executable"] == "channel_selection"]
+    for _ncpus, _group in _data.groupby("ncpus"):
+        _g1, _g2 = (
+            _group.loc[
+                _group["asynchronicity mode"] == 3, "conflicts per cpu"
+            ],
+            _group.loc[
+                _group["asynchronicity mode"] == 0, "conflicts per cpu"
+            ],
+        )
+
+        _res.append(
+            {
+                "ncpus": _ncpus,
+                "exec": "channel_selection",
+                "n": len(_group),
+                "%": 100 * (_g2.mean() / _g1.mean() - 1),
+                **dict(
+                    zip(
+                        ["wstat", "p"],
+                        scipy_stats.wilcoxon(
+                            _g1, _g2, alternative="two-sided"
+                        ),
+                    )
+                ),
+                **dict(zip(["delta", "interp"], cliffs_delta(_g1, _g2))),
+            },
+        )
+
+    pd.DataFrame(_res)
     return
 
 
