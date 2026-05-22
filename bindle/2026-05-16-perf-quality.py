@@ -867,7 +867,8 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
             _panel = _col_order[_i]
 
             # synchronous (mode 0) underneath in light gray, best-effort
-            # (mode 3) overlaid in green, each underfilled down to its min
+            # (mode 3) overlaid in green, each underfilled down to its own
+            # minimum; an inline label marks each line's upper-right end
             _lines_y = []
             for _li, _line in enumerate(list(_ax.lines)):
                 _x, _y = _line.get_xydata().T
@@ -879,13 +880,30 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
                     alpha=(0.55, 0.3)[_li],
                 )
                 _lines_y.append(_y)
+                _label, _label_c, _label_va = (
+                    ("sync", _darken(_gray, 0.5), "top"),
+                    ("best effort", _green, "bottom"),
+                )[_li]
+                _ax.text(
+                    _x[-1],
+                    _y[-1],
+                    _label,
+                    ha="right",
+                    va=_label_va,
+                    color=_label_c,
+                    fontsize=8,
+                    zorder=7,
+                )
 
             # delta sidebar to the right of the data: a vertical line per
             # mode with an open (bottom) and closed (top) dot tip, one
-            # pair for the 1-64 delta and one for the 16-64 delta, each
-            # annotated with the percent change rotated over the line.
+            # pair for the 1-64 delta and one for the 16-64 delta.
+            # rotated annotations: the synchronous one hangs from its top
+            # value nudged into the between zone, the best-effort one
+            # rises directly above its (short) green bar.
             # positions are spaced geometrically so they read as evenly
             # spaced on the log x-axis
+            _panel_top = max(_y.max() for _y in _lines_y)
             for _li, _y in enumerate(_lines_y):
                 _mode = (0, 3)[_li]
                 _base = ("black", _green)[_li]
@@ -894,8 +912,8 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
                 _signif1, _signif2 = _signif_by_panel[_panel][_mode]
 
                 for _xpos, _ysrc, _signif in (
-                    ((79, 126)[_li], _y[0], _signif1),
-                    ((200, 316)[_li], _y[2], _signif2),
+                    ((98, 155)[_li], _y[0], _signif1),
+                    ((245, 389)[_li], _y[2], _signif2),
                 ):
                     _lo, _hi = min(_ysrc, _y[3]), max(_ysrc, _y[3])
                     _pct = ((_y[3] - _ysrc) / abs(_ysrc)) * 100
@@ -931,14 +949,23 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
                         zorder=6,
                         clip_on=False,
                     )
+                    if _li == 0:
+                        # synchronous: hang from the top value, nudged
+                        # right of the bar into the between zone
+                        _tx, _ty = _xpos * 1.13, _hi
+                        _ha, _va = "right", "top"
+                    else:
+                        # best-effort: rise directly above the green bar
+                        _tx, _ty = _xpos, _hi + 0.08 * _panel_top
+                        _ha, _va = "left", "center"
                     _ax.text(
-                        _xpos,
-                        (_lo + _hi) / 2,
-                        f"|+{_pct:.0f}%{_signif}",
+                        _tx,
+                        _ty,
+                        f"+{_pct:.0f}%{_signif}",
                         rotation=90,
                         rotation_mode="anchor",
-                        ha="center",
-                        va="center",
+                        ha=_ha,
+                        va=_va,
                         color=_text_c,
                         fontsize=7,
                         zorder=7,
@@ -952,8 +979,8 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
 
         for _ax in _g.axes.flat:
             _ax.minorticks_off()
-            _ax.set_xlim(0.85, 380)
-            _ax.set_xticks([1, 4, 16, 64, 100, 251])
+            _ax.set_xlim(0.85, 468)
+            _ax.set_xticks([1, 4, 16, 64, 123, 309])
             _ax.set_xticklabels(
                 ["1", "4", "16", "64", "Δ\n1-64", "Δ\n16-64"],
             )
