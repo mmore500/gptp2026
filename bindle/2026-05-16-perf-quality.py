@@ -775,5 +775,187 @@ def _(filtered_procs, mpl, np, pathlib, pd, plt, sns, tp):
     return
 
 
+@app.cell
+def _(filtered_procs, mpl, pathlib, pd, sns, tp):
+    def _lighten(_c, _amt):
+        _r, _g, _b = mpl.colors.to_rgb(_c)
+        return (
+            _r + (1 - _r) * _amt,
+            _g + (1 - _g) * _amt,
+            _b + (1 - _b) * _amt,
+        )
+
+    def _darken(_c, _amt):
+        _r, _g, _b = mpl.colors.to_rgb(_c)
+        return (_r * (1 - _amt), _g * (1 - _amt), _b * (1 - _amt))
+
+    _long = filtered_procs.melt(
+        id_vars=["ncpus", "asynchronicity mode", "executable"],
+        value_vars=["Update Walltime (ms)", "conflicts per cpu"],
+        var_name="metric",
+        value_name="value",
+    )
+    _panels = pd.DataFrame(
+        [
+            {
+                "executable": "dishtiny",
+                "metric": "Update Walltime (ms)",
+                "panel": "Digital Evo Walltime (ms)",
+            },
+            {
+                "executable": "channel_selection",
+                "metric": "Update Walltime (ms)",
+                "panel": "Graph Color Walltime (ms)",
+            },
+            {
+                "executable": "channel_selection",
+                "metric": "conflicts per cpu",
+                "panel": "Graph Color Solution Error",
+            },
+        ]
+    )
+    _long = _long.merge(_panels, on=["executable", "metric"])
+
+    _col_order = [
+        "Digital Evo Walltime (ms)",
+        "Graph Color Walltime (ms)",
+        "Graph Color Solution Error",
+    ]
+
+    # signif markers carried over from the two-row figure, keyed by
+    # (panel, asynchronicity mode); first entry is the 1-64 delta and
+    # the second is the 16-64 delta
+    _signif_by_panel = {
+        "Digital Evo Walltime (ms)": {0: ("***", "***"), 3: ("**", "n.s.")},
+        "Graph Color Walltime (ms)": {0: ("***", "***"), 3: ("***", "n.s.")},
+        "Graph Color Solution Error": {
+            0: ("***", "***"),
+            3: ("n.s.", "n.s."),
+        },
+    }
+
+    _gray = "#c9c9c9"
+    _green = "#67a353"
+
+    with tp.teed(
+        sns.relplot,
+        data=_long,
+        x="ncpus",
+        y="value",
+        col="panel",
+        col_order=_col_order,
+        hue="asynchronicity mode",
+        hue_order=[0, 3],
+        palette={0: _gray, 3: _green},
+        err_style=None,
+        facet_kws=dict(margin_titles=True, sharey="col"),
+        kind="line",
+        legend=False,
+        teeplot_show=True,
+        teeplot_subdir=pathlib.Path(__file__).stem,
+        teeplot_outattrs={"viz": "perf-quality-delta-onerow"},
+        teeplot_outinclude=["viz"],
+        teeplot_transparent=False,
+    ) as _g:
+        for _i, _ax in enumerate(_g.axes.flat):
+            _panel = _col_order[_i]
+
+            # synchronous (mode 0) underneath in light gray, best-effort
+            # (mode 3) overlaid in green, each underfilled down to its min
+            _lines_y = []
+            for _li, _line in enumerate(list(_ax.lines)):
+                _x, _y = _line.get_xydata().T
+                _ax.fill_between(
+                    _x,
+                    _y.min(),
+                    _y,
+                    color=(_gray, _green)[_li],
+                    alpha=(0.55, 0.3)[_li],
+                )
+                _lines_y.append(_y)
+
+            # delta sidebar to the right of the data: a vertical line per
+            # mode with an open (bottom) and closed (top) dot tip, one
+            # pair for the 1-64 delta and one for the 16-64 delta, each
+            # annotated with the percent change rotated over the line.
+            # positions are spaced geometrically so they read as evenly
+            # spaced on the log x-axis
+            for _li, _y in enumerate(_lines_y):
+                _mode = (0, 3)[_li]
+                _base = ("black", _green)[_li]
+                _line_c = _lighten(_base, 0.5)
+                _text_c = _darken(_base, 0.3)
+                _signif1, _signif2 = _signif_by_panel[_panel][_mode]
+
+                for _xpos, _ysrc, _signif in (
+                    ((79, 126)[_li], _y[0], _signif1),
+                    ((200, 316)[_li], _y[2], _signif2),
+                ):
+                    _lo, _hi = min(_ysrc, _y[3]), max(_ysrc, _y[3])
+                    _pct = ((_y[3] - _ysrc) / abs(_ysrc)) * 100
+
+                    _ax.plot(
+                        [_xpos, _xpos],
+                        [_lo, _hi],
+                        color=_line_c,
+                        lw=1.5,
+                        solid_capstyle="butt",
+                        zorder=5,
+                        clip_on=False,
+                    )
+                    _ax.plot(
+                        [_xpos],
+                        [_lo],
+                        marker="o",
+                        ms=4.5,
+                        markerfacecolor="white",
+                        markeredgecolor=_line_c,
+                        markeredgewidth=1.3,
+                        zorder=6,
+                        clip_on=False,
+                    )
+                    _ax.plot(
+                        [_xpos],
+                        [_hi],
+                        marker="o",
+                        ms=4.5,
+                        markerfacecolor=_line_c,
+                        markeredgecolor=_line_c,
+                        markeredgewidth=1.3,
+                        zorder=6,
+                        clip_on=False,
+                    )
+                    _ax.text(
+                        _xpos,
+                        (_lo + _hi) / 2,
+                        f"|+{_pct:.0f}%{_signif}",
+                        rotation=90,
+                        rotation_mode="anchor",
+                        ha="center",
+                        va="center",
+                        color=_text_c,
+                        fontsize=7,
+                        zorder=7,
+                        clip_on=False,
+                    )
+
+        _g.set(ylim=(0, None))
+        _g.set(xscale="log")
+        _g.figure.set_size_inches(9, 2)
+        _g.set_titles(col_template="{col_name}", row_template="")
+
+        for _ax in _g.axes.flat:
+            _ax.minorticks_off()
+            _ax.set_xlim(0.85, 380)
+            _ax.set_xticks([1, 4, 16, 64, 100, 251])
+            _ax.set_xticklabels(
+                ["1", "4", "16", "64", "Δ\n1-64", "Δ\n16-64"],
+            )
+            _ax.set_ylabel("")
+            _ax.set_xlabel("Num Processes")
+            _ax.set_title(_ax.get_title(), fontsize=11)
+    return
+
+
 if __name__ == "__main__":
     app.run()
