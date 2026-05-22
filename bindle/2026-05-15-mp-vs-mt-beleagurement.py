@@ -353,7 +353,7 @@ def _(data, mo, palette, pathlib, plt, scipy_stats, sns, tp):
         kind="box",
         legend=False,
         notch=True,
-        order=["lac-220", "lac-221"],
+        order=["lac-221", "lac-220"],
         palette=palette,
         teeplot_show=True,
         teeplot_subdir=pathlib.Path(__file__).stem,
@@ -364,7 +364,7 @@ def _(data, mo, palette, pathlib, plt, scipy_stats, sns, tp):
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
         _g.figure.set_size_inches(1, 2)
         _ax.yaxis.get_offset_text().set_x(-0.2)
-        _ax.set_xticklabels(["lac\n220", "lac\n221"])
+        _ax.set_xticklabels(["lac\n221", "lac\n220"])
 
     _pivot = _data.pivot(
         index="Execution Instance UUID",
@@ -377,49 +377,6 @@ def _(data, mo, palette, pathlib, plt, scipy_stats, sns, tp):
         scipy_stats.wilcoxon(_pivot["lac-221"], _pivot["lac-220"]),
     ]:
         mo.output.append(x)
-    return
-
-
-@app.cell
-def _(data, mo, palette, pathlib, plt, scipy_stats, sns, tp):
-    data["ms per Update"] = data["Simstep Period Inlet (s)"] * 1000
-    _data2 = data[
-        (data["Instrumentation"] == "Longitudinal")
-        & (data["Multiprocessing"] == "Internode")
-    ]
-    with tp.teed(
-        sns.catplot,
-        data=_data2,
-        y="ms per Update",
-        hue="Hostname",
-        x="Hostname",
-        kind="box",
-        legend=False,
-        notch=True,
-        order=["lac-220", "lac-221"],
-        palette=palette,
-        teeplot_show=True,
-        teeplot_subdir=pathlib.Path(__file__).stem,
-    ) as _g:
-        _ax = _g.axes.flat[0]
-        _g.set_titles(template="{col_name}")
-        _g.set(ylabel="ms per Update", xlabel=None)
-        plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-        _g.figure.set_size_inches(1, 2)
-        _ax.yaxis.get_offset_text().set_x(-0.2)
-        _ax.set_xticklabels(["lac\n220", "lac\n221"])
-
-    _pivot2 = _data2.pivot(
-        index="Execution Instance UUID",
-        columns="Hostname",
-        values="ms per Update",
-    )
-
-    for _x in [
-        _pivot2,
-        scipy_stats.wilcoxon(_pivot2["lac-221"], _pivot2["lac-220"]),
-    ]:
-        mo.output.append(_x)
     return
 
 
