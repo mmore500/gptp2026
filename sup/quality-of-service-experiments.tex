@@ -17,13 +17,8 @@ Further, because data collection procedures were consistent across treatments, s
 
 Snapshots were performed independently for each process at each timepoint.
 So, for example, for two processes over the five minute window of a single replicate, ten snapshots were collected.
-For statistical tests comparing treatments, snapshots were aggregated by replicate by both mean and median.
-For each quality of service statistic we estimate mean --- which captures effects of extreme-magnitude outliers --- and median --- which better represents typicality --- across these window samples.
-Statistical comparisons across treatment conditions are performed via regression.
-We use ordinary least squares regression to analyze means \citep{geladi1986partial} and quantile regression to analyze medians \citep{koenker2001quantile}.
-For comparisons between dichotomous, categorical treatment conditions, one condition is coded as 0 and the other as 1.
-In the case of ordinary least squares regression, this boils down to an independent $t$-test.
-Although quantile regression on categorical predictors is not precisely equivalent to a direct test on medians between two groups (i.e., Mood's median test), there is precedent for this approach \citep{petscher2014quantile, konstantopoulos2019using}.
+For statistical tests comparing treatments, snapshots were aggregated by replicate by both maximum and median.
+For each quality of service statistic we estimate maximum --- which captures effects of extreme-magnitude outliers --- and median --- which better represents typicality --- across these window samples.
 
 Most statistics reported here can be calculated just as well in terms of incoming or outgoing messages.
 That is, most statistics can be generated via data from instrumentation attached to message ``inlets'' or data from instrumentation attached to message ``outlets'' with no obvious reason to prefer one over the other.

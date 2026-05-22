@@ -15,6 +15,26 @@
 
 \vspace{-0.5ex}
 
+\subfigure[\footnotesize stability of median and extreme QoS under best-effort scaling; higher worse]{
+\begin{minipage}{\linewidth}
+  \centering
+\includegraphics[width=\linewidth]{../bindle/bindle-2026-05-16-weak-scaling/bindle/teeplots/2026-05-16-weak-scaling/col=metric+cpus_per_node=1+hue=significance+kind=strip+marker=x+num_simels_per_cpu=2048+row=kind+viz=catplot+x=num-processes+y=value+ext=.pdf}
+  \label{moreno:fig:cpu:qos-scaling}
+\end{minipage}%
+}
+
+\vspace{-0.5ex}
+
+\subfigure[\footnotesize effect of anamolous node on median and extreme QoS; higher worse]{
+\begin{minipage}{\linewidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{../bindle/bindle-2026-05-16-lac-417/bindle/teeplots/2026-05-16-lac-417/col=metric+hue=significance+kind=strip+marker=x+row=kind+viz=catplot+x=0-sans-lac-417-1-with-lac-417+y=value+ext=.pdf}
+  \label{moreno:fig:cpu:lac417}
+\end{minipage}
+}
+
+\vspace{-0.5ex}
+
 \subfigure[\footnotesize intranode snapshot cycle profiles]{
 \begin{minipage}{0.45\linewidth}
 \centering
@@ -52,38 +72,19 @@
 
 \vspace{-0.5ex}
 
-\subfigure[\footnotesize stability of median and extreme QoS under best-effort scaling; higher worse]{
-\begin{minipage}{\linewidth}
-  \centering
-\includegraphics[width=\linewidth]{../bindle/bindle-2026-05-16-weak-scaling/bindle/teeplots/2026-05-16-weak-scaling/col=metric+cpus_per_node=1+hue=significance+kind=strip+marker=x+num_simels_per_cpu=2048+row=kind+viz=catplot+x=num-processes+y=value+ext=.pdf}
-  \label{moreno:fig:cpu:qos-scaling}
-\end{minipage}%
-}
-
-\vspace{-0.5ex}
-
-\subfigure[\footnotesize effect of anamolous node on median and extreme QoS; higher worse]{
-\begin{minipage}{\linewidth}
-  \centering
-  \includegraphics[width=0.8\linewidth]{../bindle/bindle-2026-05-16-lac-417/bindle/teeplots/2026-05-16-lac-417/col=metric+hue=significance+kind=strip+marker=x+row=kind+viz=catplot+x=0-sans-lac-417-1-with-lac-417+y=value+ext=.pdf}
-  \label{moreno:fig:cpu:lac417}
-\end{minipage}
-}
-
-\vspace{-0.5ex}
-
 \caption{
 \textbf{Cluster-based HPC Case Study.}
 \footnotesize
 Case study examines digital evolution and graph coloring benchmarks in a CPU-based compute cluster context (panel \ref{moreno:fig:cpu:architecture}).
 In scaling from 1 to 64 nodes (one process per node), best-effort relaxations substantially improve speed; for the graph coloring domain where such a measure is available, solution error also benefits.
-In related experiment, quality-of-service metrics were collected for a pair of graph coloring processes resident on the same cluster (``intranode'') or split between two clusters (``internode'').
-In both cases, negative correlation arose between message send and receive rates (panel \ref{moreno:fig:cpu:balance}).
-For intranode configuration, this imbalance likely reflects asymmetry with respect to Non-Uniform Memory Access (NUMA) disruptions introduced during counter snapshots for quality of service metrics (panel \ref{moreno:fig:cpu:intranode}).
-For internode configuration, apparent send/receive imbalance seems to have arisen from speed mismatch between hosting nodes used (panel \ref{moreno:fig:cpu:internode}).
 In scaling communication-intensive graph coloring from to 256 processes, median quality of service remains stable --- with the sole exception of throughput rate, which decreased (panel \ref{moreno:fig:cpu:qos-scaling}).
 By contrast, the maximumal magnitude of quality of service disruptions grew; closer inspection revealed extreme disruptions to stem from node \texttt{lac-417}.
-Further 256-process experiments were conducted excluding \texttt{lac-417}, which revealed median quality of service to remain stable with or without this anamolous hardware (panel \ref{moreno:fig:cpu:lac417}).
+Further 256-process experiments were conducted excluding \texttt{lac-417}, which revealed median quality of service to remain stable between allocations including and excluding this hardware (panel \ref{moreno:fig:cpu:lac417}).
+In a related experiment, quality-of-service metrics were collected for a pair of graph coloring processes resident on the same cluster (``intranode'') or split between two clusters (``internode'').
+In both cases, negative correlation arose between message send and receive rates (panel \ref{moreno:fig:cpu:balance}).
+For intranode configuration, this imbalance likely reflects asymmetry with respect to Non-Uniform Memory Access (NUMA) disruptions introduced during counter snapshots for quality of service metrics (panel \ref{moreno:fig:cpu:intranode}).
+Shaded areas show slowest-fastest throughput spread (higher values worse), overlaid translucently per-replicate.
+For internode configuration, apparent send/receive imbalance seems to have arisen from speed mismatch between hosting nodes used (panel \ref{moreno:fig:cpu:internode}).
 }
 \label{moreno:fig:cpu}
 \end{figure}

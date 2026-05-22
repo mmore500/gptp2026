@@ -50,6 +50,8 @@ As another benefit, this benchmark provides a succinct measure of solution quali
 
 Benchmark and profiling trials were replicated across 10 replicate executions within a given SLURM allocation.
 Within each replicate, performance metrics are reported as a mean across processes; median and maximum are reported for QoS.
+QoS experiments utilized Michigan State University's \texttt{lac} cluster, consisting of dual-socket nodes with 14-core Intel Xeon E5-2680 v4 CPUs @ 2.40 GHz (28 cores total) --- each socket acting as a distinct Non-Uniform Memory Access (NUMA) domain --- joined by InfiniBand interconnect.
+Hostnames and corresponding node configurations are recorded for each data point.
 Futher details on benchmark methodology are included with Supplemental Material \cite{moreno_2026_trust}.
 
 \subsection{Quality of Service Metrics}
@@ -193,19 +195,41 @@ The extreme magnitude of outliers observed in 256-process allocations prompted f
 Closer inspection revealed that the most extreme outliers were all associated with snapshots on a single node: lac-417.
 So, we performed further tests acquiring two separate 256 process allocations on the lac cluster: one including lac-417 and one excluding lac-417.
 
-Figure \ref{moreno:fig:cpu:TODO} compare the distributions of quality of service metrics between allocations with and without lac-417.
-Extreme outliers are present exclusively in the lac-417 allocation for walltime latency, simstep latency, and delivery failure rate.
-Otherwise, the metrics' distributions across snapshots are very similar between allocations.
-Mean update-latency, time-latency, and delivery failure rate are all significantly greater with lac-417.
-Surprisingly, though, update time is significantly shorter with lac-417.
+Figure \ref{moreno:fig:cpu:qos-scaling} compare the distributions of QoS metrics between 256-node allocations with and without lac-417.
+For througput QoS, tail-value extremum of slowdowns in individual processes are comparable between allocations (Wilcoxon test, $\alpha = 0.05$).
+For all other QoS measures, lac-417 introduces orders-of-magnitude more extreme outlying QoS values: latencies of $>1$ second, attritions of more than half of local message trafic, and batched delivery reaching upwards of 10 messages at a time (Wilcoxon test, $p$ annotated).
 
-However, there is no significant difference in median value for any quality of service metric between allocations including or excluding lac-417.
-This stability of metric medians within allocations containing lac-417 --- which have significantly different means due to outlier values induced by the presence of lac-417 --- demonstrates how the best-effort system maintains overall quality of service stability despite defective or degraded components.
+Nonetheless, across all metrics, no median QoS values degrade between allocations (Wilcoxon tests, $\alpha = 0.05$; Figure \ref{moreno:fig:cpu:qos-scaling}, lower panel).
+Surprisingly, median throughput actually measures as TODO\% greater with lac-417 (Wilcoxon test, $p < 0.001$).
+Thus, in this case, overall quality of service appears robust to disruption by an individual piece of hardware within the collective.
+Though such robustness should not be expected universally across all best-effort systems, such quality of service metrics provide a proactive means to detect any such widespread disruption arising from defective or degraded hardware components.
 
 \subsection{Diagnosis of QoS Asymmetrty}
 \label{moreno:sec:case1:asymmetry}
 
-In addition to anamolous hardware, quality of service metrics can flag potential more widespread asymmetries emerging in best-effort systems.
-For instance, under communication-heavy TODO conditions, we observed a significant negative correlation between incoming and outgoing message rates (Figure \ref{moreno:fig:cpu:TODO}).
-This pattern could indicate emergent producer-consumerimbalances between processors, where certain processors become bogged down processing the incoming message payload from other processes that they are able to send fewer messages, allowing the partner process to continue sending messages at a high rate --- a self-reinforcing imbalance that can arise when processing incoming messages has comparable or greater cost than sending them.
-Such correlation, however, did not arise under TODO conditions.
+Having examined QoS metrics in aggregate across process allocations, we next sought to examine whether such metrics could detect and diagnose localized QoS asymmetries emerging at the of level of individual processes.
+In a final pair of experiments characterizing Conduit-based best-effort relaxation, we performed benchmarks on two-process allocations --- split between cluster nodes (``internode'') or co-located on the same node (``intranode'').
+To maximize communication intensity, the graph coloring executable was used, configured to one node per process.
+
+As a screen for producer-consumer imbalance, where one process becomes livelocked clearing incoming messages from the other, we examined the relationship between processes' incoming and outgoing message rates.
+Did processes with higher incoming message traffic tend to have lower outgoing message traffic?
+
+Under both inter- and intranode configurations, we indeed found significant anticorrelation between incoming and outgoing traffic (Figure \ref{moreno:fig:cpu:balance}; TODO).
+Interestingly, in the case of intranode communication, an apparent bimodal distribution arose, where traffic was either balanced or strongly --- and consistently --- imbalanced.
+
+Further investigation allowed us to diagnose the underlying causes of these incoming/outgoing imbalances.
+In the internode case, imbalance was attributable to an underlying TODO\% differential in execution speed between host nodes (Figure \ref{moreno:fig:cpu:intranode}) --- after accounting for this factor, no detectable traffic imbalance remained (Generalized Linear Model, TODO).
+
+In the intranode case, incomming/outgoing traffic imbalance appears likely to have arisen as an artifact of Non-Uniform Memory Access architecture within \texttt{lac} nodes.
+Because these nodes socket two independent CPU dies, cross-socket memory accesses can trigger cache invalidations that stall execution.
+Figure \ref{moreno:fig:cpu:internode} visualizes throughput QoS over the 5-minute course of execution trials (lower better).
+Replicates are split by whether they exhibited apparent incoming/outgoing imbalance (bottom vs. top row).
+Across all replicates, maximum update walltime spikes during one-second snapshot window --- consistent with a scenario where the background QoS counter polling thread reaches across the NUMA boundary.
+However, where incoming/outgoing traffic imbalance is detected, minimum update walltime remains largely steady.
+Thus, this imbalance appears likely to haven arisen from NUMA effects slowing one process, but not the other --- introducing a traffic mismatch between the process pair.
+
+The first step to resolving local asymmetries and anamolies is detecting and diagnosing them.
+In the case of the detected intranode imbalance, the \texttt{cpu-bind} SLURM flag can be used to specify process locality with respect to NUMA domains.
+In the case of the detected internode imbalance, outgoing message rate from one process to another could be throttled to match (or slightly exceed) traffic recieved in the reverse direction.
+Alternatively, such asymmetries could simply be recorded and factored into interpretation of ultimate computed results.
+A key direction for future work should be curation of a standardized panel of QoS diagnostic tests --- such as incoming/outgoing traffic imbalance --- that provide a general-purpose a starting point to characterize QoS dynamics and flag significant asymmetries and anomalies.
