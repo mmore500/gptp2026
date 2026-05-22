@@ -880,20 +880,30 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
                     alpha=(0.55, 0.3)[_li],
                 )
                 _lines_y.append(_y)
-                _label, _label_c, _label_va = (
-                    ("sync", _darken(_gray, 0.5), "top"),
-                    ("best effort", _green, "bottom"),
-                )[_li]
-                _ax.text(
-                    _x[-1],
-                    _y[-1],
-                    _label,
-                    ha="right",
-                    va=_label_va,
-                    color=_label_c,
-                    fontsize=8,
-                    zorder=7,
-                )
+                if _li == 0:
+                    # sync label: nudged left of the line end
+                    _ax.text(
+                        _x[-1] * 0.92,
+                        _y[-1],
+                        "sync",
+                        ha="right",
+                        va="top",
+                        color=_darken(_gray, 0.5),
+                        fontsize=8,
+                        zorder=7,
+                    )
+                else:
+                    # best-effort label: lifted just above the line end
+                    _ax.text(
+                        _x[-1],
+                        _y[-1] + 0.04 * _lines_y[0].max(),
+                        "best effort",
+                        ha="right",
+                        va="bottom",
+                        color=_green,
+                        fontsize=8,
+                        zorder=7,
+                    )
 
             # delta sidebar to the right of the data: a vertical line per
             # mode with an open (bottom) and closed (top) dot tip, one
@@ -971,6 +981,27 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
                         zorder=7,
                         clip_on=False,
                     )
+
+        # per-mode error bars (sd) over the data points
+        for _eb_mode, _eb_color in (
+            (0, _darken(_gray, 0.45)),
+            (3, _darken(_green, 0.3)),
+        ):
+            _eb_data = _long[
+                (_long["panel"] == _panel)
+                & (_long["asynchronicity mode"] == _eb_mode)
+            ]
+            sns.lineplot(
+                data=_eb_data,
+                x="ncpus",
+                y="value",
+                ax=_ax,
+                color=_eb_color,
+                errorbar="sd",
+                err_style="bars",
+                legend=False,
+                lw=0,
+            )
 
         _g.set(ylim=(0, None))
         _g.set(xscale="log")
