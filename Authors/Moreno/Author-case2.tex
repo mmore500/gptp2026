@@ -38,7 +38,7 @@ Case study material is presented in four parts.
 % \end{enumerate}
 
 
-\subsection{Phylogenetic Structure and Applications}
+\subsection{Reconstruction-based Estimation of Evolutionary History}
 
 % The structure of evolutionary ancestry relationships arising in phylogenies is a cornerstone of inquiry in modern evolutionary biology .
 % Phylogenetic analysis is integral to much of evolution research, whether conducted \textit{in vivo} or \textit{in silico} \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lewinsohnStatedependentEvolutionaryModels2023a,lenski2003evolutionary}.
@@ -61,7 +61,7 @@ Structural composition of ancestry trees can reveal key evolutionary dynamics, s
 Notably, in this domain, phylogeny data underpins core metrics for measuring ongoing system change \cite{dolson2019modes}.
 In the bioinformatics testbed domain, which also makes heavy use of phylogeny data, limitations of simulation scale can obscure the relationships of population size and sampling density with sensitivity and accuracy \cite{moreno2025extending,TODO}.
 
-\subsection{Best-effort Strategy is Robust to Incomplete Data...}
+\subsection{Robustness of Best-effort Estimation of Evolutionary History}
 
 To address challenges storing and moving data on WSE, we have adopted strategies inspired by real-world experiments that assume data collection is expensive, limited, and non-deterministic.
 Robust existing methods and statistics for such ``inferential observability'' in field and lab biology make evolution simulations an ideal testbed for applications in HPC.
@@ -80,8 +80,6 @@ As such, for example when we were creating the billion-tip phylogenies, the tran
 
 8{\small,}750 generations / sec with an aggregate population size of 190.8 million; 1{\small,}250 memcpy layers sampling one genome per PE kept from ~9{\small,}250 cycles.
 
-\subsection{... Including from Hardware Faults}
-
 Another benefit in being flexible as to needed data is tolerance to hardware faults.
 While individual processor cores, under current silicon-based technologies, are generally highly reliable, where computational work involves hundreds of thousands or millions of corresponding parts, hardware failures become inevietable --- particularly when hardware is subject to round the clock thermal loadd under data center conditions.
 
@@ -99,208 +97,16 @@ Simply excluding the small fraction of potentially-corrupt data allowed our expe
 While the localized nature of this hardware fault allowed us to readily differentiate valid and invalid data, more general resilience to such faults could be accomplished with high confidence and low cost by using a checksum technique.
 If elements of the compute pool that report dasta keep a running checksum across reported data, and then send in their end-state checksum, stored dasta can be audited against the final checksum and any collections of dasta from a compute element with invalid checksums can simply be excluded.
 
-\subsection{Directional Migration Bias}
+\subsection{Detection of Bias in Population Dynamics}
 
 Finally, we resurface the theme of measuring quality-of-service metrics to identify potential biasing factors in a best-effort computation (Section \ref{moreno:sec:case1}).
 Collecting spatial phylogeny dasta helped to flag an asymmetry in our island-model evolving population.
-Specifically, under neutral evolutionary conditions, we saw that lineages appeared biased towards migrating from bottom to top across the chip (Figure \ref{moreno:fig:wse:TODO}).
-Inspection of directional message counts confirmed that, indeed, directional asymmetry existed in the migration rates between islands (\ref{moreno:fig:wse:TODO}).
-Having identified this bias, and noted that it could have a mild, but detectable systematic large-scale effect on evolution, we were able to tak e action to ameliorate this.
+Specifically, under neutral evolutionary conditions, we saw that lineages appeared biased towards migrating from bottom to top across the chip (Figure \ref{moreno:fig:wse:bias}).
+% Inspection of directional message counts confirmed that, indeed, directional asymmetry existed in the migration rates between islands (\ref{moreno:fig:wse:TODO}).
+Having identified this bias, and noted that it could have a mild, but detectable systematic large-scale effect on evolution, we were able to take action to ameliorate this.
 In this case, symmetry in directional migration rates could be rectified fon a simple manner --- without invoking global synchronization --- by simply restricting the send rate of each PE to its neighbor to the slowest among neighbors.
 
 \subsection{Best-effort Time Series Recording Using Generalized Ring Buffer}
-
-\section{Simulation Model and Implementation} \label{sec:methods}
-
-% Experiments were conducted \textit{in silico} using stochastic agent-based modeling approaches.
-Our simulations tracked fixed-capacity populations of discrete agents propagated in synchronous generations, with competition between agents to create asexual offspring.
-Each agent possessed a set of genetic traits, inherited subject to mutation, that influenced reproductive success; mutator strains were subjected to 100$\times$ higher mutation rates.
-Our genome model tracked counts of accumulated beneficial and deleterious mutations, following closely from \cite{raynes2018sign}.
-To assess the generality of our findings, we supplemented this simple ``counter-based'' genome model with an alternate ``site-explicit'' genome model where beneficial mutations become rarer as adaptation unfolds.
-% These genome models are described below.
-%
-% This section reviews the model mechanics used across experiments in this work, as well as aspects of simulation design used to enact treatment conditions.
-% Experimental variables varied between treatments include population size, spatial population structure, background prevalence of mutator traits, and restriction of adaptive potential.
-% Finally, we describe notable implementation-level considerations necessary in harnessing high-performance computing hardware to achieve the simulation of large, heterogeneous populations necessary for this work.
-%
-% \subsection{Counter-based Genome Model} \label{sec:poisson}
-%
-% Primary experiments in this work apply an agent-based modeling approach closely following work by \cite{raynes2018sign}.
-% We also adopt parameters from \cite{raynes2018sign}, which were chosen on the basis of values reported from laboratory measurements on \textit{E. coli} strains\cite{wloch2001direct,frenkel2014fates,joseph2004spontaneous,levy2015quantitative,zeyl2001estimates}.
-% Under the ``counter-based'' framework, agent genomes consist of two counters: one tracking beneficial mutations accumulated ($n_b$) and the other tracking deleterious mutations accumulated $n_d$.
-% As modeled in several pieces of related work \cite{tenaillon1999mutators,travis2002mutator,raynes2019migration,tanaka2003evolution,wylie2009fixation}, mutations are assumed to have comparable fitness impacts.
-% Thus, a genome's ``fitness score'' is calculated simply as $n_b - n_d$.
-% (Details on how ``fitness score'' influences selection are described in Section \ref{sec:evolution}.)
-% For purposes here, the simplicity of this approach is useful in enabling runtime simulation efficiency.
-% Sensitivity analysis performed in closely related work applying this genome model found evolutionary outcomes to be similar to those with exponential distributions of fitness effects for individual mutations \cite{raynes2019selection}.
-%
-% Genomes were subjected to mutation each generation.
-% For each offspring, counts of newly accrued beneficial and deleterious mutations are drawn from independent Poisson distributions.
-% Expected deleterious mutations per generation were parameterized as
-% $\lambda_d=10^{-3}$ and expected beneficial mutations per generation were parameterized as $\lambda_b=10^{-6}$.
-% Reversions are not considered, so beneficial and deleterious mutation counts are strictly nondecreasing.
-% In some experiments where adaptive potential was limited, we imposed an upper bound on the maximum quantity of beneficial mutations available.
-% Any further beneficial mutations accrued past this point were reverted to the bound.
-%
-% Agent genomes additionally contain a boolean flag, signifying whether the agent expresses a mutator trait.
-% Agents with this trait incur a hundred-fold increase to mutation rates, $\hat{\lambda_d} = 100 \times \lambda_d$ and $\hat{\lambda_b} = 100 \times \lambda_b$.
-% We assume no direct fitness benefit or cost to be associated with the mutator allele.
-%
-% Experiments applied one of two approaches to introduce mutator alleles.
-% In the ``50/50'' treatment, genomes were initialized equiprobably as a mutator or as a nonmutator.
-% The ``50/50'' experiment design, applied in \textit{in vivo} experiments reported in \cite{raynes2018sign}, maximizes sensitivity in detecting sign-change fitness effects where selection transitions between favoring versus disfavoring mutator alleles.
-% Rationale behind this approach also stems from the understanding that fitness effects from mutator alleles act in a density- and count-independent manner \cite{raynes2019selection}.
-% By contrast, in other experiments, we introduced mutator alleles via a \textit{de novo} approach where the mutator trait is spontaneously conferred to offspring with probability $10^{-6}$.
-% Under this approach, the founding population is initialized as nonmutator type.
-% As with prior work \cite{raynes2018sign}, neither treatment allows mutator to nonmutator reversion.
-%
-% \subsection{Site-explicit Genome Model} \label{sec:site-explicit}
-% As originally formulated in \cite{raynes2018sign}, the counter-based genome model assumes the availability of an unlimited adaptive potential.
-% In particular, the memorylessness of the probability distribution for mutation accumulation suits the assumption that an unlimited number of beneficial (or deleterious) mutations are available.
-% To better reflect scenarios with limited adaptive potential, we replicated several experiments using a genome model explicitly designating a finite set of loci with adaptive potential.
-% The major consequence of such a ``site-explicit'' model is that discoverable beneficial mutations become scarcer, and hence more difficult to discover, as adaptation unfolds.
-
-% Under the site-explicit approach, we model genomes as containing a discrete, finite set of $n$ loci $b_i \in \{0, 1\}$ available for adaptive mutation.
-% All loci are initialized $b_i = 0$.
-% When inherited, loci transition $0 \rightarrow 1$ with probability $p_b = 10^{-6}$, representing acquisition of a beneficial mutation.
-% Reversion mutations $1 \rightarrow 0$ are allowed, also with probability $p_{\sim b} = 10^{-6}$.
-
-% Because we do not limit the quantity of available deleterious mutations in our simulations, we maintained a counter-based approach in tracking deleterious mutations, with deleterious mutation acquisition Poisson distributed $\lambda_d = 10^{-3}$.
-% Hence, under the site-explicit model, we assign agents' fitness scores as $-n_d + \sum^n b_i$.
-
-% Mutator allele mechanics under the site-explicit model closely follow the counter-based model.
-% The mutator trait increases mutation rates hundredfold, setting $\hat{p_{b}} = \hat{p_{\sim b}} = 10^{-4}$ and $\hat{\lambda_d} = 10^{-1}$.
-% Site-explicit experiments were conducted under both ``50/50'' and ``\textit{de novo}'' models of mutator introduction, identically to description above.
-
-% \subsection{Evolution Model} \label{sec:evolution}
-
-% Simulations applied a tournament selection strategy with synchronous generations and fixed population size.
-% For each available slot in a subpopulation's next generation, we sampled, with replacement, a pair of candidate parents from that subpopulation.
-% With 90\% probability, a selected parent is chosen randomly among the pair.
-% Otherwise, the candidate with the higher fitness score was selected as the parent.
-% As such, fitness score improvements conferred a 10\% fitness advantage.
-% Our motivation in performing selection via pairwise competition was to enable efficient vectorized operations for GPU evaluation.
-
-% In simulations with spatial structure, populations were partitioned into well-mixed 256-agent ``demes.''%
-% \footnote{%
-% Where noted, 32-agent and 2,048-agent deme sizes were also used, to support finer-grained sweeps of population size or higher maximum net population size.
-% }
-% Where deme structure was used, competition occurred only between agents inhabiting the same deme.
-% Each generation, migration between neighboring demes was applied by swapping a pair of agents.
-% Hence, demes received one immigrant from each neighbor per generation.
-% Under default conditions, demes were arranged as a two-dimensional grid lattice with non-toroidal boundaries (i.e., grid edges did not wrap around).
-% For well-mixed treatments, deme structure was broken down to treat entire populations as a single deme.
-
-% Our 2D structure experiments used square deme grids.
-% To maintain square layout, we scaled surveyed population sizes by factors of 9: $1 \times 1 \times 256,\;\; 3 \times 3 \times 256,\;\; 9 \times 9 \times 256,\;\; \ldots,\;\; 729 \times 729 \times 256$.
-% To efficiently batch our computations, we processed smaller population sizes as independent tiles of a larger, fixed-size fabric.
-% Hence, replicate count decreased with population size, but was boosted to at least 9 replicates in all cases.
-% Simulations lasted 500,000 generations, which sufficed for populations to reach fixation in nearly all cases.
-% (We defined fixation as all mutators or all nonmutators for 50/50 experiments, and as either 100\% mutators or <1\% mutators for \textit{de novo} experiments.)
-% However, we found that 256-agent populations failed to reliably reach full adaptive potential in accruing more than 12 beneficial mutations within the prescribed 500,000 generation window.
-% Thus, we excluded 256-agent simulations with more than 12 beneficial mutations available from our analyses.
-
-% For all included data, $>97\%$ of replicates reached both mutator/nonmutator fixation and accrued full adaptive potential.
-% Details on the fraction of replicates reaching fixation by experimental condition are provided in Supplementary \cref{fig:neither-fixed-5050-cupy,fig:neither-fixed-denovo-cupy,fig:neither-fixed-wse-256atile,fig:neither-fixed-wse-altatile}.
-% Details on the fraction of replicates reaching full adaptive potential, measured for GPU-based simulations, appear in Supplementary \cref{fig:unaccrued-5050-cupy,fig:unaccrued-denovo-cupy}.
-
-% \subsection{Hardware Accelerator Platforms} \label{sec:hardware}
-
-% \subsection{Kernel Design} \label{sec:kernel}
-
-To suit the local lattice structure of the WSE's hardware architecture, all experiments on this platform employed 2D spatial population structure.
-Each PE hosted a single subpopulation, acting as an ``island.''
-Thus, in trials configured with 2,048 agents per PE, net population size reached 1.5 billion agents.
-Agents migrated between neighboring PEs via asynchronous message passing;
-% see e.g.,
-% https://github.com/mmore500/wse-async-ga/blob/ebc92bd012f0bb31092c5e71825af041261c35c5/kernel-async-ga/kernel.csl
-% and
-% https://osf.io/esv9z
-% (note that send flag is bumped twice per send cycle)https://osf.io/esv9z
-in practice, each PE dispatched approximately one agent to each neighbor per generation.
-Progress of each PE in stepping through agent generations within its own subpopulation was allowed to proceed independently of other PEs.
-Other detail on the Cerebras Software Language (CSL) kernel design adapted for this work is provided in \cite{moreno2024trackable}.
-
-% In some cases, experiments on WSE were extended beyond the $729 \times 729$ deme configuration to fill the CS-2 WSE's entire $750 \times 994$ complement of available PEs.
-
-% For a set of supplementary trials described in Section \ref{sec:dynamics}, we applied additional runtime data logging in our simulations to track time series data of mutator allele prevalence.
-% Generation-on-generation, we configured each processor element to sample a genome from its local population and record its mutator allele status (i.e., a binary value as either a non- or mutator).
-% To efficiently curate this single-bit data within per-PE memory limits while allowing a flexible recording duration, we leveraged recently introduced ``DStream'' ring buffer data structures \cite{moreno2024algorithms}.
-% Notably, this approach constrained memory use to a fixed-size buffer, while allowing recording to be dynamically halted when nonmutators were determined to be locally extinct (and restarted if they are reintroduced).
-% While this scheme allowed maximization of on-device resources, as a consequence the set of sampled time points varied depending on how long nonmutator alleles persisted.
-% As a result, the number of generations elapsed per frame in provided animations varies. Availability
-
-
-% Given the stochastic nature of agent-based evolution models, our experiments relied heavily on pseudorandom number generators (PRNGs).
-% These algorithms emulate true entropy by producing a sequence of output values that, although deterministic, are statistically independent.
-% Due to performance engineering considerations, vendor-supplied PRNG implementations for the WSE and GPU do not employ cryptographic-quality algorithms.
-% Our WSE simulations relied on Cerebras Software Language's PRNG utilities, which use a Linear-Feedback Shift Register (LFSR) approach with polynomial $3x^2 + 8x + 1$ strided by 128 iterations.
-% On GPU, we used CuPy's PRNG utilities, which expose CUDA's underlying XORWOW-based CuRAND implementation \cite{marsaglia2003xorshift}, another type of LFSR approach \cite{brent2004note}.
-
-% PRNG patterning, particularly in lower-quality Linear Congruential Generator (LCG) algorithms, has been shown in some cases to substantially bias simulation results \cite{click2010quality}.
-% Notably, we encountered one set of conditions in WSE simulations where fixation probabilities for 12 beneficial mutations available deviated appreciably from that for 10 and 14 beneficial mutations.
-% The anomaly occurred solely under the site-explicit genome model, where the number of PRNG calls made to apply mutation to an agent differs with the quantity of available beneficial mutations.
-% In the anomalous configuration, each PE comprised a fully independent population, so replicate count was very high ($n = 827 \times 827 = 683,929$), making the result all the more unexpected.
-
-% Fully re-running the affected simulation did not resolve the data anomaly.
-% However, modifying the simulation code to advance the PRNG engine via no-op calls within the body of the mutation operator brought the result in line with expectations.
-% Thus, it seems likely that, in this instance, the simulation encountered a PRNG cycle or similar artifact.
-% As such, for this data point, we exclude the originally generated data in favor of the results with added PRNG stepping.
-% We note that on a more general basis, the soundness of our simulation implementations is bolstered by consistency between similar experiments conducted on WSE and GPU.
-% In particular, CuRAND's RNG has been extensively characterized and, although it exhibits statistically detectable flaws of its own, is considered to be of production quality \cite{nvidia2024curand}.
-% Given the stochastic nature of agent-based evolution models, our experiments relied heavily on pseudorandom number generators (PRNGs).
-% These algorithms emulate true entropy by producing a sequence of output values that, although deterministic, are statistically independent.
-% Due to performance engineering considerations, vendor-supplied PRNG implementations for the WSE and GPU do not employ cryptographic-quality algorithms.
-% Our WSE simulations relied on Cerebras Software Language's PRNG utilities, which use a Linear-Feedback Shift Register (LFSR) approach with polynomial $3x^2 + 8x + 1$ strided by 128 iterations.
-% On GPU, we used CuPy's PRNG utilities, which expose CUDA's underlying XORWOW-based CuRAND implementation \cite{marsaglia2003xorshift}, another type of LFSR approach \cite{brent2004note}.
-
-% PRNG patterning, particularly in lower-quality Linear Congruential Generator (LCG) algorithms, has been shown in some cases to substantially bias simulation results \cite{click2010quality}.
-% Notably, we encountered one set of conditions in WSE simulations where fixation probabilities for 12 beneficial mutations available deviated appreciably from that for 10 and 14 beneficial mutations.
-% The anomaly occurred solely under the site-explicit genome model, where the number of PRNG calls made to apply mutation to an agent differs with the quantity of available beneficial mutations.
-% In the anomalous configuration, each PE comprised a fully independent population, so replicate count was very high ($n = 827 \times 827 = 683,929$), making the result all the more unexpected.
-
-% Fully re-running the affected simulation did not resolve the data anomaly.
-% However, modifying the simulation code to advance the PRNG engine via no-op calls within the body of the mutation operator brought the result in line with expectations.
-% Thus, it seems likely that, in this instance, the simulation encountered a PRNG cycle or similar artifact.
-% As such, for this data point, we exclude the originally generated data in favor of the results with added PRNG stepping.
-% We note that on a more general basis, the soundness of our simulation implementations is bolstered by consistency between similar experiments conducted on WSE and GPU.
-% In particular, CuRAND's RNG has been extensively characterized and, although it exhibits statistically detectable flaws of its own, is considered to be of production quality \cite{nvidia2024curand}.
-% \subsection{On-hardware Simulation Performance}
-% \label{sec:performance}
-
-% \input{fig/perf}
-
-% To assess the efficacy of hardware accelerator resources in expediting our simulations, we collected timings of runtime duration from our simulation experiments.
-% As a baseline comparison point for performance, we also benchmarked simulation on CPU (AMD EPYC 7H12 2.595 GHz).
-
-% Figure \ref{fig:perf} compares simulation performance between hardware platforms, measured in agent-generations per second (AGPS).
-% Mean throughput was 7.0 (SD 0.5) million AGPS on CPU, 2.7 (SD 0.03) billion AGPS on GPU, and 780 (SD 0.5) billion AGPS on WSE for \textit{de novo} trials using the counter-based model.
-% Net speedup, normalized to mean CPU throughput, was $378\times$ (SD 4) on GPU and $111,091\times$ (SD 75) on WSE.
-% Normalized to net GPU performance, WSE provided a speedup of $294\times$ (SD 0.2).
-
-% Under the site-explicit model, WSE gave 650 (SD 50) billion AGPS under \textit{de novo} conditions.
-% The site-explicit model was not implemented on GPU.
-% For all the above, 50/50 trials gave similar performance to \textit{de novo}.
-
-% On WSE, we found agent-generation throughput to be generally consistent across per-PE population densities, as shown in Supplementary Figure \ref{fig:perf-tilepop}.
-% In contrast, mean GPU throughput dropped $>95\%$ to 121 million AGPS when increasing net population size from 15.1 million to 175 million.
-% For this reason, we only scaled GPU experiments up to 15.1-million-agent populations ($243 \times 243$ demes).
-
-% \subsection{Software, Data, and Materials} \label{sec:materials}
-
-Simulation code, configuration files, and batch scripts are available via the Open Science Framework at \url{https://doi.org/10.17605/OSF.IO/YMAF8}.
-% To enable the simulation scale necessary for this work, we employed Graphics Processing Unit (GPU) and Wafer-Scale Engine (WSE) hardware accelerators, which contain large collections of worker processors specialized for numerical computation.
-CPU hardware was AMD EPYC 7H12, GPU hardware was NVIDIA A100, WSE hardware was Cerebras CS-2 \cite{buitrago2021neocortex,Brashear2025}.
-%\cite{choquette2021nvidia,cerebras2021wafer}.
-% WSE hardware was hosted by the Neocortex at PSC.
-
-% This project benefited significantly from open-source scientific software \cite{2020SciPy-NMeth,harris2020array,reback2020pandas,mckinney-proc-scipy-2010,waskom2021seaborn,hunter2007matplotlib,moreno2023teeplot}.
-
-
-% \section{Results}
-
-\section{On-device Data Management}
-\label{sec:dynamics}
 
 % Transient dynamics
 % % While this scheme allowed maximization of on-device resources, as a consequence the set of sampled time points varied depending on how long nonmutator alleles persisted.
@@ -311,8 +117,16 @@ CPU hardware was AMD EPYC 7H12, GPU hardware was NVIDIA A100, WSE hardware was C
 % This configuration yielded a net population size of 191 million agents.
 % In these trials, we probed the critical region where outcomes transition between nonmutator and mutator fixation, configuring adaptive potential between 12 and 16 available beneficial mutations.
 
+Within evolving microbial populations, genes that elevate mutation rate impose a fundamental trade-off: on one hand, increasing harmful mutations among offspring but, on the other, allowing more opportunities for rare beneficial mutations.
+Existing single-CPU agent-based simulation work suggests that increased population size should generally favor the proliferation of mutator alleles due to ``hitch-hiking'' effects associated with beneficial mutation discovery.
+However, in contrast to this expectation, this outcome is often not the case in large asexual populations found in nature.
+To address this knowledge gap, we leveraged the 850,000-processor Cerebras Wafer-Scale Engine (WSE) to increase simulation scale up to 1.5 billion-agent populations.
+In benchmarks, WSE provided $294\times$ speedup over GPU and $111{,}091\times$ speedup over single-core CPU execution.
+Among other results, our experiments indicate that limitation of adaptive potential (i.e., few beneficial mutations available) can produce a tertiary regime where complete mutator allele takeover becomes disfavored at very large population sizes.
+Hardware for this experiment was WSE-2, rather than WSE-3.g
+
 A key challenge in this work was balancing limited on-device memory between simulation content and data recording.
-For example, some experiments required time series measurements of mutator prevalence in PE subpopulations (Figure \ref{fig:dynamics}).
+For example, some experiments required time series measurements of mutator prevalence in PE subpopulations (Figure \ref{moreno:fig:wse:timeseries}).
 To economize memory use, we applied recently developed algorithms that generalize ring buffer storage to efficiently perform systematic temporal downsampling \cite{moreno2024algorithms,gunther2014algorithm}.
 Successive local samples are recorded as single bits within a flat, fixed-size buffer --- with no bookkeeping overhead.
 Crucially, because recording duration (i.e., until extinction) is unknown \textit{a priori}, this approach dynamically coarsens recording density via overwrites once storage capacity is reached --- strictly bounding memory use.
@@ -345,127 +159,3 @@ As such, we see significant opportunity in future work to more broadly explore h
 % This TODO allowed us to assess the fact that mutators transiently peak at well above the majority of population composition.
 % \input{fig/peaksweep}
 
-
-\section{On-device Performance}
-\label{sec:performance}
-
-To assess the efficacy of hardware accelerator resources in expediting our simulations, we collected timings of runtime duration from our simulation experiments.
-As a baseline comparison point, we also benchmarked corresponding single-core CPU simulation code.
-
-Mean throughput was 7.0 (std. deviation [SD] 0.5) million agent-generations per second (AGPS) on CPU, 2.7 (SD 0.03) billion AGPS on GPU, and 780 (SD 0.5) billion AGPS on WSE for \textit{de novo} trials using the counter-based model.
-We found that WSE provided a speedup of $111,091\times$ (SD 75) over CPU and $294\times$ (SD 0.2) over GPU (Figure \ref{fig:perf}).
-% Net speedup, normalized to mean CPU throughput, was $378\times$ (SD 4) on GPU and $111,091\times$ (SD 75) on WSE.
-% Normalized to GPU performance, WSE provided a speedup of $294\times$ (SD 0.2).
-
-% Under the site-explicit model, WSE gave 650 (SD 50) billion AGPS under \textit{de novo} conditions.
-% The site-explicit model was not implemented on GPU.
-% For all the above, 50/50 trials gave similar performance to \textit{de novo}.
-
-On WSE, we found agent-generation throughput to be consistent across per-PE population densities.
-%, as shown in Supplementary Figure \ref{fig:perf-tilepop}.
-In contrast, on GPU we encountered an apparent memory-wall effect where mean throughput dropped $>95\%$ to 121 million AGPS when increasing net population size from 15.1 million to 175 million.
-% For this reason, we only scaled GPU experiments up to 15.1-million-agent populations ($243 \times 243$ demes).
-
-% \subsection{Major Results}
-
-% In our initial experiment, we confirmed that large populations favor mutator fixation, under the assumption of unlimited adaptive potential.
-% Consistent with expectations, we found that restricting adaptive potential by capping available adaptive mutations reversed outcomes in large populations to favor nonmutators.
-% Investigating the influence of population structure and composition, we found spatial structure to substantially increase the amount of adaptive potential required to fix mutator alleles in large populations.
-% However, this effect only occurred when mutator alleles were initially rare within the population.
-% We also report qualitative differences between effects of population size on mutator fixation probability under well-mixed versus 2D population structure when mutations are rare.
-% In the final part of our investigation, we analyze the spatiotemporal dynamics of our simulations to better understand the mechanisms at play behind these effects.
-
-% Differing from existing results, we find that in the situation of limited adaptive potential, the effect of population structure on fixation probability is actually opposite to that predicted under the theory.
-% Population structure has also been found to influence mutator outcomes, with deviation from well-mixed conditions being linked to a higher probability for hypermutator fixation so long as any connectivity remains between subpopulations \cite{raynes2019migration}.
-
-
-% \section{Results and Discussion} \label{sec:results}
-
-% In this work, we investigate the interactions between population size, adaptive potential, and population structure in influencing selection on mutator traits within asexual populations.
-% In our first experiments, we replicate previous work by \cite{raynes2018sign} showing sign-change effects of population size on mutator favorability.
-% Subsequent experiments investigate how these dynamics vary based on initial mutator abundance and the availability of beneficial mutations.
-% Finally, experiments compare mutator dynamics between well-mixed population structure and spatial segregation into subpopulations connected by migration.
-
-% \subsection{Scaling Population Size}
-% \label{sec:scaling-population-size}
-
-% In a first set of experiments, we tested the capability of our model to reproduce the qualitative regimes of mutator dynamics across population scales identified by \cite{raynes2018sign}.
-% In the first regime, where population size is very small, fixation of mutator and nonmutator alleles is nearly equiprobable, owing to the overwhelming influence of stochastic effects.
-% Subsequently, in medium-sized populations, mutators become disfavored on account of increased power of selection becoming in penalizing the increased mutational load imposed by mutator alleles.
-% Finally, in sufficiently large populations, a sign-change fitness effect occurs and mutator fixation becomes overwhelmingly favored.
-% This effect occurs in asexual populations because population size increases the probability of at least one mutator discovering a beneficial mutation, and so ``hitch-hiking'' to sweep out nonmutators.
-
-% \input{fig/wse-inf-one}
-
-% As shown in the left panel of Figure \ref{fig:wse-inf-one:32}, our simulations reproduce the sign-change fitness effect described by \cite{raynes2018sign}.
-% Leveraging the capabilities of WSE accelerator hardware, we tested population sizes several orders of magnitude beyond those reported in \cite{raynes2018sign}.
-% For these experiments, 2D population structure was used with 50/50 initialization.
-% In line with expectations, no further qualitative differences in mutator fixation probability emerged in these larger population sizes, which ranged up to 1 billion agents.
-% For the largest-scale trials, shown in the left panel of Figure \ref{fig:wse-inf-one:2048}, an increased subpopulation size of 2,048 agents per deme was used.
-% As such, in these trials, note that coarsened spacing between surveyed population sizes obscures the sign-change fitness effect near the lower bound of population size.
-
-% \subsection{Restricting Adaptive Potential}
-% \label{sec:restricting-adaptive-potential}
-
-% \subsection{Major Results}
-
-% \input{fig/avail-ben-muts-gen}
-
-% Given that experiments conducted on the WSE platform all involve 2D spatial structure, we implemented an additional set of GPU-based experiments to compare findings with well-mixed population structure.
-% Figure \ref{fig:avail-ben-muts-gen} overviews these results.
-% Although experiments ranged up to a smaller maximum population size on the GPU platform, detected regimes of mutator dynamics are consistent with WSE-based experiments.
-% Comparing on the basis of spatial structure, we find fixation probabilities to be near-identical between GPU-based trials using 2D and well-mixed structure across surveyed conditions.
-% % https://github.com/mmore500/hypermutator-dynamics/blob/484ac79f35baf10e4acc52babee836d10ab50bdb/binder/cupy-5050-traits.ipynb
-% We find significant divergence in fixation probability between spatial structure treatments only for population size 20,736 with adaptive potential of one available beneficial mutation (Mann-Whitney U test; $p < 0.0005$; Bonferroni corrected $p < 0.01$).
-
-% \subsection{Effects of Background Mutator Prevalence}
-% \label{sec:background-hypermutator-prevalence}
-
-% \input{fig/denovo-5050-conditions-combined}
-
-% Having observed large population size prevent mutator fixation in competition experiments under conditions of limited adaptive potential, we next sought to assess how such an effect might manifest in more naturalistic conditions.
-% For this purpose, we relaxed the initial condition that mutators begin ``50/50'' in equal proportion to nonmutators.
-% Instead, we allowed mutators to enter the population at a low background rate \cite{desai2011balance,johnson1999approach}, an experimental design common with several previous simulation studies of hypermutator dynamics \cite{wylie2009fixation,tenaillon1999mutators}.
-% To provide a conservative reflection of the impact of mutator allele rarity, we used a mutator allele introduction probability of $10^{-6}$ per replication event.
-% Figure \ref{fig:denovo-5050-conditions-combined} compares mutator fixation probabilities between 50/50 and \textit{de novo} conditions.
-% Trials were conducted with 2D spatial structure on the WSE platform.
-% With 256 agents per deme, population size scaled up to 136 million agents.
-
-% Prior work analyzing conditions with infinite adaptive potential has shown per-capita favorability of mutator traits to be density independent \cite{raynes2019selection}.
-% As such, a lower background rate for mutator alleles should be expected to substantially reduce the net probability of mutator fixation.
-% In line with expectations, the \textit{de novo} treatment substantially reduces mutator fixation.
-% Under \textit{de novo} conditions, nonmutators reliably resist mutator fixation in populations of 136 million through more than 10 beneficial mutations available.
-% Under 50/50 conditions, by contrast, mutators begin to fix in these large populations past 2 beneficial mutations available.
-
-% We performed sensitivity analysis of our findings to the underlying counter-based genome model used.
-% For this purpose, we implemented an alternate ``site-explicit'' model where the probability of discovering a beneficial mutation scales proportionally to the number available.
-% As shown in Supplementary Figure \ref{fig:wse-site-explicit-counter-based}, results were generally consistent between the two genome models.
-% Notably, though, under the ``site-explicit'' model, mutator alleles are more frequently fixed within the smallest surveyed population size under 50/50 initialization.
-
-% % ^^^ https://github.com/mmore500/hypermutator-dynamics/blob/5e904ac2fbbd4b41a0ad679883fc1a63af71c00c/binder/wse-denovo-spatial2d-explicitsite-timeseries.ipynb
-% To assess the magnitude of transient peak mutator concentrations across levels of adaptive potential, we performed an additional set of four-replicate simulations with adaptive potentials ranging from 2 to 10 available beneficial mutations.
-% For all replicates with 6 or more available beneficial mutations, mutators peaked beyond 50\% prevalence (Figure \ref{fig:peaksweep}).
-
-% \subsection{Effects of Population Structure}
-% \label{sec:population-structure}
-
-% In a final set of experiments, we extended our earlier trials with 50/50 initialization to assess the impact of spatial structure on mutator dynamics where mutators are initially rare.
-% In particular, we were curious whether removal of population structure would negligibly affect mutator fixation probabilities, as was earlier the case with 50/50 initialization.
-% Trials conducted in this experiment comparing the 2D deme structure to fully well-mixed conditions were conducted using GPU evaluation.
-% As a result, population sizes ranged only up to 15 million.
-
-% \input{fig/spatial-structure-combined}
-
-% Figure \ref{fig:spatial-structure-combined} plots increase in mutator fixation probability with available adaptive potential across a spectrum of population sizes.
-% Interestingly, spatial structure does cause results to differ substantially under \textit{de novo} conditions.
-% We find that in large nonmutator populations of 15 million with well-mixed structure, fixation probability of mutator alleles becomes appreciable with adaptive potential of only 5 available beneficial mutations.
-% This is not the case for large populations with 2D deme structure, where fixation of mutator alleles become appreciable above 10 available beneficial mutations.
-% For intermediate population sizes of 186,000 agents, however, an opposite effect occurs: spatial structure raises the probability of mutator fixation across the board of available adaptive potential compared to well-mixed conditions.
-
-% These findings contrast with previous modeling work assuming unlimited adaptive potential, which predicts that so long as any level of connectivity exists between subpopulations, spatial structure boosts mutator fixation probability \cite{raynes2019migration}.
-% One possible explanation for why spatial structure can decrease mutator fixation probability is in extending fixation times, which extends the opportunity for nonmutators to exploit available adaptive potential before being driven to extinction.
-% This described effect notably aligns with findings from \textit{in vivo} evolution experiments with \textit{E. coli} that show that migration barriers delaying introduction of mutator strains into nonmutator populations can reduce mutator advantage \cite{lechat2006escherichia}.
-
-% On a separate front, it is surprising that substantial differences in mutator dynamics between deme-structured and well-mixed conditions only become apparent with low initial mutator frequency, given the established expectation of fitness effects of mutator alleles as a density- and number-independent \cite{raynes2019selection}.
-% While one possible explanation may be in part that detectability of fitness effect magnitudes is masked by sensitivity limitations of the 50/50 assay, this result draws into question the extent to which density-independence of mutator fitness effects generalizes to scenarios with limited adaptive potential and spatial structure.
-% In future work, it would be informative to test whether the impact of spatial structure where mutators are rare stems from heterogeneity in the spatial distribution of mutator clades or from slowing the spread of beneficial alleles.
