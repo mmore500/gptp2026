@@ -2,32 +2,32 @@
 
 \input{fig/wse.tex}
 
-In addition to scale-up synchronization overhead, as highlighted in our first case study (Section \ref{moreno:sec:case1}), best-effort strategies can also be leveraged to work within constraints of limited memory capacity and data loss from hardware faults.
-These factors have come to the fore in ongoing work with agent-based evolution experiments harnessing the Cerebras Wafer-Scale Engine.
+In addition to large-scale synchronization overhead, as highlighted in our first case study (Section \ref{moreno:sec:case1}), best-effort strategies can also be leveraged to work within constraints of memory scarcity and data loss from hardware faults.
+These factors have come to the fore in ongoing work conducting agent-based evolution experiments on the Cerebras Wafer-Scale Engine.
 This hardware, primarily developed to target AI/ML workloads, exemplifies the emerging promise of massively-distributed compute power, but also lays bare accompanying challenges.
 
 The 3rd generation Cerebras WSE comprises a $755 \times 1{\small,}170$ mesh of 880{\small,}000 networked compute cores (Processing Elements or PEs; Figure \ref{moreno:fig:wse:architecture}).
 PEs execute independently with CPU-like control flow, and use specialized on-chip routing to stream 32-bit messages between neighbors with single-cycle latency. % with vectorized integer and floating-point operations available
 % In the context of digital evolution, this architecture is a natural fit for island model schemes \cite{bennett1999building}, where each PE hosts an independent subpopulation.
-The chip shards on-device memory, 44GB in aggregate, uniformly across PEs --- each equipped with a private, single-cycle access memory bank \cite{buitrago2021neocortex}.
-Thus, work on WSE must contend with scarce per-PE memory (48kB each), extreme decentralization (direct communication only among local neighbors), and restricted host-device connectivity (only at grid perimeter).
+The chip shards on-device memory, 44GB in aggregate, uniformly across PEs --- each equipped with a private memory bank with single-cycle read/write access \cite{buitrago2021neocortex}.
+Thus, work on WSE must contend with scarce memory per PE (48kB each), extreme decentralization (direct communication only among local neighbors), and restricted host-device connectivity (only at grid perimeter).
 Physical stresses placed on hardware by kilowatts of thermal loading \cite{la2020cerebras}, coupled with sheer component count of transistors, also make hardware faults a practical concern.
 
-Our second case study explores application of best-effort strategies to overcome these challenges in collecting data from digital evolution experiments conducted on Wafer-Scale Engine hardware.
+Our second case study explores best-effort strategies in overcoming these challenges to collect data from digital evolution experiments conducted on Wafer-Scale Engine hardware.
 Experiments draw unreported details from two projects:
 \begin{enumerate}
-\item work with dummy genomes comprising a simple 32-bit floating point value, as a substrate to test methodology for best-effort tracking of evolutionary history \cite{singhvi2025scalable}, and
+\item work with a dummy agent model, as a substrate to test methodology for best-effort tracking of evolutionary history \cite{singhvi2025scalable}, and
 \item experiments scaling up an existing agent-based model of mutator allele dynamics to explore outcomes in large, spatially-distributed populations \cite{raynes2018sign}.
 \end{enumerate}
 Both of these applications target the Wafer-Scale Engine using an island model scheme \cite{bennett1999building}, where each PE hosts an independent subpopulation and randomly-selected population members are migrated between neighboring PEs.
-Detail on experiment configurations underlying TODO accompanies in supplementary material \cite{moreno_2026_trust}.
+Detail on experiment configurations underlying these applications accompanies in supplementary material \cite{moreno_2026_trust}.
 
-Case study material is presented in four parts.
+Case study material is organized in four parts.
 \begin{enumerate}
-\item description of approach to characterize evolutionary history based on population samples,
-\item resilience of this approach to sparse, asynchronous device-to-host subsamples of population composition and to a persistent localized data-corruption fault arising across runs in a hardware testbed,
-\item use of evolutionary tracking to complement direct QoS tracking to identify emergent biases in population dynamics, and
-\item details of a generalized ring buffer approach used to efficiently record time series data of \textit{a priori} unknown duration by accepting best-effort granularization of data in the case that duration exceeds available capacity.
+\item description of approach to characterize evolutionary history based on population samples (Section \ref{moreno:sec:case2:hstrat}),
+\item resilience of this approach to sparse, asynchronous device-to-host subsamples of population composition and to a persistent localized data-corruption fault arising across runs in a hardware testbed (Section \ref{moreno:sec:case2:missing}),
+\item use of evolutionary tracking to complement direct QoS tracking to identify emergent biases in population dynamics (Section \ref{moreno:sec:case2:bias}), and
+\item details of a generalized ring buffer approach used to efficiently record time series data of \textit{a priori} unknown duration by accepting best-effort granularization of data in the case that duration exceeds available capacity (Section \ref{moreno:sec:case2:timeseries}).
 \end{enumerate}
 
 % In the second case study incorporating best-effort strategies into the memory- and bandwidth-constrained Cerebras Wafer-Scale Engine, we found that
@@ -39,68 +39,74 @@ Case study material is presented in four parts.
 
 
 \subsection{Reconstruction-based Estimation of Evolutionary History}
+\label{moreno:sec:case2:hstrat}
 
 % The structure of evolutionary ancestry relationships arising in phylogenies is a cornerstone of inquiry in modern evolutionary biology .
 % Phylogenetic analysis is integral to much of evolution research, whether conducted \textit{in vivo} or \textit{in silico} \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lewinsohnStatedependentEvolutionaryModels2023a,lenski2003evolutionary}.
-In our experiments, each PE hosted an independent subpopulation, introducing the challenge of tracking evolution spread across the PEs, with migrations stitching the independent subpopulations into one massively-distributed meta-population spread across the chip.
-As with other applications on the WSE, on-device memory and host--device bandwidth are key limitations --- not all data can be kept, and not all data can be transmitted.
+In our WSE-based experiments, migrations stitching independent subpopulations into a single massive meta-population introduce substantial logistical challenges of tracking evolutionary history as it unfolds.
 In this setting, it is particularly important for instrumentation to be lightweight --- resources used for instrumentation (e.g., memory, bandwidth) directly compete with memory used to increase population size and bandwidth that is useful for facilitating on-device migrations.
+Even were sufficient memory and bandwidth available, the entirety of evolutionary history --- upwards of a quadrillion replication events in some simulations \cite{singhvi2025scalable} --- would be of negligible tractability in its entirety.
+Instead, means are needed to extract a reasonable subsample or summary of evolutionary history.
 
-To explore this challenge, we focus on one particular type of historical information specific to, and critical to, evolutionary studies \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lenski2003evolutionary}: phylogeny, which we briefly review.
+In evolutionary studies, a key aspect of history is phylogeny --- the structure of ancestry relationships among organisms \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lenski2003evolutionary}.
+In addition to tracing the history of evolutionary events \cite{dawkins2016ancestor,hedges2015tree,hinchliff2015synthesis}, phylogenetic analysis can characterize more general questions about the underlying mode and tempo of evolution \cite{felsenstein1985phylogenies}.
+Classically, these analyses have been applied to investigation of species-level macroevolutionary dynamics revolving around speciation and extinction rates; however, population- and organism-level dynamics can also be inferred, such as the spread of beneficial mutations within a population or fitness parameters like growth rate and probability of survival \cite{genthon2023cell, levy2015quantitative,stadler2013recovering,Moreno2025ecology,lewinsohnStatedependentEvolutionaryModels2023a,nozoe2017inferring}.
+Phylogeny data has also been leveraged in proactive efforts to influence the trajectory of evolving populations \cite{Scott2018}.
+% Such scenarios arise in clinical and public health fields, managing therapy-resistant tumors, antibiotic resistance, and infectious disease \cite{Scott2018}.
+% Notable objective-oriented contexts arise also in computing, where evolution can be leveraged as an optimization algorithm.
+In application-oriented evolutionary computation, phylogenetic information can be used directly in guiding evolution toward desired outcomes \cite{lalejini2024phylogeny,lalejini2024runtime,murphy2008simple,burke2003increased}, but also indirectly to provide diagnostics for choosing appropriate configuration and parameterizations \cite{hernandez2022can,shahbandegan2022untangling}.
+Digital simulations also serve as a useful testbed for bioinformatics methodologies, as ground truth conditions may be configured directly \cite{daudey2024aevol,haller2023slim,moreno2025extending}.
 
-In addition to tracing the history of notable evolutionary events such as extinctions or evolutionary innovations \cite{TODO}, phylogenetic analysis has allowed characterization of more general questions about the underlying mode and tempo of evolution \cite{Moreno2025ecology}.
-Classically, these analyses have been applied to investigation of species-level macroevolutionary dynamics revolving around speciation and extinction rates; however, population- and organism-level dynamics can also be inferred, such as the spread of beneficial mutations within a population or fitness parameters like growth rate and probability of survival \cite{genthon2023cell, levy2015quantitative,stadler2013recovering,moreno2023toward,lewinsohnStatedependentEvolutionaryModels2023a}. %TODO instantaneous fitness paper
-Phylogeny data has also been leveraged in proactive efforts to influence the trajectory of evolving populations.
-Such scenarios arise in clinical and public health fields, managing therapy-resistant tumors, antibiotic resistance, and infectious disease \cite{Scott2018,TODO}. %@emily?
-Notable objective-oriented contexts arise also in computing, where evolution can be leveraged as an optimization algorithm.
-For such application-oriented evolutionary computation, phylogenetic information can be used directly in guiding evolution toward desired outcomes \cite{lalejini2024phylogeny,lalejini2024runtime,murphy2008simple,burke2003increased}, but also indirectly to provide diagnostics for choosing appropriate configuration and parameterizations \cite{hernandez2022can,shahbandegan2022untangling}.
-Digital simulations also serve as a useful testbed for bioinformatics methodologies, as ground truth conditions may be configured directly \cite{daudey2024aevol,haller2023slim}.
-
-Our ultimate goal of building these ancestry trees is to provide visibility into large-scale evolution experiments running on the WSE.
-Structural composition of ancestry trees can reveal key evolutionary dynamics, such as discovery of beneficial mutations (adaptation).
-Notably, in this domain, phylogeny data underpins core metrics for measuring ongoing system change \cite{dolson2019modes}.
-In the bioinformatics testbed domain, which also makes heavy use of phylogeny data, limitations of simulation scale can obscure the relationships of population size and sampling density with sensitivity and accuracy \cite{moreno2025extending,TODO}.
-
-\subsection{Robustness of Best-effort Estimation of Evolutionary History}
+% Our ultimate goal of building these ancestry trees is to provide visibility into large-scale evolution experiments running on the WSE.
+% Structural composition of ancestry trees can reveal key evolutionary dynamics, such as discovery of beneficial mutations (adaptation).
+% Notably, in this domain, phylogeny data underpins core metrics for measuring ongoing system change \cite{dolson2019modes}.
+% In the bioinformatics testbed domain, which also makes heavy use of phylogeny data, limitations of simulation scale can obscure the relationships of population size and sampling density with sensitivity and accuracy \cite{moreno2025extending,TODO}.
 
 To address challenges storing and moving data on WSE, we have adopted strategies inspired by real-world experiments that assume data collection is expensive, limited, and non-deterministic.
 Robust existing methods and statistics for such ``inferential observability'' in field and lab biology make evolution simulations an ideal testbed for applications in HPC.
 
-Our approach to tracking ancestry (i.e., phylogenies) on WSE illustrates inferential observability in action. Rather than exhaustively tracking all parent-child relationships, we adopt an approach akin to how biologists reconstruct ancestry by comparing DNA sequences. Inspired by synthetic biologists \cite{Masuyama2019}, we use genome barcoding with single-bit markers to shrink memory footprint as low as 96 bits per organism \cite{moreno2022hstrat,moreno2022hereditary,moreno2025testing}.
-This ``hereditary stratigraphy'' approach supports sparse, flexible device-to-host sampling tailored to experimental objectives—for instance, collected through time or only the final time point.
+Our approach to tracking ancestry (i.e., phylogenies) on WSE illustrates inferential observability in action. Rather than exhaustively tracking all parent-child relationships, we adopt an approach akin to how biologists reconstruct ancestry by comparing DNA sequences
+Inspired by synthetic biologists \cite{Masuyama2019}, we use genome barcoding with single-bit markers to shrink memory footprint as low as 96 bits per organism \cite{moreno2022hereditary,moreno2025testing}.
+This ``hereditary stratigraphy'' approach supports sparse, flexible device-to-host sampling tailored to experimental objectives --- for instance, collected through time or only the final time point.
+
+\subsection{Robustness of Best-effort Estimation of Evolutionary History}
+\label{moreno:sec:case2:missing}
 
 In recent work with WSE, we have proven out the viability of this approach in scaling to 1 billion sampled/1 quadrillion total taxa \cite{singhvi2025scalable}.
 However, this approach is flexible with respect to the number of taxa sampled, and can even be used down to a single pair of genomes alone to estimate their relatedness history.
 This flexibility allows for prioritization of bandwidth for device-to-host transfers and also with on-device migration during runtime based on project priorities.
-With memory footprint reasonably as low as 64 bits per tracked genome, such a simulation could be done that uses a lightweight, fixed-size footprint at runtime and simply builds a phylogeny from the end-state population \cite{TODO}.
+With memory footprint reasonably as low as 64 bits per tracked genome, such a simulation could be done that uses a lightweight, fixed-size footprint at runtime and simply builds a phylogeny from the end-state population.
 
-Likewise, if samples from across runtime are desired, because the data required is flexible, transfers can be conducted asynchronously without imposing slowdown on the rest of the computation.
+Likewise, if samples from across runtime are desired, because the data required is flexible, transfers can be conducted asynchronously without imposing slowdown on the rest of the computation (Figure \ref{moreno:fig:wse:phylogeny}).
 Using this strategy, in fact, it is possible to receive more data than is actually practical to work with.
-As such, for example when we were creating the billion-tip phylogenies, the transfer rate was such that we actually only kept around TODO\% of transferred genomes and discarded the rest to economize on storage, memory, and avoid overwhelming our downstream analyses (Figure \ref{moreno:fig:wse:TODO})
+As such, for example when we were creating the billion-tip phylogenies, we processed 8{\small,}750 generations / sec with an aggregate population size of 190.8 million.
+During the 10 minute runtime, around 9{\small,}000 device-to-host transfers elapsed, of which we kept only 1
+approximately the transfer rate was such that we actually only kept around 1{\small,}250 snapshots of one genome per PE --- a downsampling rate of around one in one million of all agents elapsed.
 
 % TODO: integrate or remove this raw data note
-8{\small,}750 generations / sec with an aggregate population size of 190.8 million; 1{\small,}250 memcpy layers sampling one genome per PE kept from ~9{\small,}250 cycles.
+% 8{\small,}750 generations / sec with an aggregate population size of 190.8 million; 1{\small,}250 memcpy layers sampling one genome per PE kept from ~9{\small,}250 cycles.
 
 Another benefit in being flexible as to needed data is tolerance to hardware faults.
-While individual processor cores, under current silicon-based technologies, are generally highly reliable, where computational work involves hundreds of thousands or millions of corresponding parts, hardware failures become inevitable --- particularly when hardware is subject to round the clock thermal load under data center conditions.
+While individual processor cores, under current silicon-based technologies, are generally highly reliable, where computational work involves hundreds of thousands or millions of corresponding parts, hardware failures become inevitable --- particularly when hardware is subject to round the clock workloads.
 
 The Cerebras Wafer-Scale Engine is no exception.
 In fact, this is an essential consideration in its manufacturing process --- because so many processors are printed onto a single chip, it is inevitable that some will be unusable due to manufacturing defects.
-Therefore, the manufacturing process for the Wafer-Scale Engine instead involves printing more cores than are needed, and then using tests to exclude those that are defective and route around them \cite{TODO}.
-Likewise, at runtime, strain on the hardware is significant --- in order to house the chip, a special suspension is needed to allow the chip to physically expand and contract within its housing based on thermal status \cite{TODO}.
+Therefore, the manufacturing process for the Wafer-Scale Engine instead involves printing more cores than are needed, and then using tests to exclude those that are defective and route around them \cite{cerebras2025yield}.
+Likewise, at runtime, strain on the hardware is significant --- in order to house the chip, a special suspension is needed to allow the chip to physically expand and contract within its housing based on thermal status \cite{la2020cerebras}.
 
 As such, and analogous to other HPC hardware, it is therefore not surprising to encounter apparent hardware failures in deployment.
-When working with the CS-3 chip available to us under our allocation, we noted that after a certain date it began to impose bit-flip corruption into output data, which we confirmed through parity-check instrumentation.
-Parity-check instrumentation confirmed that this apparent corruption was specific to the device-host transfer and localized to a single row on the chip, not affecting the integrity of on-device data (Figure \ref{moreno:fig:wse:TODO}).
+When working with the CS-3 chip available to us under our allocation, we noted that sometime between Feb 20, 2026 and Feb 26, 2026 (on system \texttt{rwse1001-cs-sy01} hosted in Dallas, Tx) it began to impose bit-flip corruption into output data, which we confirmed through parity-check instrumentation.
+Parity-check instrumentation confirmed that this apparent corruption was specific to the device-host transfer and localized to a single row on the chip, not affecting the integrity of on-device data (Figure \ref{moreno:fig:wse:fault}).
 That is, the integrity of underlying simulation was not impinged --- only our ability to collect complete information from the chip.
 Simply excluding the small fraction of potentially-corrupt data allowed our experiments testing the spatial structure of reconstructed phylogenies (i.e., where organisms are physically sampled from on the chip) to continue without interruption.
 
-While the localized nature of this hardware fault allowed us to readily differentiate valid and invalid data, more general resilience to such faults could be accomplished with high confidence and low cost by using a checksum technique.
+While the localized nature of this hardware fault allowed ready isolation of potentially invalid data, more general resilience to such faults could be accomplished with high confidence and low cost by using a checksum technique.
 If elements of the compute pool that report data keep a running checksum across reported data, and then send in their end-state checksum, stored data can be audited against the final checksum and any collections of data from a compute element with invalid checksums can simply be excluded.
 
 \subsection{Detection of Bias in Population Dynamics}
+\label{moreno:sec:case2:bias}
 
-Finally, we resurface the theme of measuring quality-of-service metrics to identify potential biasing factors in a best-effort computation (Section \ref{moreno:sec:case1}).
+Next, we resurface the theme of measuring quality-of-service metrics to identify potential biasing factors in a best-effort computation (Section \ref{moreno:sec:case1}).
 Collecting spatial phylogeny data helped to flag an asymmetry in our island-model evolving population.
 Specifically, under neutral evolutionary conditions, we saw that lineages appeared biased towards migrating from bottom to top across the chip (Figure \ref{moreno:fig:wse:bias}).
 % Inspection of directional message counts confirmed that, indeed, directional asymmetry existed in the migration rates between islands (\ref{moreno:fig:wse:TODO}).
@@ -108,6 +114,7 @@ Having identified this bias, and noted that it could have a mild, but detectable
 In this case, symmetry in directional migration rates could be rectified in a simple manner --- without invoking global synchronization --- by simply restricting the send rate of each PE to its neighbor to the slowest among neighbors.
 
 \subsection{Best-effort Time Series Recording Using Generalized Ring Buffer}
+\label{moreno:sec:case2:timeseries}
 
 % Transient dynamics
 % % While this scheme allowed maximization of on-device resources, as a consequence the set of sampled time points varied depending on how long nonmutator alleles persisted.
@@ -118,13 +125,14 @@ In this case, symmetry in directional migration rates could be rectified in a si
 % This configuration yielded a net population size of 191 million agents.
 % In these trials, we probed the critical region where outcomes transition between nonmutator and mutator fixation, configuring adaptive potential between 12 and 16 available beneficial mutations.
 
-Within evolving microbial populations, genes that elevate mutation rate impose a fundamental trade-off: on one hand, increasing harmful mutations among offspring but, on the other, allowing more opportunities for rare beneficial mutations.
-Existing single-CPU agent-based simulation work suggests that increased population size should generally favor the proliferation of mutator alleles due to ``hitch-hiking'' effects associated with beneficial mutation discovery.
-However, in contrast to this expectation, this outcome is often not the case in large asexual populations found in nature.
-To address this knowledge gap, we leveraged the 850,000-processor Cerebras Wafer-Scale Engine (WSE) % TODO: verify core count (850,000 for WSE-2 vs. 880,000 for WSE-3 used elsewhere) to increase simulation scale up to 1.5 billion-agent populations.
-In benchmarks, WSE provided $294\times$ speedup over GPU and $111{,}091\times$ speedup over single-core CPU execution.
-Among other results, our experiments indicate that limitation of adaptive potential (i.e., few beneficial mutations available) can produce a tertiary regime where complete mutator allele takeover becomes disfavored at very large population sizes.
-Hardware for this experiment was WSE-2, rather than WSE-3.
+Within evolving microbial populations, genes that elevate mutation rate impose a fundamental trade-off: on one hand, increasing harmful mutations among offspring but, on the other, allowing more opportunities for rare beneficial mutations --- dynamics which are known to be sensitive to population size \cite{raynes2018sign}.
+% Existing single-CPU agent-based simulation work suggests that increased population size should generally favor the proliferation of mutator alleles due to ``hitch-hiking'' effects associated with beneficial mutation discovery.
+% However, in contrast to this expectation, this outcome is often not the case in large asexual populations found in nature.
+% To address this knowledge gap, we leveraged the 850,000-processor Cerebras Wafer-Scale Engine (WSE)'
+% In benchmarks, WSE provided $294\times$ speedup over GPU and $111{,}091\times$ speedup over single-core CPU execution.
+To explore how these processes unfold in the presence of spatial structure and limited adaptive potential, we harnessed WSE-2 hardware to run large-cale \cite{moreno2025hypermutatorsc}.
+% Among other results, our experiments indicate that limitation of adaptive potential (i.e., few beneficial mutations available) can produce a tertiary regime where complete mutator allele takeover becomes disfavored at very large population sizes.
+% Hardware for this experiment was WSE-2, rather than WSE-3.
 
 A key challenge in this work was balancing limited on-device memory between simulation content and data recording.
 For example, some experiments required time series measurements of mutator prevalence in PE subpopulations (Figure \ref{moreno:fig:wse:timeseries}).
@@ -138,12 +146,13 @@ Crucially, because recording duration (i.e., until extinction) is unknown \texti
 % To efficiently curate this single-bit data within per-PE memory limits while allowing  (as timing of extinction or fixation events is not known \textit{a priori}), we leveraged recently introduced ``DStream'' ring buffer data structures \cite{moreno2024algorithms}.
 % Crucially, this approach constrained memory use to a fixed-size buffer known \text{a priori}, while allowing recording to be dynamically halted when nonmutators were determined to be locally extinct (and restarted if they are reintroduced).
 % These allowed to be stored in flat memory without data structure overhead, with configurable distribution over time.
-Among other results, this data collection strategy revealed that even in circumstances where mutator alleles did not reliably fix, they could nonetheless transiently dominate population composition --- in some cases, reaching peaks upwards of 99.9\% frequency.
+Among other results, this data collection strategy revealed that even in circumstances where mutator alleles did not reliably fix, they could nonetheless transiently dominate population composition --- in some cases, reaching peaks upwards of 99.9\% frequency (Figure \ref{moreno:fig:wse:timeseries})..
 % at peak mutator prevalence, nonmutators transiently shrink to less than 0.1\% of population in experiments under conditions where mutators were initially rare but did not fix.
 % Given that biological analyses often amenable to incomplete data,
 
 Given limitations in studying real-world systems, biological analyses are often robust to coarsening and sampling.
 As such, we see significant opportunity in future work to more broadly explore how such best-effort data collection approaches can be applied to meet practical constraints of hardware accelerator device architectures.
+
 %  which we are interested in continuing to explore in future work.
 %Owing to rich statistical methods developed to overcome incomplete data in studying real-world systems,
 
