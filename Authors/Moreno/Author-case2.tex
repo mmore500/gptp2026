@@ -78,6 +78,7 @@ Likewise, if samples from across runtime are desired, because the data required 
 Using this strategy, in fact, it is possible to receive more data than is actually practical to work with.
 As such, for example when we were creating the billion-tip phylogenies, the transfer rate was such that we actually only kept around TODO\% of transferred genomes and discarded the rest to economize on storage, memory, and avoid overwhelming our downstream analyses (Figure \ref{moreno:fig:wse:TODO})
 
+% TODO: integrate or remove this raw data note
 8{\small,}750 generations / sec with an aggregate population size of 190.8 million; 1{\small,}250 memcpy layers sampling one genome per PE kept from ~9{\small,}250 cycles.
 
 Another benefit in being flexible as to needed data is tolerance to hardware faults.
@@ -120,7 +121,7 @@ In this case, symmetry in directional migration rates could be rectified in a si
 Within evolving microbial populations, genes that elevate mutation rate impose a fundamental trade-off: on one hand, increasing harmful mutations among offspring but, on the other, allowing more opportunities for rare beneficial mutations.
 Existing single-CPU agent-based simulation work suggests that increased population size should generally favor the proliferation of mutator alleles due to ``hitch-hiking'' effects associated with beneficial mutation discovery.
 However, in contrast to this expectation, this outcome is often not the case in large asexual populations found in nature.
-To address this knowledge gap, we leveraged the 850,000-processor Cerebras Wafer-Scale Engine (WSE) to increase simulation scale up to 1.5 billion-agent populations.
+To address this knowledge gap, we leveraged the 850,000-processor Cerebras Wafer-Scale Engine (WSE) % TODO: verify core count (850,000 for WSE-2 vs. 880,000 for WSE-3 used elsewhere) to increase simulation scale up to 1.5 billion-agent populations.
 In benchmarks, WSE provided $294\times$ speedup over GPU and $111{,}091\times$ speedup over single-core CPU execution.
 Among other results, our experiments indicate that limitation of adaptive potential (i.e., few beneficial mutations available) can produce a tertiary regime where complete mutator allele takeover becomes disfavored at very large population sizes.
 Hardware for this experiment was WSE-2, rather than WSE-3.
