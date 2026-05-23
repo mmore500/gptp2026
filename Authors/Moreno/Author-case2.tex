@@ -20,7 +20,7 @@ Experiments draw unreported details from two projects:
 \item experiments scaling up an existing agent-based model of mutator allele dynamics to explore outcomes in large, spatially-distributed populations \cite{raynes2018sign}.
 \end{enumerate}
 Both of these applications target the Wafer-Scale Engine using an island model scheme \cite{bennett1999building}, where each PE hosts an independent subpopulation and randomly-selected population members are migrated between neighboring PEs.
-Detail on experiment configurations underlying TODO accompanies in supplementary material \cite{moreno_2026_trust}.
+Detail on experiment configurations underlying TODO is provided in supplementary material \cite{moreno_2026_trust}.
 
 Case study material is presented in four parts.
 \begin{enumerate}
@@ -42,9 +42,9 @@ Case study material is presented in four parts.
 
 % The structure of evolutionary ancestry relationships arising in phylogenies is a cornerstone of inquiry in modern evolutionary biology .
 % Phylogenetic analysis is integral to much of evolution research, whether conducted \textit{in vivo} or \textit{in silico} \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lewinsohnStatedependentEvolutionaryModels2023a,lenski2003evolutionary}.
-In our experiments, each PE hosted an independent subpopulation, introducing the challenge of tracking evolution spread across the PEs, with migrations stitching the independent subplopulations into one massively-distributed meta-population spread across the chip.
+In our experiments, each PE hosted an independent subpopulation, introducing the challenge of tracking evolution spread across the PEs, with migrations stitching the independent subpopulations into one massively-distributed meta-population spread across the chip.
 As with other applications on the WSE, on-device memory and host--device bandwidth are key limitations --- not all data can be kept, and not all data can be transmitted.
-In this setting, it is particularly important for instrumentation to be lightweight --- resources used for instrumentation (e.g.,) memory, bandwidth) directly competes with memory used to increase population size and bandwidth that is useful for facilitting on-device migrations.
+In this setting, it is particularly important for instrumentation to be lightweight --- resources used for instrumentation (e.g., memory, bandwidth) directly compete with memory used to increase population size and bandwidth that is useful for facilitating on-device migrations.
 
 To explore this challenge, we focus on one particular type of historical information specific to, and critical to, evolutionary studies \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lenski2003evolutionary}: phylogeny, which we briefly review.
 
@@ -71,20 +71,20 @@ This ``hereditary stratigraphy'' approach supports sparse, flexible device-to-ho
 
 In recent work with WSE, we have proven out the viability of this approach in scaling to 1 billion sampled/1 quadrillion total taxa \cite{singhvi2025scalable}.
 However, this approach is flexible with respect to the number of taxa sampled, and can even be used down to a single pair of genomes alone to estimate their relatedness history.
-This fleixibility allows for prioritization of bandwidth for device-to-hust transfers and also with on-device migration during runtime based on project priorities.
-With memory footprint reasonably as low as 64 bits per tracked genome, such a simulation could be done that uses a lightweight, fixed-size footprint at runtime and simply builds a phylogeny fromm the end-state population \cite{TODO}.
+This flexibility allows for prioritization of bandwidth for device-to-host transfers and also with on-device migration during runtime based on project priorities.
+With memory footprint reasonably as low as 64 bits per tracked genome, such a simulation could be done that uses a lightweight, fixed-size footprint at runtime and simply builds a phylogeny from the end-state population \cite{TODO}.
 
-Likewise, if samples from across runtime are desired, because the data reqwuired is flexible, transfers can be conducted asynchronously without imposing slowdown on the rest of the comutation.
+Likewise, if samples from across runtime are desired, because the data required is flexible, transfers can be conducted asynchronously without imposing slowdown on the rest of the computation.
 Using this strategy, in fact, it is possible to receive more data than is actually practical to work with.
-As such, for example when we were creating the billion-tip phylogenies, the transfer rate was such that we actually only kept around TODO\% of transffered genomes and discarded tghe rest to economize on storage, memory, and avoid overwhelming our downstream analyses(Figure \ref{moreno:fig:wse:TODO})
+As such, for example when we were creating the billion-tip phylogenies, the transfer rate was such that we actually only kept around TODO\% of transferred genomes and discarded the rest to economize on storage, memory, and avoid overwhelming our downstream analyses (Figure \ref{moreno:fig:wse:TODO})
 
 8{\small,}750 generations / sec with an aggregate population size of 190.8 million; 1{\small,}250 memcpy layers sampling one genome per PE kept from ~9{\small,}250 cycles.
 
 Another benefit in being flexible as to needed data is tolerance to hardware faults.
-While individual processor cores, under current silicon-based technologies, are generally highly reliable, where computational work involves hundreds of thousands or millions of corresponding parts, hardware failures become inevietable --- particularly when hardware is subject to round the clock thermal loadd under data center conditions.
+While individual processor cores, under current silicon-based technologies, are generally highly reliable, where computational work involves hundreds of thousands or millions of corresponding parts, hardware failures become inevitable --- particularly when hardware is subject to round the clock thermal load under data center conditions.
 
 The Cerebras Wafer-Scale Engine is no exception.
-In fact, this is an essential consideration in its manufacturing process --- because so many processors are printed onto a single chip, it is inevietable that some will be unusable due to manufacturing defects.
+In fact, this is an essential consideration in its manufacturing process --- because so many processors are printed onto a single chip, it is inevitable that some will be unusable due to manufacturing defects.
 Therefore, the manufacturing process for the Wafer-Scale Engine instead involves printing more cores than are needed, and then using tests to exclude those that are defective and route around them \cite{TODO}.
 Likewise, at runtime, strain on the hardware is significant --- in order to house the chip, a special suspension is needed to allow the chip to physically expand and contract within its housing based on thermal status \cite{TODO}.
 
@@ -92,19 +92,19 @@ As such, and analogous to other HPC hardware, it is therefore not surprising to 
 When working with the CS-3 chip available to us under our allocation, we noted that after a certain date it began to impose bit-flip corruption into output data, which we confirmed through parity-check instrumentation.
 Parity-check instrumentation confirmed that this apparent corruption was specific to the device-host transfer and localized to a single row on the chip, not affecting the integrity of on-device data (Figure \ref{moreno:fig:wse:TODO}).
 That is, the integrity of underlying simulation was not impinged --- only our ability to collect complete information from the chip.
-Simply excluding the small fraction of potentially-corrupt data allowed our experiments testing the spatial structure of reconstruted phylogenies (i.e., where organissms are physically sampled from on the chip) to continue without interruption.
+Simply excluding the small fraction of potentially-corrupt data allowed our experiments testing the spatial structure of reconstructed phylogenies (i.e., where organisms are physically sampled from on the chip) to continue without interruption.
 
 While the localized nature of this hardware fault allowed us to readily differentiate valid and invalid data, more general resilience to such faults could be accomplished with high confidence and low cost by using a checksum technique.
-If elements of the compute pool that report dasta keep a running checksum across reported data, and then send in their end-state checksum, stored dasta can be audited against the final checksum and any collections of dasta from a compute element with invalid checksums can simply be excluded.
+If elements of the compute pool that report data keep a running checksum across reported data, and then send in their end-state checksum, stored data can be audited against the final checksum and any collections of data from a compute element with invalid checksums can simply be excluded.
 
 \subsection{Detection of Bias in Population Dynamics}
 
 Finally, we resurface the theme of measuring quality-of-service metrics to identify potential biasing factors in a best-effort computation (Section \ref{moreno:sec:case1}).
-Collecting spatial phylogeny dasta helped to flag an asymmetry in our island-model evolving population.
+Collecting spatial phylogeny data helped to flag an asymmetry in our island-model evolving population.
 Specifically, under neutral evolutionary conditions, we saw that lineages appeared biased towards migrating from bottom to top across the chip (Figure \ref{moreno:fig:wse:bias}).
 % Inspection of directional message counts confirmed that, indeed, directional asymmetry existed in the migration rates between islands (\ref{moreno:fig:wse:TODO}).
 Having identified this bias, and noted that it could have a mild, but detectable systematic large-scale effect on evolution, we were able to take action to ameliorate this.
-In this case, symmetry in directional migration rates could be rectified fon a simple manner --- without invoking global synchronization --- by simply restricting the send rate of each PE to its neighbor to the slowest among neighbors.
+In this case, symmetry in directional migration rates could be rectified in a simple manner --- without invoking global synchronization --- by simply restricting the send rate of each PE to its neighbor to the slowest among neighbors.
 
 \subsection{Best-effort Time Series Recording Using Generalized Ring Buffer}
 
@@ -123,7 +123,7 @@ However, in contrast to this expectation, this outcome is often not the case in 
 To address this knowledge gap, we leveraged the 850,000-processor Cerebras Wafer-Scale Engine (WSE) to increase simulation scale up to 1.5 billion-agent populations.
 In benchmarks, WSE provided $294\times$ speedup over GPU and $111{,}091\times$ speedup over single-core CPU execution.
 Among other results, our experiments indicate that limitation of adaptive potential (i.e., few beneficial mutations available) can produce a tertiary regime where complete mutator allele takeover becomes disfavored at very large population sizes.
-Hardware for this experiment was WSE-2, rather than WSE-3.g
+Hardware for this experiment was WSE-2, rather than WSE-3.
 
 A key challenge in this work was balancing limited on-device memory between simulation content and data recording.
 For example, some experiments required time series measurements of mutator prevalence in PE subpopulations (Figure \ref{moreno:fig:wse:timeseries}).
