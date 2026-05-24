@@ -2,7 +2,7 @@
 
 \input{fig/wse.tex}
 
-In addition to large-scale synchronization overhead, as highlighted in our first case study (Section \ref{moreno:sec:case1}), best-effort strategies can also be leveraged to work within constraints of memory scarcity and data loss from hardware faults.
+In addition to synchronization costs, as highlighted in our first case study (Section \ref{moreno:sec:case1}), best-effort strategies can also be leveraged to accomodate constraints of memory scarcity and data loss from hardware faults.
 These factors have come to the fore in ongoing work conducting agent-based evolution experiments on the Cerebras Wafer-Scale Engine.
 This hardware, primarily developed to target AI/ML workloads, exemplifies the emerging promise of massively-distributed compute power, but also lays bare accompanying challenges.
 
@@ -124,7 +124,7 @@ However, as illustrated in this example, instrumentation-level analyses in best-
 % Inspection of directional message counts confirmed that, indeed, directional asymmetry existed in the migration rates between islands (\ref{moreno:fig:wse:TODO}).
 
 
-\subsection{Best-effort Time Series Recording Using Generalized Ring Buffer}
+\subsection{Best-effort Time Series Recording}
 \label{moreno:sec:case2:timeseries}
 
 % Transient dynamics
@@ -136,20 +136,22 @@ However, as illustrated in this example, instrumentation-level analyses in best-
 % This configuration yielded a net population size of 191 million agents.
 % In these trials, we probed the critical region where outcomes transition between nonmutator and mutator fixation, configuring adaptive potential between 12 and 16 available beneficial mutations.
 
-Within evolving microbial populations, genes that elevate mutation rate impose a fundamental trade-off: on one hand, increasing harmful mutations among offspring but, on the other, allowing more opportunities for rare beneficial mutations --- dynamics which are known to be sensitive to population size \cite{raynes2018sign}.
+Within evolving microbial populations, genes that elevate mutation rate, on one hand, increase harmful mutations among offspring but, on the other, create opportunities for rare beneficial mutations ---  a fundamental trade-off known to be sensitive to population size \cite{raynes2018sign}.
 % Existing single-CPU agent-based simulation work suggests that increased population size should generally favor the proliferation of mutator alleles due to ``hitch-hiking'' effects associated with beneficial mutation discovery.
 % However, in contrast to this expectation, this outcome is often not the case in large asexual populations found in nature.
 % To address this knowledge gap, we leveraged the 850,000-processor Cerebras Wafer-Scale Engine (WSE)'
 % In benchmarks, WSE provided $294\times$ speedup over GPU and $111{,}091\times$ speedup over single-core CPU execution.
-To explore how these processes unfold in the presence of spatial structure and limited adaptive potential, we harnessed WSE-2 hardware to run large-cale \cite{moreno2025hypermutatorsc}.
+To explore how selection acts on such ``mutator alleles'' in spatially-structured populations, we harnessed WSE-2 hardware to run large-scale agent-based experiments \cite{moreno2025hypermutatorsc}.
 % Among other results, our experiments indicate that limitation of adaptive potential (i.e., few beneficial mutations available) can produce a tertiary regime where complete mutator allele takeover becomes disfavored at very large population sizes.
 % Hardware for this experiment was WSE-2, rather than WSE-3.
 
 A key challenge in this work was balancing limited on-device memory between simulation content and data recording.
-For example, some experiments required time series measurements of mutator prevalence in PE subpopulations (Figure \ref{moreno:fig:wse:timeseries}).
-To economize memory use, we applied recently developed algorithms that generalize ring buffer storage to efficiently perform systematic temporal downsampling \cite{moreno2024algorithms,gunther2014algorithm}.
+For example, some experiments required time series measurements of mutator prevalence in PE subpopulations.
+To economize memory use, we applied algorithms that generalize ring buffer storage to efficiently perform systematic temporal downsampling \cite{moreno2024algorithms,gunther2014algorithm}.
 Successive local samples are recorded as single bits within a flat, fixed-size buffer --- with no bookkeeping overhead.
-Crucially, because recording duration (i.e., until extinction) is unknown \textit{a priori}, this approach dynamically coarsens recording density via overwrites once storage capacity is reached --- strictly bounding memory use.
+Crucially, because recording duration (i.e., until mutator allele extinction) is unknown \textit{a priori}, this approach dynamically coarsens recording density via overwrites once storage capacity is reached --- strictly bounding memory use.
+
+Among other results, this data collection strategy revealed that even in circumstances where mutator alleles did not reliably fix, they could nonetheless transiently dominate population composition --- in some cases, reaching peaks upwards of 99.9\% frequency (Figure \ref{moreno:fig:wse:timeseries}).
 
 % Crucially, given extinction timings are unknown \textit{a priori}, after storage capacity is reached, this approach  a representative online downsample, of configurable composition, is dynamically coarsened once capacity is reached.
 % We configured each processor element to sample a genome from its local population and record its mutator allele status (i.e., a binary value as either a non- or mutator).
@@ -157,13 +159,13 @@ Crucially, because recording duration (i.e., until extinction) is unknown \texti
 % To efficiently curate this single-bit data within per-PE memory limits while allowing  (as timing of extinction or fixation events is not known \textit{a priori}), we leveraged recently introduced ``DStream'' ring buffer data structures \cite{moreno2024algorithms}.
 % Crucially, this approach constrained memory use to a fixed-size buffer known \text{a priori}, while allowing recording to be dynamically halted when nonmutators were determined to be locally extinct (and restarted if they are reintroduced).
 % These allowed to be stored in flat memory without data structure overhead, with configurable distribution over time.
-Among other results, this data collection strategy revealed that even in circumstances where mutator alleles did not reliably fix, they could nonetheless transiently dominate population composition --- in some cases, reaching peaks upwards of 99.9\% frequency (Figure \ref{moreno:fig:wse:timeseries})..
 % at peak mutator prevalence, nonmutators transiently shrink to less than 0.1\% of population in experiments under conditions where mutators were initially rare but did not fix.
 % Given that biological analyses often amenable to incomplete data,
 
-Given limitations in studying real-world systems, biological analyses are often robust to coarsening and sampling.
-As such, we see significant opportunity in future work to more broadly explore how such best-effort data collection approaches can be applied to meet practical constraints of hardware accelerator device architectures.
-As with our applications in phylogeny data, robust existing methods and statistics for such ``inferential observability'' in field and lab biology make evolution simulations an ideal testbed for applications in HPC.
+Given limitations in studying real-world systems, biological analyses are often subject to imperfect partial observation \cite{yoccoz2001monitoring}.
+As such, opportunity exists to explore how sampling designs and statistical techniques developed to overcome these limitations can help more specifically target data collection from large-scale digital evolution experiments, perhaps through trigger- or query-based mechanisms.
+
+% As with our applications in phylogeny data, robust existing methods and statistics for such ``inferential observability'' in field and lab biology make evolution simulations an ideal testbed for applications in HPC.
 
 %  which we are interested in continuing to explore in future work.
 %Owing to rich statistical methods developed to overcome incomplete data in studying real-world systems,
