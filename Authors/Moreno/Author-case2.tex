@@ -81,24 +81,23 @@ For experiments benchmarking barcode-based phylogeny restruction \cite{singhvi20
 This approach allowed available bandwidth capacity to be dynamically balanced with existing on-chip traffic.
 Experiments evaluated a population size of 190.8 million for 5 million generations, elapsing around 8{\small,}750 generations per second walltime.
 D2H tranfers sampled one genome per PE, and completed on the order of fifteen times per second --- yielding 9{\small,}000 snapshots over the course of 10 minute runtime.
-This volume, nearly 8 billion genomes harvested in total, exceeded downstream capacity, and so was downsampled to 1 billion genomes (~0.0001\% of cumulative individuals).
+This volume of havested genomes, nearly 8 billion in total, exceeded downstream capacity, and so was thinned on a rolling basis to 1 billion genomes (~0.0001\% of cumulative individuals).
 
-Another benefit in being flexible as to needed data is tolerance to hardware faults.
-While individual processor cores, under current silicon-based technologies, are generally highly reliable, where computational work involves hundreds of thousands or millions of corresponding parts, hardware failures become inevitable --- particularly when hardware is subject to round the clock workloads.
+Another practical benefit of reconstruction-based analysis is resilience to data loss from hardware faults.
+Reported phylogeny experiments were conducted using system \texttt{rwse1001-cs-sy01} hosted in Cerebras Cloud.
+Between February 20th and 26th, 2026 this hardware began to produce unreliable D2H transfers localized along row 410 between columns 0 and 248 (Figure \ref{moreno:fig:wse:fault}).
+Between 5 and 6\% of 32-bit values copied from this region encountered bit-flip errors, corrupting around 0.03\% of overall extracted genomes.
+Runtime parity checks confirmed that this phemenon did not compromise integrity of on-device simulation, only capability to collect complete data from the chip.
 
-The Cerebras Wafer-Scale Engine is no exception.
-In fact, this is an essential consideration in its manufacturing process --- because so many processors are printed onto a single chip, it is inevitable that some will be unusable due to manufacturing defects.
-Therefore, the manufacturing process for the Wafer-Scale Engine instead involves printing more cores than are needed, and then using tests to exclude those that are defective and route around them \cite{cerebras2025yield}.
-Likewise, at runtime, strain on the hardware is significant --- in order to house the chip, a special suspension is needed to allow the chip to physically expand and contract within its housing based on thermal status \cite{la2020cerebras}.
+In this case, best-effort resilience allowed work to continue uninterrupted during the following two months the chip remained in service.
+While narrow localization simplified handling of this particular fault, a minimally invasive checksum strategy could be used to handle more generalized transfer faults with low runtime cost:
+each PE would maintain a running checksum over its exported data, and faults could be detected (at coarse granularity, barring rare collisions) by collecting and auditing final checksum values.
 
-As such, and analogous to other HPC hardware, it is therefore not surprising to encounter apparent hardware failures in deployment.
-When working with the CS-3 chip available to us under our allocation, we noted that sometime between Feb 20, 2026 and Feb 26, 2026 (on system \texttt{rwse1001-cs-sy01} hosted in Dallas, Tx) it began to impose bit-flip corruption into output data, which we confirmed through parity-check instrumentation.
-Parity-check instrumentation confirmed that this apparent corruption was specific to the device-host transfer and localized to a single row on the chip, not affecting the integrity of on-device data (Figure \ref{moreno:fig:wse:fault}).
-That is, the integrity of underlying simulation was not impinged --- only our ability to collect complete information from the chip.
-Simply excluding the small fraction of potentially-corrupt data allowed our experiments testing the spatial structure of reconstructed phylogenies (i.e., where organisms are physically sampled from on the chip) to continue without interruption.
-
-While the localized nature of this hardware fault allowed ready isolation of potentially invalid data, more general resilience to such faults could be accomplished with high confidence and low cost by using a checksum technique.
-If elements of the compute pool that report data keep a running checksum across reported data, and then send in their end-state checksum, stored data can be audited against the final checksum and any collections of data from a compute element with invalid checksums can simply be excluded.
+Hardware faults are an inescapable consideration in modern high-performance computing \cite{gupta2017failures,navaux2023challenges}, with upwards of daily occurence in large systems \cite{kokolis2025revisiting}.
+Faults are typically handled by checkpoint rollbacks \cite{gupta2017failures,zhu2025understanding} --- in flagship workloads, consuming on the order of 100PB of high-bandwidth disk capacity \cite{frontiere2025cosmological}.
+Further, in highly integrated hardware accelerator platforms, such as the WSE, challenges are compounded by the fact that small component failures can compromise much larger hardware units \cite{cerebras2025yield}.
+Where computation can be structured to gracefully degrade under disruption, such costs can be avoided.
+Fault robustness may also enable future compatibility with emerging computational substrates that operate at limited fidelity \cite{markovi2020physics,ackley2011pursue,dreslinski2010near}.
 
 \subsection{Detection of Bias in Population Dynamics}
 \label{moreno:sec:case2:bias}
