@@ -16,7 +16,7 @@ Physical stresses placed on hardware by kilowatts of thermal loading \cite{la202
 Our second case study explores best-effort strategies in overcoming these challenges to collect data from digital evolution experiments conducted on Wafer-Scale Engine hardware.
 Experiments draw unreported details from two projects:
 \begin{enumerate}
-\item work with a dummy agent model, as a substrate to test methodology for best-effort tracking of evolutionary history \cite{singhvi2025scalable}, and
+\item work with a dummy agent model, as a vehicle to test methodology for best-effort tracking of evolutionary history \cite{singhvi2025scalable}, and
 \item experiments scaling up an existing agent-based model of mutator allele dynamics to explore outcomes in large, spatially-distributed populations \cite{raynes2018sign}.
 \end{enumerate}
 Both of these applications target the Wafer-Scale Engine using an island model scheme \cite{bennett1999building}, where each PE hosts an independent subpopulation and randomly-selected population members are migrated between neighboring PEs.
@@ -62,29 +62,26 @@ Digital simulations also serve as a useful testbed for bioinformatics methodolog
 % Notably, in this domain, phylogeny data underpins core metrics for measuring ongoing system change \cite{dolson2019modes}.
 % In the bioinformatics testbed domain, which also makes heavy use of phylogeny data, limitations of simulation scale can obscure the relationships of population size and sampling density with sensitivity and accuracy \cite{moreno2025extending,TODO}.
 
-To address challenges storing and moving data on WSE, we have adopted strategies inspired by real-world experiments that assume data collection is expensive, limited, and non-deterministic.
-Robust existing methods and statistics for such ``inferential observability'' in field and lab biology make evolution simulations an ideal testbed for applications in HPC.
-
-Our approach to tracking ancestry (i.e., phylogenies) on WSE illustrates inferential observability in action. Rather than exhaustively tracking all parent-child relationships, we adopt an approach akin to how biologists reconstruct ancestry by comparing DNA sequences
-Inspired by synthetic biologists \cite{Masuyama2019}, we use genome barcoding with single-bit markers to shrink memory footprint as low as 96 bits per organism \cite{moreno2022hereditary,moreno2025testing}.
-This ``hereditary stratigraphy'' approach supports sparse, flexible device-to-host sampling tailored to experimental objectives --- for instance, collected through time or only the final time point.
+To collect ancestry data from WSE experiments, we have adopted strategies inspired by real-world experiments that assume data collection is expensive, limited, and non-deterministic.
+Rather than exhaustively tracking parent-child relationships \cite{dolson2023phylotrackpy}, we adopt an approach akin to how biologists reconstruct ancestry by comparing DNA sequences --- which we call ``hereditary stratigraphy.''
+Inspired synthetic biology techniques for lineage tracking \cite{Masuyama2019}, we use genome barcoding with single-bit markers to shrink memory footprint as low as 96 bits per organism \cite{moreno2025testing}; once budgeted storage capcity fills, barcodes are progressively pruned to maintain an approximate record \cite{moreno2024algorithms}.
+Barcodes remain chronologically attributed, allowing estimation of the point in time when lineages diverged from conflicts \cite{moreno2022hereditary}.
+Reconstsruction of phylogenies comprising many taxa can then be accomplished through an agglomerative trie-based algorithm \cite{moreno2023toward}.
 
 \subsection{Robustness of Best-effort Estimation of Evolutionary History}
 \label{moreno:sec:case2:missing}
 
-In recent work with WSE, we have proven out the viability of this approach in scaling to 1 billion sampled/1 quadrillion total taxa \cite{singhvi2025scalable}.
-However, this approach is flexible with respect to the number of taxa sampled, and can even be used down to a single pair of genomes alone to estimate their relatedness history.
-This flexibility allows for prioritization of bandwidth for device-to-host transfers and also with on-device migration during runtime based on project priorities.
-With memory footprint reasonably as low as 64 bits per tracked genome, such a simulation could be done that uses a lightweight, fixed-size footprint at runtime and simply builds a phylogeny from the end-state population.
+A key advantage of reconstruction-based evolutionary analysis is flexibility with respect to the number of taxa (phylogenetic units) sampled.
+At the extremum, evolutionary divergence can be estimated between a single pair of taxa.
+Ultimately, necessary data collection arises from experimental objectives --- for instance, taxa may be sampled through time, or only the final time point.
 
-Likewise, if samples from across runtime are desired, because the data required is flexible, transfers can be conducted asynchronously without imposing slowdown on the rest of the computation (Figure \ref{moreno:fig:wse:phylogeny}).
-Using this strategy, in fact, it is possible to receive more data than is actually practical to work with.
-As such, for example when we were creating the billion-tip phylogenies, we processed 8{\small,}750 generations / sec with an aggregate population size of 190.8 million.
-During the 10 minute runtime, around 9{\small,}000 device-to-host transfers elapsed, of which we kept only 1
-approximately the transfer rate was such that we actually only kept around 1{\small,}250 snapshots of one genome per PE --- a downsampling rate of around one in one million of all agents elapsed.
-
-% TODO: integrate or remove this raw data note
-% 8{\small,}750 generations / sec with an aggregate population size of 190.8 million; 1{\small,}250 memcpy layers sampling one genome per PE kept from ~9{\small,}250 cycles.
+Because it tolerates sparse, irregular sampling, reconstruction-based analysis is well suited to best-effort data collection strategies.
+% on large WSE-generated datasets
+For experiments benchmarking barcode-based phylogeny restruction \cite{singhvi2025scalable}, sample genomes were gathered from WSE-based simulation on a rolling basis using asynchronous device-to-host (D2H) transfers (Figure \ref{moreno:fig:wse:phylogeny}).
+This approach allowed available bandwidth capacity to be dynamically balanced with existing on-chip traffic.
+Experiments evaluated a population size of 190.8 million for 5 million generations, elapsing around 8{\small,}750 generations per second walltime.
+D2H tranfers sampled one genome per PE, and completed on the order of fifteen times per second --- yielding 9{\small,}000 snapshots over the course of 10 minute runtime.
+This volume, nearly 8 billion genomes harvested in total, exceeded downstream capacity, and so was downsampled to 1 billion genomes (~0.0001\% of cumulative individuals).
 
 Another benefit in being flexible as to needed data is tolerance to hardware faults.
 While individual processor cores, under current silicon-based technologies, are generally highly reliable, where computational work involves hundreds of thousands or millions of corresponding parts, hardware failures become inevitable --- particularly when hardware is subject to round the clock workloads.
@@ -152,6 +149,7 @@ Among other results, this data collection strategy revealed that even in circums
 
 Given limitations in studying real-world systems, biological analyses are often robust to coarsening and sampling.
 As such, we see significant opportunity in future work to more broadly explore how such best-effort data collection approaches can be applied to meet practical constraints of hardware accelerator device architectures.
+As with our applications in phylogeny data, robust existing methods and statistics for such ``inferential observability'' in field and lab biology make evolution simulations an ideal testbed for applications in HPC.
 
 %  which we are interested in continuing to explore in future work.
 %Owing to rich statistical methods developed to overcome incomplete data in studying real-world systems,
@@ -168,4 +166,3 @@ As such, we see significant opportunity in future work to more broadly explore h
 % Where nonmutators persist, they re-establish via concentric growth from surviving pockets (panel \ref{fig:dynamics:no-fixation}).
 % This TODO allowed us to assess the fact that mutators transiently peak at well above the majority of population composition.
 % \input{fig/peaksweep}
-
