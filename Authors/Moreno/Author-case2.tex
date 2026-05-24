@@ -103,12 +103,27 @@ If elements of the compute pool that report data keep a running checksum across 
 \subsection{Detection of Bias in Population Dynamics}
 \label{moreno:sec:case2:bias}
 
-Next, we resurface the theme of measuring quality-of-service metrics to identify potential biasing factors in a best-effort computation (Section \ref{moreno:sec:case1}).
-Collecting spatial phylogeny data helped to flag an asymmetry in our island-model evolving population.
-Specifically, under neutral evolutionary conditions, we saw that lineages appeared biased towards migrating from bottom to top across the chip (Figure \ref{moreno:fig:wse:bias}).
+In addition to benchmarking the speed of barcode-based reconstruction on large wafer-scale-generated datasets, we wished to perform further work to validate the plausibility of reconstructed phylogenies.
+While earlier CPU-based work has extensively validated underlying methodology against ground truth comparisons \cite{moreno2025testing}, at scale on the WSE ground truth data was not available.
+So, instead, we ran simulations under different evolutionary conditions and looked more generally at the structure of the phylogeny.
+Under conditions of local migration, one pattern that we would expect to see in a phylogeny is spatial proximity among related taxa \cite{novembre2008genes,grundler2025geographic}.
+
+We began by examining evolutionary histories under neutral conditions, where no advantageous mutations were available.
+Under these conditions, lineage histories constitute a random walk in space \cite{lemey2010phylogeography}.
+Color-coding \cite{steiger2015explorative} by the position of samples on the WSE  a surprising pattern, where parallel lineages appeared to disproportionately transition through common gradients (left panels, Figure \ref{moreno:fig:wse:bias}).
+Closer inspection of sample lineages revealed that many progressed physically across the chip from bottom-to-top (right panels, Figure \ref{moreno:fig:wse:bias}), consistent with a scenario where migration in this direction was slightly more likely.
+
+This finding demonstrates the importance of diagnostic checks on the structure of underlying computation.
+% Such bias can be easily prevented by throttling each PEs outgoing migration rates to their slowest direction, which we have enacted for future simulations.
+% Having identified this bias, and noted that it could have a mild, but detectable systematic large-scale effect on evolution, we were able to take action to ameliorate this.
+% In this case, symmetry in directional migration rates could be rectified in a simple manner --- without invoking global synchronization --- by simply restricting the send rate of each PE to its neighbor to the slowest among neighbors.
+While Quality of Service metrics can flag this kind of issue, their interpretation requires testing against particular hypotheses for biases.
+A key direction for future work should be curation of a standardized panel of QoS diagnostic tests --- such as incoming/outgoing traffic imbalance --- that provide a general-purpose starting point to characterize QoS dynamics and flag potential asymmetries and anomalies.
+However, as illustrated in this example, instrumentation-level analyses in best-effort systems should be coupled with sekptical inspection of simulation dynamics to identify potential biasing factors in a best-effort computation to guard against unknown unknowns.
+% Collecting spatial phylogeny data helped to flag an asymmetry in our island-model evolving population.
+% Specifically, under neutral evolutionary conditions, we saw that lineages appeared biased towards migrating from bottom to top across the chip (Figure \ref{moreno:fig:wse:bias}).
 % Inspection of directional message counts confirmed that, indeed, directional asymmetry existed in the migration rates between islands (\ref{moreno:fig:wse:TODO}).
-Having identified this bias, and noted that it could have a mild, but detectable systematic large-scale effect on evolution, we were able to take action to ameliorate this.
-In this case, symmetry in directional migration rates could be rectified in a simple manner --- without invoking global synchronization --- by simply restricting the send rate of each PE to its neighbor to the slowest among neighbors.
+
 
 \subsection{Best-effort Time Series Recording Using Generalized Ring Buffer}
 \label{moreno:sec:case2:timeseries}

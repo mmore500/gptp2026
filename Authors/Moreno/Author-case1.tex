@@ -240,4 +240,3 @@ The first step to resolving local asymmetries and anomalies is detecting and dia
 In the case of the detected intranode imbalance, the \texttt{cpu-bind} SLURM flag can be used to specify process locality with respect to NUMA domains.
 In the case of the detected internode imbalance, outgoing message rate from one process to another could be throttled to match (or slightly exceed) traffic received in the reverse direction.
 Alternatively, such asymmetries could simply be recorded and factored into interpretation of ultimate computed results.
-A key direction for future work should be curation of a standardized panel of QoS diagnostic tests --- such as incoming/outgoing traffic imbalance --- that provide a general-purpose starting point to characterize QoS dynamics and flag significant asymmetries and anomalies.
