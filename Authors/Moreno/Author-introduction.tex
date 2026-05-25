@@ -1,57 +1,55 @@
 \section{Introduction} \label{moreno:sec:introduction}
 
 Relative to instances of digital evolution \textit{in silico}, biological evolution operates at nearly incomprehensible scale.
-It has been estimated that the biosphere hosts $5 \times 10^{30}$ living cells and on the order of $5.3 \times 10^{37}$ DNA base pairs --- a workload analogized to the storage and processing capacity of between $10^{20}$ and $10^{21}$ supercomputers \textit{circa} 2015 \cite{Landenmark2015}.
-Indeed, at present, detailed simulation at the scope of individual cells is only beginning to come into reach \cite{Thornburg2026}.
-As such, it is not surprising that many interesting biological processes remain beyond reach of satisfactory modeling experiments.
+It has been estimated that the biosphere hosts $5 \times 10^{30}$ living cells and on the order of $5.3 \times 10^{37}$ DNA base pairs --- a workload analogized to the storage and processing capacity of between $10^{20}$ and $10^{21}$ supercomputers circa 2015 \cite{Landenmark2015}.
+Indeed, at present, detailed simulation at the scope of a single biological cell is only beginning to materialize \cite{Thornburg2026}.
+As such, many interesting biological processes remain out of reach of satisfactory modeling experiments.
 Although serial simulation code can achieve rapid generational turnover and high replicate count, generally this is at the cost of small population sizes when working with rich agent models \cite{moreno2022engineering}.
 In the context of ecology, evolutionary biology, and allied fields, key questions such as many-species eco-evolutionary dynamics and evolutionary transitions in individuality (e.g., multicellularity, eusociality) hinge on cross-scale dynamics \cite{penczykowski2016understanding,alizon2012modelling,schreiber2021cross}.
-Likewise, limitations of simulation scale have been highlighted in studying evolutionary transitions in individuality, eco-evolutionary dynamics, and rare evolutionary innovations \cite{taylor2016open,dolson2021digital,taylor2019evolutionary} --- questions key, in particular, to the topic of open-ended evolution --- how and why evolution generates ongoing complexity, novelty, and adaptation \cite{ackley2014indefinitely}.
-Indeed, evidence suggests that the generative potential of at least some digital evolution systems is --- at least in part --- meaningfully constrained by available compute resources \cite{channon2019maximum}.
+In the field of artifical life, these questions are key, in particular, to the topic of open-ended evolution --- how and why evolution generates ongoing complexity, novelty, and adaptation \cite{taylor2016open,dolson2021digital,taylor2019evolutionary,ackley2014indefinitely}.
+Indeed, evidence suggests that the generative potential of at least some digital evolution systems is --- at least in part --- meaningfully constrained by computational scale \cite{channon2019maximum}.
 
-By analogy, in retrospect, connectionist artificial intelligence turns out to have been profoundly scale-dependent.
+In retrospect, connectionist approaches to artificial intelligence turn out to have been profoundly scale-dependent \cite{kaplan2020scaling}.
 The utility and ubiquity of ANNs have exploded in tandem with torrential growth in training set sizes, parameter counts, and training FLOPs \cite{marcus2018deep}.
-Recruitment of multi-GPU training for image classification, requiring particular accommodating adjustments to the underlying deep learning architecture, is commonly identified as the watershed moment in this transformation
- \cite{krizhevsky2012imagenet}.
-Commercial investment in AI capabilities then set in motion a virtuous cycle of further-enabling hardware advances \cite{jouppi2017datacenter}.
-Indeed, the scaling relationship between deep learning and training resources has itself become a major area of active study, with expectation for this virtuous cycle to continue through the foreseeable future \cite{kaplan2020scaling}.
+Recruitment of multi-GPU training for image classification, accomplished in tailoring underlying deep learning architecture to hardware, is commonly identified as the watershed moment in this transformation
+ \cite{krizhevsky2012imagenet}, which launched a decade of commercial investment in AI/ML infrastructure \cite{jouppi2017datacenter}.
+Commercial investment in AI capabilities then set in motion a virtuous cycle of further-enabling hardware advances .
 
-A major upshot of the deep learning race is the emergence of spectacularly capable next-generation compute accelerators affording hundreds of thousands of processing cores (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras)\cite{zhang2016cambricon,emani2021accelerating,jia2019dissecting,medina2020habana}.
-Although tailored expressly to deep learning workloads, these hardware platforms represent an exceptional opportunity to leapfrog progress on grand challenges in digital evolution and advance both hypothesis-driven explorations of multi-scale biological phenomena and application-driven evolutionary optimization targeting rugged, expensive problem domains.
-Indeed, rapid advances in the capability of accelerator devices, driven in particular by market demand for deep learning operations, are anticipated to drive advances in broader agent-based model capabilities writ large \cite{perumalla2022computer}.
-The emerging class of fabric-based accelerators, led by the 880,000 core Cerebras CS-3 Wafer-Scale Engine (WSE) \cite{lauterbach2021path,lie2022cerebras,TODOCS3}, holds particular promise as a vehicle for digital evolution.
+A major upshot of the deep learning race is the emergence of spectacularly capable next-generation compute accelerators affording up to hundreds of thousands of processing cores (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras)\cite{zhang2016cambricon,emani2021accelerating,jia2019dissecting,medina2020habana}.
+Although engineered around deep learning workloads, these hardware platforms have opportunity to benefit both hypothesis-driven explorations of digital evolution and application-driven evolutionary optimization.
+Indeed, rapid ongoing advances in the capability of accelerator devices are anticipated to advance the leading edge in broader domains of agent-based modeling (ABM) and high-performance computing (HPC) writ large \cite{perumalla2022computer,VanEssendelft2025}.
+% The emerging class of fabric-based accelerators, led by the 880,000 core Cerebras CS-3 Wafer-Scale Engine (WSE) \cite{lauterbach2021path,lie2022cerebras,TODOCS3}, holds particular promise as a vehicle for digital evolution.
 
-Next-generation computational hardware accelerators have demonstrated immense potential in testbed deployments \cite{VanEssendelft2025} and are transforming the leading edge of High-Performance Computing (HPC).
-These emerging platforms exploit highly-distributed on-chip dataflow architectures to achieve extraordinary computational throughput, at the cost of exacerbating strain on memory and bandwidth capacities.
-For instance, to pack 880,000 processors onto a single chip, Cerebras' Wafer-Scale Engine (WSE) platform provisions only 48kB of on-device memory per processor, requires multi-hop routing for point-to-point communication, and allows data export only from the chip periphery.
-The upcoming CS-3 chip, for instance, supports clustering potentially thousands of constituent accelerators --- potentially reaching upwards of a billion individually-programmable processors \cite{moore2024cerebras}.
-These constraints exemplify broader emerging challenges arising from trends in High-Performance Computing (HPC) where data volume and movement are becoming more expensive relative to compute \cite{Buluc2021}.
-Due to physical constraints associated with existing computing technology, over the last decades, high-performance computational capability has grown through scaling-out rather than souping-up \cite{sutter2005free}.
-As such, the computational capacity of high-performance computing (HPC) clusters has become increasingly dependent on the cooperation of larger and larger collections of hardware components.
+These emerging accelerator platforms exploit highly-distributed on-chip dataflow architectures to achieve high computational throughput, but this comes at the cost of aggravating challenges in locality and scarcity of on-device memory.
+For instance, to pack 880,000 processors onto a single chip, Cerebras' Wafer-Scale Engine (WSE) platform provisions only 48kB memory per processor, introduces multi-hop message routing, and allows data export only from the chip periphery.
+These constraints exemplify broader emerging challenges in High-Performance Computing (HPC) where data storage and movement are becoming more expensive relative to compute \cite{Buluc2021,khan2021analysis,gholami2024ai}.
 
-For many HPC applications, meeting these trends will require a fundamental overhaul of data handling algorithms.
-Effectively harnessing AI/ML accelerators for scientific computing workloads, however, poses substantial engineering challenges.
-One such challenge is tracking simulation dynamics that take place across a vast, highly-distributed fabric of memory-constrained processors --- a critical consideration, as simulation is useful insofar as it is interpretable and observable \cite{casti1997wouldbe}.
-Likewise, diagnostic information is necessary for understanding how evolutionary computation works and troubleshooting and fine-tuning it \cite{hernandez2022dossier,Hooker1995}.
+% Due to physical constraints associated with existing computing technology, over the last decades, high-performance computational capability has grown through scaling-out rather than souping-up \cite{sutter2005free}.
+% As such, the computational capacity of high-performance computing (HPC) clusters has become increasingly dependent on the cooperation of larger and larger collections of hardware components.
+
+Effectively harnessing AI/ML accelerators for scientific computing workloads thus poses substantial, but broadly pertinent, algorithm engineering challenges.
+In the arena of digital evolution, one such challenge is tracking simulation dynamics that take place across a vast, highly-distributed fabric of memory-constrained processors.
+While such dasta collection lies out the core implementation of a digital evolution system, it is nonetheless --- in many cases --- critical to its utility.
+In the case of hypothesis-driven digital evolution work, simulation is only scientifically useful insofar as it is interpretable and observable \cite{casti1997wouldbe}.
+Likewise, diagnostic information is necessary to tuning parameters, troubleshooting, and developing theory \cite{hernandez2022dossier,Hooker1995}.
 As digital evolution scales, so does the challenge of managing an exhaustive data record.
 Recent hardware trends only exacerbate matters, growing processing power while reducing the amount of RAM and disk storage available per core --- especially in accelerator-driven HPC architectures \cite{khan2021analysis,gholami2024ai}.
 For such architectures, host-device bandwidth and latency strongly impact performance \cite{kwon2018beyond}.
 Such concerns arise especially in work with the Cerebras WSE where only a small fraction of peripherally-located PEs interface to the host.
 
-In some regards, computational costs and constraints arising around data storage and accessibility in modern HPC resemble the logistical costs and constraints faced in research studying real-world systems.
+In some regards, computational costs and constraints arising around data storage and movement in HPC resemble the logistical costs and constraints faced in research studying real-world systems.
 Rather than ``complete,'' deterministic data observability, most real-world studies instead rely on dynamic, query-driven sampling, a paradigm we term ``inferential observability.''
-In exchange, this paradigm shift addresses device-to-host bandwidth/on-device storage limitations characteristic of hardware accelerators, enables on-the-fly prioritization of data collection, and tolerates intermittent disruption.
-Such approaches degrade gracefully under resource scarcity, system heterogeneity, and intermittent anomalies and faults characteristic of post-exascale computing.
-Untapped potential exists to translate and extend experimental design, sampling techniques, and statistical methods from natural sciences to facilitate extreme-scale scientific computing under bandwidth/memory constraint, runtime anomalies and hardware faults, and asymmetries in data accessibility.
+Such approaches degrade gracefully under resource scarcity, system heterogeneity, and intermittent anomalies and faults.
 
-Historically, most research using computational models has assumed complete observability of model state.
-Indeed, the ability to measure properties \textit{in silico} that would be impossible to observe \textit{in vitro} or \textit{in vivo} is a major benefit of computational models for scientific inquiry.
-However, as the scale of these models increases, the cost of data collection becomes a serious obstacle.
-Thus, experiments exist that are intractable in the real world because they rely on data that are physically impossible to measure, but are also intractable in digital models because storing the necessary data to answer the questions at hand is infeasible.
-We propose that, through careful algorithm development, we can solve this problem by recording a smaller amount of data that enables us to draw the desired scientific inferences at a fraction of the computational cost.
-Indeed, past a certain point, precision in data from computational models becomes of essentially negligible value, owing to arbitrary effects of stochasticity and fundamental limitations in correspondence between model and reality.
-Any computational resources invested in producing this excessive level of precision could be better used elsewhere.
-Trading a controlled amount of data precision for increased scalability and hardware accelerator compatibility would be highly worthwhile.
+By contrast, most research using computational models has historically assumed complete observability of model state.
+Indeed, the ability to measure properties \textit{in silico} that would be impossible to observe \textit{in vitro} or \textit{in vivo} is a major benefit of computational models for scientific inquiry \cite{lenski2003evolutionary}.
+% However, as the scale of these models increases, the cost of data collection becomes a serious obstacle.
+% Thus, experiments exist that are intractable in the real world because they rely on data that are physically impossible to measure, but are also intractable in digital models because storing the necessary data to answer the questions at hand is infeasible.
+% We propose that, through careful algorithm development, we can solve this problem by recording a smaller amount of data that enables us to draw the desired scientific inferences at a fraction of the computational cost.
+However, past a certain point, precision in data from computational models becomes of essentially negligible practical value.
+% owing to arbitrary effects of stochasticity and fundamental limitations in correspondence between model and reality.
+Necessary computational resources could be better used elsewhere, such that trading a controlled amount of data precision for increased scalability and hardware accelerator compatibility can be highly worthwhile.
+% invested in producing this excessive level of precision
 
 Inferential observability ties into the larger topic of best-effort computing, approaches to computing that relax the assumption of the reliable digital machine in which all steps in an algorithm correspond to deterministic logical transforms.
 This model has important benefits, in that (1) all computational experiments are not only qualitatively reproducible but in fact \textit{exactly} reproducible and (2) the computational process can be described purely logically irrespective of underlying hardware, making the nature of the computation being performed entirely transparent, and readily (fully) expressed through notational formalisms.
