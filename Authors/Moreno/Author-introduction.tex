@@ -29,30 +29,29 @@ These constraints exemplify broader emerging challenges in High-Performance Comp
 
 Effectively harnessing AI/ML accelerators for scientific computing workloads thus poses substantial, but broadly pertinent, algorithm engineering challenges.
 In the arena of digital evolution, one such challenge is tracking simulation dynamics that take place across a vast, highly-distributed fabric of memory-constrained processors.
-While such dasta collection lies out the core implementation of a digital evolution system, it is nonetheless --- in many cases --- critical to its utility.
+While such data: collection lies outside the core workload of a digital evolution system, it is nonetheless --- in many cases --- critical to its utility.
 In the case of hypothesis-driven digital evolution work, simulation is only scientifically useful insofar as it is interpretable and observable \cite{casti1997wouldbe}.
-Likewise, diagnostic information is necessary to tuning parameters, troubleshooting, and developing theory \cite{hernandez2022dossier,Hooker1995}.
-As digital evolution scales, so does the challenge of managing an exhaustive data record.
-Recent hardware trends only exacerbate matters, growing processing power while reducing the amount of RAM and disk storage available per core --- especially in accelerator-driven HPC architectures \cite{khan2021analysis,gholami2024ai}.
-For such architectures, host-device bandwidth and latency strongly impact performance \cite{kwon2018beyond}.
-Such concerns arise especially in work with the Cerebras WSE where only a small fraction of peripherally-located PEs interface to the host.
+Likewise, in the context of application-oriented evolutionary computation, diagnostic information is necessary to tuning parameters, troubleshooting, and developing theory \cite{hernandez2022dossier,Hooker1995}.
 
 In some regards, computational costs and constraints arising around data storage and movement in HPC resemble the logistical costs and constraints faced in research studying real-world systems.
 Rather than ``complete,'' deterministic data observability, most real-world studies instead rely on dynamic, query-driven sampling, a paradigm we term ``inferential observability.''
 Such approaches degrade gracefully under resource scarcity, system heterogeneity, and intermittent anomalies and faults.
 
 By contrast, most research using computational models has historically assumed complete observability of model state.
-Indeed, the ability to measure properties \textit{in silico} that would be impossible to observe \textit{in vitro} or \textit{in vivo} is a major benefit of computational models for scientific inquiry \cite{lenski2003evolutionary}.
+Indeed, the ability to measure properties \textit{in silico} that would be impossible to observe \textit{in vitro} or \textit{in vivo} is a major benefit of computational modeling \cite{lenski2003evolutionary}.
 % However, as the scale of these models increases, the cost of data collection becomes a serious obstacle.
 % Thus, experiments exist that are intractable in the real world because they rely on data that are physically impossible to measure, but are also intractable in digital models because storing the necessary data to answer the questions at hand is infeasible.
 % We propose that, through careful algorithm development, we can solve this problem by recording a smaller amount of data that enables us to draw the desired scientific inferences at a fraction of the computational cost.
 However, past a certain point, precision in data from computational models becomes of essentially negligible practical value.
 % owing to arbitrary effects of stochasticity and fundamental limitations in correspondence between model and reality.
-Necessary computational resources could be better used elsewhere, such that trading a controlled amount of data precision for increased scalability and hardware accelerator compatibility can be highly worthwhile.
+Necessary computational resources could be better used elsewhere, such that trading some data precision for increased scalability and hardware accelerator compatibility might be highly worthwhile.
 % invested in producing this excessive level of precision
 
+Discussion around ``approximate computing'' overlaps significantly with ``best-effort computing,'' although focusing more heavily on using algorithm design to shirk non-essential computation (i.e., reducing floating point precision, inexact memoization, etc.) \cite{mittal2016survey,menon2023approximate}.
+Likewise, ``randomized algorithms'' typically rely on pseudorandom number generation through deterministic functions, although these topics naturally intertwine with discussion of best-effort computing \cite{Buluc2021}.
+Indeed, software and hardware that relaxes guarantees of correctness and determinism --- a so-called ``best-effort model'' --- have been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.
 Inferential observability ties into the larger topic of best-effort computing, approaches to computing that relax the assumption of the reliable digital machine in which all steps in an algorithm correspond to deterministic logical transforms.
-This model has important benefits, in that (1) all computational experiments are not only qualitatively reproducible but in fact \textit{exactly} reproducible and (2) the computational process can be described purely logically irrespective of underlying hardware, making the nature of the computation being performed entirely transparent, and readily (fully) expressed through notational formalisms.
+This model has important benefits, in that (1) all computational experiments are not only qualitatively reproducible but in fact \textit{exactly} reproducible \cite{stodden2013resolving} and (2) the computational process can be described purely logically irrespective of underlying hardware, making the nature of the computation being performed entirely transparent, and readily (fully) expressed through notational formalisms.
 Already, however, high-performance computing increasingly strains the viability of the reliable digital machine approach to computing.
 With scale, it becomes increasingly difficult to orchestrate efficient use of available hardware and also provide reproducible results (or even near-perfectly reproducible results --- i.e., up to effects from floating point non-transitivity) consistent with models of computation as being performed by a reliable digital machine \cite{heroux2014toward}.
 Even if soft errors can be effectively eradicated --- or at least suppressed to a point of inconsequentiality --- the nondeterministic mechanics of fault recovery and dynamic task scheduling could conceivably make guaranteeing bitwise reproducibility at exascale effectively impossible, or at least an unreasonable engineering choice \cite{dongarra2014applied,Buluc2021}.
@@ -60,7 +59,7 @@ Nonetheless, the implicit assumption of the reliable digital machine model remai
 
 Be it just costly or simply a practical impossibility, the worsening burden of synchronization, fault recovery, and error correction begs the question of whether it is viable to maintain, or even to strive to maintain, the reliable digital machine model at scale.
 Indeed, software and hardware that relaxes guarantees of correctness and determinism --- a so-called ``best-effort model'' --- have been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.
-Discussion around ``approximate computing'' overlaps significantly with ``best-effort computing,'' although focusing more heavily on using algorithm design to shirk non-essential computation (i.e., reducing floating point precision, inexact memoization, etc.) \cite{mittal2016survey}.
+Discussion around ``approximate computing'' overlaps significantly with ``best-effort computing,'' although focusing more heavily on using algorithm design to shirk non-essential computation (i.e., reducing floating point precision, inexact memoization, etc.) \cite{mittal2016survey,menon2023approximate}.
 Likewise, ``randomized algorithms'' typically rely on pseudorandom number generation through deterministic functions, although these topics naturally intertwine with discussion of best-effort computing \cite{Buluc2021}.
 
 Discussion of best-effort computing can be largely conceptualized around three flavors of relaxation: data corruption, data attrition, and asynchrony (Figure \ref{moreno:fig:best-effort}).
