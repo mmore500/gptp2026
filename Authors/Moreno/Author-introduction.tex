@@ -62,7 +62,7 @@ More perniciously, however, beyond introducing stochastic noise, such relaxation
 Computation, in tandem, also becomes more opaque, as it can no longer be fully described by logical abstractions independent from the underlying execution context.
 
 Given these drawbacks, prudent integration of best-effort approaches will require careful consideration to uphold the integrity of underlying computation.
-We suggest, in particular, two mitigations: domain-appropriate scoping of allowed relaxations and, for relaxations that are incorporated, measurement of runtime quality of service (QoS).
+We suggest, in particular, two mitigations: domain-appropriate scoping of allowed relaxations and, for relaxations that are incorporated, measurement of runtime quality of service (QoS) \cite{karakus2017quality}.
 To structure discussion of these mitigations, we frame a best-effort system's runtime activity in three parts: (1) an underlying \textit{core computation}, (2) \textit{observation} of that computation's intermediate and final states, and (3) \textit{instrumentation} of hardware's actual behavior during execution (Figure \ref{moreno:fig:best-effort:components}).
 In the context of digital evolution, \textit{core computation} would comprise all runtime operations that influence the composition of an end-state population and \textit{observation} might include recording lineage histories, discrete evolutionary events, or aggregate population statistics.
 As for \textit{instrumentation}, possibilites include send/receive counters, timestamps, profiling traces, event logs, and records of exact hardware composition and configuration --- a topic returned to shortly.
@@ -73,23 +73,31 @@ The consequence of irregularity in observation, by contrast, is restricted to \t
 Likewise, the structure of observational blur can typically be more readily documented, reasoned about, and accounted for --- although complications can arise where resource utilization patterns driven by computational state bias observation.
 In exchange, best-effort observation strategies can enable efficiencies exploiting dynamic resource availability and data locality convenience, while providing fault robustness and capped-budget utilization guarantees.
 Such an \textit{inferential observability} paradigm thus allows an intermediate compromise in best-effort tradeoffs, which may suit a broader collection of possible use cases.
+\unskip\footnote{%
+Unique characteristics of epistemeological abstraction and causal contingency may suit digital evolution workloads to best-effort relaxations --- a point taken up in Section \ref{moreno:sec:conclusion}.
+}
 
-As for TODO
-Figure \ref{moreno:fig:best-effort} lists a few possible (non-exhaustive) quality-of-service metrics that can be collected inexpensively.
-We suggest four aspects of real-time behavior to monitor, with corresponding quality of service metrics \cite{karakus2017quality},
+As for aspects of runtime behavior that should be measured, an exhaustive treatment remains as future work.
+Instead, in this initial exploration, we consider four broad dimensions of quality of service (Figure \ref{moreno:fig:best-effort:qos}):
 \begin{itemize}
-  \item throughput,
-  \item latency,
-  \item attrition, and
-  \item bunching.
+  \item \textit{throughput}, computational operations processed per unit time;
+  \item \textit{latency}, communication delay between sender and receiver;
+  \item \textit{attrition}, data discarded or lost --- both in flight and at rest; and
+  \item \textit{bunching}, irregularity in the timing of communication.
 \end{itemize}
-(Formal definitions for these metrics follow in Section \ref{moreno:sec:case1}.)
-Based on these measurements, it is possible to tune simulation configuration such that quality of service remains within acceptable bounds, screen for systematic correlations between quality of service and simulation outcomes, provide a more informed interpretation for the nature of the computation actually being accomplished, and report conditions alongside findings to improve qualitative reproducibility.
+Definition of formal quality of service metrics follows in Section \ref{moreno:sec:case1}.
 
-To examine the trade-offs of best-effort high-performance computing for digital evolution that might arise in practice, and how rigorous instrumentation can help quantify these benefits and mitigate downsides, we will examine two case studies --- reported next.
+Likewise, broad considerations exist as to how quality of service should be anlayzed and interpreted.
+Runtime behavior may be considered in average, variance, extremes, and distribution across space and time in physical hardware and logical simulation content --- likely often supplemented by domain-specific considerations.
+In practice, quality of service metrics may be used to tune runtime configuration within acceptable bounds, flag anomolous hardware components, screen for problematic biases and correlations, facilitate empirical reproducibility, and interpret reported computations.
+We also suggest QoS to be reported alongside execution speed in scaling benchmarks, to characterize any performance-fidelity tradeoffs (see Section \ref{moreno:sec:case1:qos-scaling}).
 
-In the first case study, we use our proposed metrics to examine the best-effort characteristics of a multiprocessing-based best-effort framework to examine how its performance and quality-of-service scale and the robustness to hardware anomaly.
-In the second case study, we look at these strategies in action on the Cerebras Wafer-Scale Engine, and show how data collection and instrumentation can be used to flag and mitigate potential sources of bias.
+% empirical characteristics (scalability and runtime behavior) of
+To explore performance characteristics of best-effort HPC in practice, we present two case studies --- reported next.
+In the first case study, we use proposed QoS metrics to characterize runtime behavior of a best-effort multiprocessing framework for digital evolution experiments, testing the impact of best-effort relaxations on scaling efficiency.
+We also assess QoS robustness in tolerating anamolous hardware and scaling out to larger hardware pools.
+In the second case study, we demonstrate best-effort strategies in action on the Cerebras Wafer-Scale Engine, examining fault-robustness and detection of processing asymmetries.
+Discussion includes approximate tracking of spatiotemporal and phylogenetic evolutionary history.
 
 % The scope of what aspects of a computation are relaxed, and bounds on the relaxation, can be enforced.
 % For instance, in the case of the \textit{inferential observability} paradigm, a distinction is drawn between data collection and the underlying computation (Figure \ref{moreno:fig:best-effort}).
