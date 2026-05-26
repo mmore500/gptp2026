@@ -20,7 +20,7 @@ Although engineered around deep learning workloads, these hardware platforms hav
 Indeed, rapid ongoing advances in the capability of accelerator devices are anticipated to advance the leading edge in broader domains of agent-based modeling (ABM) and high-performance computing (HPC) writ large \cite{perumalla2022computer,VanEssendelft2025}.
 % The emerging class of fabric-based accelerators, led by the 880,000 core Cerebras CS-3 Wafer-Scale Engine (WSE) \cite{lauterbach2021path,lie2022cerebras,TODOCS3}, holds particular promise as a vehicle for digital evolution.
 
-These emerging accelerator platforms exploit highly-distributed on-chip dataflow architectures to achieve high computational throughput, but this comes at the cost of aggravating challenges in locality and scarcity of on-device memory.
+To achieve high computational throughput, these emerging accelerator platforms exploit highly-distributed on-chip dataflow architectures to achieve high computational throughput --- but at the cost of aggravating challenges in locality and scarcity of on-device memory.
 For instance, to pack 880,000 processors onto a single chip, Cerebras' Wafer-Scale Engine (WSE) platform provisions only 48kB memory per processor, introduces multi-hop message routing, and allows data export only from the chip periphery.
 These constraints exemplify broader emerging challenges in High-Performance Computing (HPC) where data storage and movement are becoming more expensive relative to compute \cite{Buluc2021,khan2021analysis,gholami2024ai}.
 
@@ -29,7 +29,7 @@ These constraints exemplify broader emerging challenges in High-Performance Comp
 
 Effectively harnessing AI/ML accelerators for scientific computing workloads thus poses substantial, but broadly pertinent, algorithm engineering challenges.
 In the arena of digital evolution, one such challenge is tracking simulation dynamics that take place across a vast, highly-distributed fabric of memory-constrained processors.
-While such data: collection lies outside the core workload of a digital evolution system, it is nonetheless --- in many cases --- critical to its utility.
+While such data collection lies outside the core workload of a digital evolution system, it is nonetheless --- in many cases --- critical to its utility.
 In the case of hypothesis-driven digital evolution work, simulation is only scientifically useful insofar as it is interpretable and observable \cite{casti1997wouldbe}.
 Likewise, in the context of application-oriented evolutionary computation, diagnostic information is necessary to tuning parameters, troubleshooting, and developing theory \cite{hernandez2022dossier,Hooker1995}.
 
@@ -47,51 +47,34 @@ However, past a certain point, precision in data from computational models becom
 Necessary computational resources could be better used elsewhere, such that trading some data precision for increased scalability and hardware accelerator compatibility might be highly worthwhile.
 % invested in producing this excessive level of precision
 
-Discussion around ``approximate computing'' overlaps significantly with ``best-effort computing,'' although focusing more heavily on using algorithm design to shirk non-essential computation (i.e., reducing floating point precision, inexact memoization, etc.) \cite{mittal2016survey,menon2023approximate}.
-Likewise, ``randomized algorithms'' typically rely on pseudorandom number generation through deterministic functions, although these topics naturally intertwine with discussion of best-effort computing \cite{Buluc2021}.
-Indeed, software and hardware that relaxes guarantees of correctness and determinism --- a so-called ``best-effort model'' --- have been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.
-Inferential observability ties into the larger topic of best-effort computing, approaches to computing that relax the assumption of the reliable digital machine in which all steps in an algorithm correspond to deterministic logical transforms.
-This model has important benefits, in that (1) all computational experiments are not only qualitatively reproducible but in fact \textit{exactly} reproducible \cite{stodden2013resolving} and (2) the computational process can be described purely logically irrespective of underlying hardware, making the nature of the computation being performed entirely transparent, and readily (fully) expressed through notational formalisms.
-Already, however, high-performance computing increasingly strains the viability of the reliable digital machine approach to computing.
-With scale, it becomes increasingly difficult to orchestrate efficient use of available hardware and also provide reproducible results (or even near-perfectly reproducible results --- i.e., up to effects from floating point non-transitivity) consistent with models of computation as being performed by a reliable digital machine \cite{heroux2014toward}.
-Even if soft errors can be effectively eradicated --- or at least suppressed to a point of inconsequentiality --- the nondeterministic mechanics of fault recovery and dynamic task scheduling could conceivably make guaranteeing bitwise reproducibility at exascale effectively impossible, or at least an unreasonable engineering choice \cite{dongarra2014applied,Buluc2021}.
-Nonetheless, the implicit assumption of the reliable digital machine model remains near-universal within parallel and distributed algorithm design for scientific computing \cite{chakradhar2010best}.
-
-Be it just costly or simply a practical impossibility, the worsening burden of synchronization, fault recovery, and error correction begs the question of whether it is viable to maintain, or even to strive to maintain, the reliable digital machine model at scale.
-Indeed, software and hardware that relaxes guarantees of correctness and determinism --- a so-called ``best-effort model'' --- have been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.
-Discussion around ``approximate computing'' overlaps significantly with ``best-effort computing,'' although focusing more heavily on using algorithm design to shirk non-essential computation (i.e., reducing floating point precision, inexact memoization, etc.) \cite{mittal2016survey,menon2023approximate}.
-Likewise, ``randomized algorithms'' typically rely on pseudorandom number generation through deterministic functions, although these topics naturally intertwine with discussion of best-effort computing \cite{Buluc2021}.
-
-Discussion of best-effort computing can be largely conceptualized around three flavors of relaxation: data corruption, data attrition, and asynchrony (Figure \ref{moreno:fig:best-effort}).
-Here, we focus on the latter two, as many types of possible data corruption can be effectively transformed into data attrition (e.g., via checksums, replicate operations, inverse checks, and skeptical assertions).
-With respect to data attrition, this may be considered either in-flight or at-rest.
-In the case of the former, data is dropped in transit due to network anomalies or dynamic congestion.
-In the case of the latter, data is dropped e.g., due to memory limitation --- which may vary device-to-device, be due to the rate at which real-time bandwidth is able to transfer data, or (in departing from the strict best-effort computation paradigm) be based on the timing between computational events (e.g., simulation dynamics).
-Finally, best-effort approaches may be considered in terms of relaxing synchronization requirements.
-In this case, the logical order of computational events may be allowed to depend on the rate at which processing on different compute elements proceeds or the duration it takes to deliver messages between compute elements.
-Under this model, the runtime strives to minimize message latency and loss, but guarantees elimination of neither.
-Instead, processes continue their compute work unimpeded and incorporate communication from collaborating processes as it happens to become available.
-
-We see best-effort communication and data attrition as a particularly fruitful target for investigation.
-Firstly, synchronization constitutes the root cause of many contemporary scaling bottlenecks, well below the mark of thousands or millions of cores where runtime failures and soft errors become critical considerations.
-Secondly, future HPC hardware is expected to provide more heterogeneous, more variable (i.e., due to power management), and generally lower (relative to compute) communication bandwidth \cite{gropp2013programming,acun2014parallel}; a best-effort approach suits these challenges.
-A best-effort communication model presents the possibility of runtime adaptation to effectively utilize available resources given the particular ratio of compute and communication capability at any one moment in any one rack.
-Likewise, these best-effort strategies allow the possibility of gracefully degrading to meet the memory and bandwidth limitations, e.g., of hardware accelerator devices.
-
-While departing from a strict deterministic computing model can reduce synchronization overhead, increase resource utilization (particularly under heterogeneous or fluctuating resource availability), reduce the cost of checkpointing and rollback to handle hardware failures, and --- at its extremum --- allow cost savings through reduced power use and longer acceptable hardware lifespans, it creates important challenges for reproducibility and bias that, if not considered carefully, can effectively entirely undermine the value of the computation being done in the first place.
-With respect to bias, it is possible and even in fact likely for errors to be non-uniformly distributed across the compute fabric and even to correlate with features of the underlying computation (e.g., compute intensity of certain simulation conditions) to create consequences that don't just increase the variance or reduce the bias of the simulation, but in fact systematically bias it --- often in unexpected or pernicious ways.
-Likewise, allowing the behavior of a computation to depend on underlying physical hardware doesn't just remove the exact reproducibility of a result, but can also undermine its qualitative reproducibility --- whether due to needing the particular type of hardware, the particular instance of hardware, or even the hardware at a certain point in time (e.g., under certain load conditions).
-These challenges can be especially pernicious in the case of evolutionary studies, where evolving genotypes can adopt strategies that depend on or even exploit unintentional features of their virtual environment \cite{Thompson1997,Lehman2020}.
-
 \input{fig/best-effort.tex}
 
-However, incorporating best-effort relaxations need not involve arbitrary \textit{laissez-faire} impacts on reproducibility and bias.
-The scope of what aspects of a computation are relaxed, and bounds on the relaxation, can be enforced.
-For instance, in the case of the \textit{inferential observability} paradigm, a distinction is drawn between data collection and the underlying computation (Figure \ref{moreno:fig:best-effort}).
-While it is still possible for unexpected bias to creep in if simulation conditions systematically influence the pattern of data that is collected, this scope is generally more conservative because it is generally possible to know the distribution of data that was collected (and often to have a well-founded outline of the data that was not) because collected data do not have a causal effect on later outcomes of the simulation and instead pertain only to the analysis and inference conducted \textit{post hoc}, it is generally more straightforward to account for the effects of potential best-effort variation on the underlying simulation.
-Likewise, even if best-effort relaxations are allowed into the underlying core computation, it is possible to pick and choose the aspects to target that are less likely to be sensitive to noise.
+Here, in addressing the challenge of efficiently scaling up digital evolution, we explore the application of \textit{best-effort computing}.
+This topic concerns relaxing assumption of the reliable digital machine model \cite{heroux2014toward}, in which all steps in an algorithm correspond to deterministic logical transforms --- a near-universal implicit assumption of scientific computing \cite{chakradhar2010best}.
+Though not our primary focus, best-effort computing intertwines with related topics of ``aproximate computing'' (which focuses more heavily on shaving away non-essential computation, e.g., floating point precision, inexact memoization, etc.) and ``randomized algorithms'' (which typically rely on pseudorandom number generation) \cite{Buluc2021,mittal2016survey,menon2023approximate}.
+As treated here, best-effort computation can be conceptualized around three pillars: asynchronicity (e.g., transmission delays, data races, jitter and straggler effects), data attrition (e.g., memory constraint, transmission failure, hardware crashout), and data corruption (e.g., soft errors, partial writes, analog approximation) (Figure \ref{moreno:fig:best-effort:types}).
+Due to the reasonable economy of error detection in conventional digital computing \cite{hamming1950error} (e.g., via error correcting codes, checksums, replicate operations, inverse checks, or skeptical assertions), our focus here is limited in narrowing the broader issue of data corruption into the simpler frame of data attrition \cite{ackley2013beyond}.
 
-Where relaxations are allowed, an obvious step to mitigate potential downsides from best-effort relaxations is to establish runtime instrumentation (Figure \ref{moreno:fig:best-effort}) to measure runtime conditions experienced.
+Best-effort software and hardware that relaxes guarantees of correctness and determinism has been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.  % TODO fault tolerance
+However, best-effort relaxation involves important drawbacks (Figure \ref{fig:moreno:fig:best-effort:tradeoffs}).
+Most obviously, best-effort computation abandons bitwise reproducibility --- the guarantee that repeating a computation will produce the same result.
+More perniciously, however, beyond introducing stochastic noise, such relaxation can also undermine scientific reprodicibility \cite{menon2025reproducibility}, by introducing transient irregularities or structural asymmetries that bias qualitative outcomes.
+Computation, in tandem, also becomes more opaque, as it can no longer be fully described by logical abstractions independent from the underlying execution context.
+
+Given these drawbacks, prudent integration of best-effort approaches will require careful consideration to uphold the integrity of underlying computation.
+We suggest, in particular, two mitigations: domain-appropriate scoping of allowed relaxations and, for relaxations that are incorporated, measurement of runtime quality of service (QoS).
+To structure discussion of these mitigations, we frame a best-effort system's runtime activity in three parts: (1) an underlying \textit{core computation}, (2) \textit{observation} of that computation's intermediate and final states, and (3) \textit{instrumentation} of hardware's actual behavior during execution (Figure \ref{moreno:fig:best-effort:components}).
+In the context of digital evolution, \textit{core computation} would comprise all runtime operations that influence the composition of an end-state population and \textit{observation} might include recording lineage histories, discrete evolutionary events, or aggregate population statistics.
+As for \textit{instrumentation}, possibilites include send/receive counters, timestamps, profiling traces, event logs, and records of exact hardware composition and configuration --- a topic returned to shortly.
+
+With respect to scoping allowed relaxations, a key distinction can be drawn between \textit{core computation} and \textit{observation}.
+In scenrios where core computation has iterative structure, runtime irregularities compound and can propagate forward in pathological cascades, possibly even amplifying through positive feedback with the computation's state.
+The consequence of irregularity in observation, by contrast, is restricted to \textit{post hoc} analysis.
+Likewise, the structure of observational blur can typically be more readily documented, reasoned about, and accounted for --- although complications can arise where resource utilization patterns driven by computational state bias observation.
+In exchange, best-effort observation strategies can enable efficiencies exploiting dynamic resource availability and data locality convenience, while providing fault robustness and capped-budget utilization guarantees.
+Such an \textit{inferential observability} paradigm thus allows an intermediate compromise in best-effort tradeoffs, which may suit a broader collection of possible use cases.
+
+As for TODO
 Figure \ref{moreno:fig:best-effort} lists a few possible (non-exhaustive) quality-of-service metrics that can be collected inexpensively.
 We suggest four aspects of real-time behavior to monitor, with corresponding quality of service metrics \cite{karakus2017quality},
 \begin{itemize}
@@ -107,3 +90,65 @@ To examine the trade-offs of best-effort high-performance computing for digital 
 
 In the first case study, we use our proposed metrics to examine the best-effort characteristics of a multiprocessing-based best-effort framework to examine how its performance and quality-of-service scale and the robustness to hardware anomaly.
 In the second case study, we look at these strategies in action on the Cerebras Wafer-Scale Engine, and show how data collection and instrumentation can be used to flag and mitigate potential sources of bias.
+
+% The scope of what aspects of a computation are relaxed, and bounds on the relaxation, can be enforced.
+% For instance, in the case of the \textit{inferential observability} paradigm, a distinction is drawn between data collection and the underlying computation (Figure \ref{moreno:fig:best-effort}).
+% While it is still possible for unexpected bias to creep in if simulation conditions systematically influence the pattern of data that is collected, this scope is generally more conservative because it is generally possible to know the distribution of data that was collected (and often to have a well-founded outline of the data that was not) because collected data do not have a causal effect on later outcomes of the simulation and instead pertain only to the analysis and inference conducted \textit{post hoc}, it is generally more straightforward to account for the effects of potential best-effort variation on the underlying simulation.
+% Likewise, even if best-effort relaxations are allowed into the underlying core computation, it is possible to pick and choose the aspects to target that are less likely to be sensitive to noise.
+
+% Where relaxations are allowed, an obvious step to mitigate potential downsides from best-effort relaxations is to establish runtime instrumentation (Figure \ref{moreno:fig:best-effort:qos}) to measure runtime conditions experienced.
+
+
+% % Nonetheless, the implicit assumption of the reliable digital machine model remains near-universal within parallel and distributed algorithm design for scientific computing .
+
+
+% This model has important benefits, in that (1) all computational experiments are not only qualitatively reproducible but in fact \textit{exactly} reproducible and (2) the computational process can be described purely logically irrespective of underlying hardware, making the nature of the computation being performed entirely transparent, and readily (fully) expressed through notational formalisms.
+
+
+% Discussion around ``approximate computing'' overlaps significantly with ``best-effort computing,'' although focusing more heavily on using algorithm design to shirk non-essential computation (i.e., reducing floating point precision, inexact memoization, etc.) \cite{mittal2016survey,menon2023approximate}.
+% Likewise, ``randomized algorithms'' typically rely on pseudorandom number generation through deterministic functions, although these topics naturally intertwine with discussion of best-effort computing \cite{Buluc2021}.
+% Indeed, software and hardware that relaxes guarantees of correctness and determinism --- a so-called ``best-effort model'' --- have been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.
+% Inferential observability ties into the larger topic of best-effort computing, approaches to computing that relax the assumption of the reliable digital machine in which all steps in an algorithm correspond to deterministic logical transforms.
+% This model has important benefits, in that (1) all computational experiments are not only qualitatively reproducible but in fact \textit{exactly} reproducible \cite{stodden2013resolving} and (2) the computational process can be described purely logically irrespective of underlying hardware, making the nature of the computation being performed entirely transparent, and readily (fully) expressed through notational formalisms.
+
+% % Indeed, software and hardware that relaxes guarantees of correctness and determinism --- a so-called ``best-effort model'' --- have been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.
+% % Discussion around ``approximate computing'' overlaps significantly with ``best-effort computing,'' although focusing more heavily on using algorithm design to shirk non-essential computation (i.e., reducing floating point precision, inexact memoization, etc.) \cite{mittal2016survey,menon2023approximate}.
+% % Likewise, ``randomized algorithms'' typically rely on pseudorandom number generation through deterministic functions, although these topics naturally intertwine with discussion of best-effort computing \cite{Buluc2021}.
+
+% Discussion of best-effort computing can be largely conceptualized around three flavors of relaxation: data corruption, data attrition, and asynchrony (Figure \ref{moreno:fig:best-effort}).
+% Here, we focus on the latter two, as many types of possible data corruption can be effectively transformed into data attrition (e.g., via checksums, replicate operations, inverse checks, and skeptical assertions).
+% With respect to data attrition, this may be considered either in-flight or at-rest.
+% In the case of the former, data is dropped in transit due to network anomalies or dynamic congestion.
+% In the case of the latter, data is dropped e.g., due to memory limitation --- which may vary device-to-device, be due to the rate at which real-time bandwidth is able to transfer data, or (in departing from the strict best-effort computation paradigm) be based on the timing between computational events (e.g., simulation dynamics).
+% Finally, best-effort approaches may be considered in terms of relaxing synchronization requirements.
+% In this case, the logical order of computational events may be allowed to depend on the rate at which processing on different compute elements proceeds or the duration it takes to deliver messages between compute elements.
+% Under this model, the runtime strives to minimize message latency and loss, but guarantees elimination of neither.
+% Instead, processes continue their compute work unimpeded and incorporate communication from collaborating processes as it happens to become available.
+
+% We see best-effort communication and data attrition as a particularly fruitful target for investigation.
+% Firstly, synchronization constitutes the root cause of many contemporary scaling bottlenecks, well below the mark of thousands or millions of cores where runtime failures and soft errors become critical considerations.
+% Secondly, future HPC hardware is expected to provide more heterogeneous, more variable (i.e., due to power management), and generally lower (relative to compute) communication bandwidth \cite{gropp2013programming,acun2014parallel}; a best-effort approach suits these challenges.
+% A best-effort communication model presents the possibility of runtime adaptation to effectively utilize available resources given the particular ratio of compute and communication capability at any one moment in any one rack.
+% Likewise, these best-effort strategies allow the possibility of gracefully degrading to meet the memory and bandwidth limitations, e.g., of hardware accelerator devices.
+
+% While departing from a strict deterministic computing model can reduce synchronization overhead, increase resource utilization (particularly under heterogeneous or fluctuating resource availability), reduce the cost of checkpointing and rollback to handle hardware failures, and --- at its extremum --- allow cost savings through reduced power use and longer acceptable hardware lifespans, it creates important challenges for reproducibility and bias that, if not considered carefully, can effectively entirely undermine the value of the computation being done in the first place.
+% With respect to bias, it is possible and even in fact likely for errors to be non-uniformly distributed across the compute fabric and even to correlate with features of the underlying computation (e.g., compute intensity of certain simulation conditions) to create consequences that don't just increase the variance or reduce the bias of the simulation, but in fact systematically bias it --- often in unexpected or pernicious ways.
+% Likewise, allowing the behavior of a computation to depend on underlying physical hardware doesn't just remove the exact reproducibility of a result, but can also undermine its qualitative reproducibility --- whether due to needing the particular type of hardware, the particular instance of hardware, or even the hardware at a certain point in time (e.g., under certain load conditions).
+
+% However, incorporating best-effort relaxations need not involve arbitrary \textit{laissez-faire} impacts on reproducibility and bias.
+% The scope of what aspects of a computation are relaxed, and bounds on the relaxation, can be enforced.
+% For instance, in the case of the \textit{inferential observability} paradigm, a distinction is drawn between data collection and the underlying computation (Figure \ref{moreno:fig:best-effort}).
+% While it is still possible for unexpected bias to creep in if simulation conditions systematically influence the pattern of data that is collected, this scope is generally more conservative because it is generally possible to know the distribution of data that was collected (and often to have a well-founded outline of the data that was not) because collected data do not have a causal effect on later outcomes of the simulation and instead pertain only to the analysis and inference conducted \textit{post hoc}, it is generally more straightforward to account for the effects of potential best-effort variation on the underlying simulation.
+% Likewise, even if best-effort relaxations are allowed into the underlying core computation, it is possible to pick and choose the aspects to target that are less likely to be sensitive to noise.
+
+% Where relaxations are allowed, an obvious step to mitigate potential downsides from best-effort relaxations is to establish runtime instrumentation (Figure \ref{moreno:fig:best-effort}) to measure runtime conditions experienced.
+% Figure \ref{moreno:fig:best-effort} lists a few possible (non-exhaustive) quality-of-service metrics that can be collected inexpensively.
+% We suggest four aspects of real-time behavior to monitor, with corresponding quality of service metrics \cite{karakus2017quality},
+% \begin{itemize}
+%   \item throughput,
+%   \item latency,
+%   \item attrition, and
+%   \item bunching.
+% \end{itemize}
+% (Formal definitions for these metrics follow in Section \ref{moreno:sec:case1}.)
+% Based on these measurements, it is possible to tune simulation configuration such that quality of service remains within acceptable bounds, screen for systematic correlations between quality of service and simulation outcomes, provide a more informed interpretation for the nature of the computation actually being accomplished, and report conditions alongside findings to improve qualitative reproducibility.
