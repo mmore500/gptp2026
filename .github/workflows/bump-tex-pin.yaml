@@ -10,6 +10,12 @@ jobs:
           submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: fregante/setup-git-user@v1
+      - name: Ensure on bump-tex-pin branch
+        run: |
+          if [ "$(git rev-parse --abbrev-ref HEAD)" != "bump-tex-pin" ]; then
+            git fetch origin bump-tex-pin
+            git checkout bump-tex-pin
+          fi
       - name: Update tex submodule to latest on tex branch
         run: |
           git submodule update --init --single-branch paper
