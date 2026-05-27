@@ -14,7 +14,7 @@ jobs:
         run: |
           if [ ! -d "tex" ]; then
             git fetch origin paper
-            git checkout paper
+            git checkout paper --
           fi
       - name: Update tex submodule to latest on tex branch
         run: |
