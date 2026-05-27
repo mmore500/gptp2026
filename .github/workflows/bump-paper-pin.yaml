@@ -10,9 +10,9 @@ jobs:
           submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: fregante/setup-git-user@v1
-      - name: Update tex submodule to latest on tex
+      - name: Update tex submodule to latest on paper
         run: |
           git submodule update --init --remote paper
-          git add tex
+          git add paper
           git diff --cached --quiet || git commit -m "bump paper pin"
       - run: git push origin HEAD
