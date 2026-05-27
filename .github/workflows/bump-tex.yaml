@@ -12,6 +12,13 @@ jobs:
         with:
           submodules: 'recursive'
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Ensure on paper branch
+        run: |
+          if [ "$(git rev-parse --abbrev-ref HEAD)" != "paper" ]; then
+            git fetch origin paper
+            git checkout paper
+            git submodule update --init --recursive
+          fi
       - name: Bump tex submodule to latest
         run: |
           git submodule update --remote tex
