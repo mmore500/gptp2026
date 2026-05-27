@@ -56,7 +56,7 @@ As treated here, best-effort computation can be conceptualized around three pill
 Due to the reasonable economy of error detection in conventional digital computing \cite{hamming1950error} (e.g., via error correcting codes, checksums, replicate operations, inverse checks, or skeptical assertions), our focus here is limited in narrowing the broader issue of data corruption into the simpler frame of data attrition \cite{ackley2013beyond}.
 
 Best-effort software and hardware that relaxes guarantees of correctness and determinism has been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.  % TODO fault tolerance
-However, best-effort relaxation involves important drawbacks (Figure \ref{fig:moreno:fig:best-effort:tradeoffs}).
+However, best-effort relaxation involves important drawbacks (Figure \ref{moreno:fig:best-effort:tradeoffs}).
 Most obviously, best-effort computation abandons bitwise reproducibility --- the guarantee that repeating a computation will produce the same result.
 More perniciously, however, beyond introducing stochastic noise, such relaxation can also undermine scientific reprodicibility \cite{menon2025reproducibility}, by introducing transient irregularities or structural asymmetries that bias qualitative outcomes.
 Computation, in tandem, also becomes more opaque, as it can no longer be fully described by logical abstractions independent from the underlying execution context.
