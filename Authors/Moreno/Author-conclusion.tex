@@ -1,21 +1,20 @@
 \section{Conclusion} \label{moreno:sec:conclusion}
 
-As demonstrated across our two case studies, best-effort strategies represent a promising remedy to contend with scaling challenges in conducting digital evolution work among higher processor counts and working within the constraints of an emerging next-generation AI/ML hardware accelerator device.
+We have presented two case studies exploring how best-effort strategies can help address HPC challenges in scaling digital evolution work to large compute cluster process counts and in harnessing the resource-constrained processing power of next-generation AI/ML hardware accelerator device.as
 
 Takeaway findings from our first case study on best-effort cluster-based multiprocessing include,
 \begin{enumerate}
-\item best-effort communication and synchronization improve scaling efficiency for both communication-heavy workloads and compute-heavy problems with heterogeneous workloads;
-\item in a benchmark problem with an objective solution quality score, the trade-off between quality-of-service and efficiency was such that best-effort approaches were able to produce higher-quality solutions within an allotted runtime;
-\item in benchmarked trials, median quality of service metrics remain stable with processor count;
-\item quality of service metrics flagged an anomalous laggard node, and allowed us to determine that quality of service and performance nonetheless remained stable across the computation; and
-\item quality of service metrics can help flag runtime asymmetries and diagnose underlying hardware factors.
+\item best-effort communication and synchronization can improve scaling efficiency and solution quality for both communication-heavy workloads and compute-heavy, heterogeneous workloads;
+\item median quality of service (QoS) metrics remained generally stable under scale-out, including scenarios involving degraded hardware; and
+\item QoS instrumentation can help flag runtime anamolies and diagnose underlying hardware causes.
 \end{enumerate}
 
-Takeaway findings from our second case study, incorporating best-effort strategies into the memory- and bandwidth-constrained Cerebras Wafer-Scale Engine, we found that
+Our second case study explored incorporation of best-effort strategies into wafer-scale digital evolution experiments.
+Takeaway findings include,
 \begin{enumerate}
-\item inferential observability strategies, inspired by techniques biologists use to study the evolutionary history of biological organisms, allow us to overcome limitations in data volume and stochasticity to usefully capture evolutionary history (phylogeny reconstruction);
-\item inferential observability, combined with quality-of-service tracking, allow us to detect and correct potential biasing factors arising from asymmetries in directional migration rates; and
-\item inferential observability allows us to easily workaround hardware faults causing corruption of data exported from a subset of the Wafer-Scale Engine by simply excluding it.
+\item inferential observability strategies --- inspired by techniques developed to study natural history --- can provide rich visibility of evolutionary history at low cost in on-device data movement and storage;
+\item domain-specific analyses (e.g., spatiotemporal phylogenies) can complement QoS metrics in detecting potential computational biases; and
+\item inferential observability strategies can readily tolerate otherwise disruptive data loss from hardware faults.
 \end{enumerate}
 
 Although practical scaling challenges explored in this work are, to an extent, universal across HPC problem domains, the suitability of the best-effort model varies greatly from application to application.
