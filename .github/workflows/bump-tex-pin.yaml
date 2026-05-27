@@ -16,9 +16,9 @@ jobs:
             git fetch origin paper
             git checkout paper --
           fi
-      - name: Update tex submodule to latest on tex branch
+      - name: Update tex submodule to latest on tex
         run: |
-          git submodule update --init --single-branch paper
+          git submodule update --init --single-branch tex
           cd tex
           git fetch origin tex
           git checkout tex --
