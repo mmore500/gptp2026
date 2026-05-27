@@ -12,11 +12,11 @@ jobs:
         with:
           submodules: 'recursive'
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Ensure on paper branch
+      - name: Ensure on bump-tex-pin branch
         run: |
-          if [ "$(git rev-parse --abbrev-ref HEAD)" != "paper" ]; then
-            git fetch origin paper
-            git checkout paper
+          if [ "$(git rev-parse --abbrev-ref HEAD)" != "bump-tex-pin" ]; then
+            git fetch origin bump-tex-pin
+            git checkout bump-tex-pin
             git submodule update --init --recursive
           fi
       - name: Bump tex submodule to latest
