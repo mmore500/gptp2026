@@ -6,7 +6,7 @@ Takeaway findings from our first case study on best-effort cluster-based multipr
 \begin{enumerate}
 \item best-effort communication and synchronization can improve scaling efficiency and solution quality for both communication-heavy workloads and compute-heavy, heterogeneous workloads;
 \item median quality of service (QoS) metrics remained generally stable under scale-out, including scenarios involving degraded hardware; and
-\item QoS instrumentation can help flag runtime anamolies and diagnose underlying hardware causes.
+\item QoS instrumentation can help flag runtime anomalies and diagnose underlying hardware causes.
 \end{enumerate}
 
 Our second case study explored incorporation of best-effort strategies into wafer-scale digital evolution experiments.
@@ -18,8 +18,8 @@ Takeaway findings include:
 \end{enumerate}
 
 While case study computations were amenable to best-effort relaxations, suitability will vary widely between HPC problem domains.
-Some domains are clear cut in favor of the reliable digital machine model --- for example, due to regulatory issues \cite{dongarra2014applied}.
-Certain problem characteristics, however can help tolerate nondeterministic computation.
+Some domains are clear-cut in favor of the reliable digital machine model --- for example, due to regulatory issues \cite{dongarra2014applied}.
+Certain problem characteristics, however, can help tolerate nondeterministic computation.
 Heuristic optimization algorithms can fall into this category, a notable example being stochastic gradient descent \cite{dean2012large,zhao2019elastic,niu2011hogwild,noel2014dogwild,rhodes2020real}.
 Likewise, algorithms relying on randomized methods, which already exploit stochasticity, also make good candidates \cite{chakrapani2008probabilistic,chakradhar2010best}.
 
