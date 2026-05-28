@@ -18,7 +18,7 @@ Takeaway findings include:
 \end{enumerate}
 
 While case study computations were amenable to best-effort relaxations, suitability will vary widely between HPC problem domains.
-Some domains are clear-cut in favor of the reliable digital machine model --- for example, due to regulatory issues \cite{dongarra2014applied}.
+Some domains are clear-cut in favor of the reliable digital machine model \cite{heroux2014toward} --- for example, due to regulatory issues \cite{dongarra2014applied}.
 Certain problem characteristics, however, can help tolerate nondeterministic computation.
 Heuristic optimization algorithms can fall into this category, a notable example being stochastic gradient descent \cite{dean2012large,zhao2019elastic,niu2011hogwild,noel2014dogwild,rhodes2020real}.
 Likewise, algorithms relying on randomized methods, which already exploit stochasticity, also make good candidates \cite{chakrapani2008probabilistic,chakradhar2010best}.
