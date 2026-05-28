@@ -2,7 +2,7 @@
 
 We have presented two case studies exploring how best-effort strategies can help address HPC challenges in scaling digital evolution work to large compute cluster process counts and in harnessing the resource-constrained processing power of next-generation AI/ML hardware accelerator device.as
 
-Takeaway findings from our first case study on best-effort cluster-based multiprocessing include,
+Takeaway findings from our first case study on best-effort cluster-based multiprocessing include:
 \begin{enumerate}
 \item best-effort communication and synchronization can improve scaling efficiency and solution quality for both communication-heavy workloads and compute-heavy, heterogeneous workloads;
 \item median quality of service (QoS) metrics remained generally stable under scale-out, including scenarios involving degraded hardware; and
@@ -10,51 +10,52 @@ Takeaway findings from our first case study on best-effort cluster-based multipr
 \end{enumerate}
 
 Our second case study explored incorporation of best-effort strategies into wafer-scale digital evolution experiments.
-Takeaway findings include,
+Takeaway findings include,:
 \begin{enumerate}
-\item inferential observability strategies --- inspired by techniques developed to study natural history --- can provide rich visibility of evolutionary history at low cost in on-device data movement and storage;
-\item domain-specific analyses (e.g., spatiotemporal phylogenies) can complement QoS metrics in detecting potential computational biases; and
-\item inferential observability strategies can readily tolerate otherwise disruptive data loss from hardware faults.
+\item best-effort ``inferential observability'' strategies --- inspired by techniques developed to study natural history --- can provide rich visibility into evolutionary history with lean on-device data movement and storage;
+\item best-effort inferential observability strategies can readily tolerate otherwise disruptive data loss from hardware faults; and
+\item domain-specific analyses (e.g., spatiotemporal phylogenies) can complement QoS metrics in screening for computational biases.
 \end{enumerate}
 
-Although practical scaling challenges explored in this work are, to an extent, universal across HPC problem domains, the suitability of the best-effort model varies greatly from application to application.
+While case study computations were amenable to best-effort relaxations, suitability will vary widely between HPC problem domains.
 Some domains are clear cut in favor of the reliable digital machine model --- for example, due to regulatory issues \cite{dongarra2014applied}.
-However, a subset of computational workloads may tolerate occasionally flawed or even fundamentally nondeterministic computation.
-Various approximation algorithms or heuristics fall into this category, with notable work being done on best-effort stochastic gradient descent for artificial neural network applications \cite{dean2012large,zhao2019elastic,niu2011hogwild,noel2014dogwild,rhodes2020real}.
-Likewise, algorithms relying on pseudo-stochastic methods that tend to exploit noise (rather than destabilize due to it) also make good candidates \cite{chakrapani2008probabilistic,chakradhar2010best}.
+Certain problem characteristics, however can help tolerate nondeterministic computation.
+Heuristic optimization algorithms can fall into this category, a notable example being stochastic gradient descent \cite{dean2012large,zhao2019elastic,niu2011hogwild,noel2014dogwild,rhodes2020real}.
+Likewise, algorithms relying on randomized methods, which already exploit stochasticity, also make good candidates \cite{chakrapani2008probabilistic,chakradhar2010best}.
 
-Structurally, evolution bears key similarities to these problem domains.
-Evolution is fundamentally a stochastic process, which recovers from local perturbations through replicator growth which in fact depends on imperfections introduced by local disruptions (e.g., random mutation).
-Likewise, like other application-oriented optimization domains, for evolutionary computation the worst case outcome is a low quality result, rather than an invalid scientific finding.
+Digital evolution notably exhibits both these problem characteristics.
+Lending further robustness, replicators readily repopulate and, by natural selection, purge degeneracy.
+In the case of application-oriented evolutionary computation, like other optimization domains, worst-case outcomes simply waste resources, rather than producing junk science.
 
-Even hypothesis-driven domains of digital evolution have unusual flexibility with regard to best-effort computation.
-While typical work in modeling and simulation seek to detect a specific ``real world’’ analog, this is not necessarily the case for all digital evolution experiments.
-In addition to work motivated by concrete natural analogs, the field also has a strong track record of studying general evolutionary processes through more abstract representations of instantiating of variation, heredity, and replication \cite{pennock2007models}.
- akin to the natural world, yet distinct from it \cite{bonabeau1994we}.
+Even in the case of hypothesis-driven work, however, digital evolution enjoys unusual computatinal malleability.
+While typical simulation seeks to describe a concrete ``real-world'' analog, this is not necessarily the case in digital evolution.
+The field often studies evolutionary processes in abstracted terms, by instantiation variation, heredity, and replication in artificial substrates (e.g., self-replicating computer programs) \cite{pennock2007models,bonabeau1994we}.
 
-In the case of the latter school of models capturing ``life as it could be,’’ much greater leeway exists model construction — while best-effort relaxations can detract from scientific utility by making a system more difficult to interpret, they do not fundamentally invalidate a model \textit{ipso facto} by bringing it out of alignment with a concrete real-world analog.
-Even in the case of more literal models that require such alignment, however, moderate disruptions and irregularities arguably may, to an extent, reflect biological reality more faithfully.
-\unskip\footnote{%
-It is certainly the case that large-scale disruptions can fundamentally redirect and systematically bias evolutionary outcomes.
-Likewise, systematic biases, such as directional migration bias, could undermine population genetics simulations.
-}
+In the case of such models capturing ``life-as-it-could-be,’’ broad leeway exists in model composition.
+While best-effort relaxations can make a system less useful in being more difficult to interpret, they do not necessarily invalidate a model \textit{ipso facto}.
+Even in the case of more literal models aligned to a concrete real-world analog, moderate disruptions and irregularities may arguably, to an extent, more faithfully reflect biological reality.
+% \unskip\footnote{%
+% It is certainly the case that large-scale disruptions can fundamentally redirect and systematically bias evolutionary outcomes.
+% Likewise, systematic biases, such as directional migration bias, could undermine population genetics simulations.
+% }
 
-Leeway also extends to the harnessing and infrastructure necessaryto ocnduct informative experiments.
-Although perfect reproducibility and observability have uniquely enabled digital evolution experiments to ask and answer otherwise intractable questions \cite{pontes2020evolutionary,lenski2003evolutionary,grabowski2013case,dolson2020interpreting,fortuna2019coevolutionary,goldsby2014evolutionary,covert2013experiments,zaman2011rapid,bundy2021footprint,dolson2017spatial}, the reliable digital machine model is not strictly necessary for all such work.
-Robust existing methods and statistics for accounting for data limitations in field biology, experimental evolution, and public health exist to overcome such limitations.
-For instance, evolutionary epidemiologists employ sampling-based surveillance methods (e.g., wastewater monitoring, viral sequencing) as do ecologists (e.g., mark recapture, quadrats, metagenomics) and evolutionary biologists (e.g., phylodynamics, \textit{ex situ} cultivation, biorepositories).
+Given the vast, noisy nature of biology, many experimental designs tolerate imperfect control over system behavior.
+Perfect reproducibility and observability have certainly, in cases, enabled digital evolution experiments to tackle otherwise intractable questions \cite{pontes2020evolutionary,lenski2003evolutionary,grabowski2013case,dolson2020interpreting,fortuna2019coevolutionary,goldsby2014evolutionary,covert2013experiments,zaman2011rapid,bundy2021footprint,dolson2017spatial}, but the reliable digital machine model is not strictly necessary for all such work.
+In natural systems, many questions are approached observationally (e.g., phylodynamics, metagenomics, biorepositories) or by limited-scale interventions (e.g., mark recapture, \textit{ex situ} cultivation, knockout analyses).
 
-For these reasons, digital evolution has a unique opportunity to play in exploring and pushing the boundaries of post-deterministic computing.
-Indeed, best-effort, real-time computing approaches have also been used in some artificial life models \cite{ray1995proposal,moreno2021exploring}, with particularly notable work led by Dave Ackley \cite{Ackley2023,Ackley2016}.
-Likewise, island model genetic algorithms are easy to parallelize and have been shown to perform well with asynchronous migration \cite{izzo2009parallel}.
-As has been pointed out by Dave Ackley \cite{ackley2014indefinitely}, for these reasons artificial life and, more broadly, digital evolution has a unique opportunity to play in exploring and pushing the boundaries of post-deterministic computing.
-Ackley's work \cite{Ackley2023,ganapati2009modular}, as with much of existing studies of best-effort computing \cite{chippa2014scalable,ackley2011homeostatic,cho2012ersa,chakrapani2008probabilistic,rhodes2020real}, has focused on bespoke experimental hardware.
-While some custom hardware has scaled quite large \cite{mayr2019spinnaker210million}, but for the forseeable future, AI/ML is likely to define the leading edge of hardware and tagging along in their wake
-will be the most advantageous.
+For these reasons, digital evolution has a unique opportunity to contribute in the development of post-deterministic computing approaches.
+Indeed, such work exists already in artificial life \cite{ray1995proposal,moreno2021exploring} and evolutionary computation research \cite{izzo2009parallel}.
+Particularly ambitious, and provocative, work poineering post-deterministic computing has been led by Dave Ackley \cite{ackley2014indefinitely}.
+Ackley's work \cite{Ackley2023,ganapati2009modular}, alongside many existing studies of best-effort computing \cite{chippa2014scalable,ackley2011homeostatic,cho2012ersa,chakrapani2008probabilistic,rhodes2020real}, has largely focused on bespoke experimental hardware.
+While notable custom hardware projects have been realized at frontier scale, capability and capacity will caiter to mainstream workloads (e.g., for the forseeable future, AI/ML).
+Thus,
+TODO
 To do this effectively, we will need to be able to work within the constraints of emerging hardware accelerator architectures.
-existing, commercially-available hardware at the heart of mainstream high-performance computing, including both traditional CPU-based HPC and the emerging next-generation Cerebras Wafer-Scale Engine hardware accelerator platform.
+existing, commercially-available hardware at the heart of mainstream high-performance computing.
 
-These tendency of evolving virtual organisms to adversarial exploit a system make it particularly interesting \cite{Thompson1997,Lehman2020}.
+Misappropriating available resources for unintended purposes is by no means an unfamiliar concept to digital evolution.
+Efforts to incorporate best-effort relaxations will, without doubt, be put to the test by the well-known tendency of evolving virtual organisms to adversarially exploit their evaluation context \cite{Thompson1997,Lehman2020}.
+Lessons learned TODO
 % These challenges can be especially pernicious in the case of evolutionary studies, where evolving genotypes can adopt strategies that depend on or even exploit unintentional features of their virtual environment .
 By translating these approaches into mainstream high-performance computing writ large, digital evolution may play a role in laying a principled, rigorous, and generalizable foundation for broader development of post-deterministic computing writ large.
 % TODO \cite{mayr2019spinnaker210million}
