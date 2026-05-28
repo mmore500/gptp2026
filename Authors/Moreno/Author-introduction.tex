@@ -11,7 +11,7 @@ Indeed, evidence suggests that the generative potential of at least some digital
 
 In retrospect, connectionist approaches to artificial intelligence turn out to have been profoundly scale-dependent \cite{kaplan2020scaling}.
 The utility and ubiquity of ANNs have exploded in tandem with torrential growth in training set sizes, parameter counts, and training FLOPs \cite{marcus2018deep}.
-Recruitment of multi-GPU training for image classification, accomplished in tailoring underlying deep learning architecture to hardware, is commonly identified as the watershed moment in this transformation
+Recruitment of multi-GPU training for image classification, accomplished by tailoring underlying deep learning architecture to hardware, is commonly identified as the watershed moment in this transformation
  \cite{krizhevsky2012imagenet}, which launched a decade of commercial investment in AI/ML infrastructure \cite{jouppi2017datacenter}.
 Commercial investment in AI capabilities then set in motion a virtuous cycle of further-enabling hardware advances.
 
@@ -53,7 +53,7 @@ Here, in addressing the challenge of efficiently scaling up digital evolution, w
 This topic concerns relaxing assumption of the reliable digital machine model \cite{heroux2014toward}, in which all steps in an algorithm correspond to deterministic logical transforms --- a near-universal implicit assumption of scientific computing \cite{chakradhar2010best}.
 Though not our primary focus, best-effort computing intertwines with related topics of ``approximate computing'' (which focuses more heavily on shaving away non-essential computation, e.g., floating point precision, inexact memoization, etc.) and ``randomized algorithms'' (which typically rely on pseudorandom number generation) \cite{Buluc2021,mittal2016survey,menon2023approximate}.
 As treated here, best-effort computation can be conceptualized around three pillars: asynchronicity (e.g., transmission delays, data races, jitter and straggler effects), data attrition (e.g., memory constraint, transmission failure, hardware crashout), and data corruption (e.g., soft errors, partial writes, analog approximation) (Figure \ref{moreno:fig:best-effort:types}).
-Due to the reasonable economy of error detection in conventional digital computing \cite{hamming1950error} (e.g., via error correcting codes, checksums, replicate operations, inverse checks, or skeptical assertions), our focus here is limited in narrowing the broader issue of data corruption into the simpler frame of data attrition \cite{ackley2013beyond}.
+Due to the reasonable economy of error detection in conventional digital computing \cite{hamming1950error} (e.g., via error correcting codes, checksums, replicate operations, inverse checks, or skeptical assertions), our focus here is limited to narrowing the broader issue of data corruption into the simpler frame of data attrition \cite{ackley2013beyond}.
 
 Best-effort software and hardware that relaxes guarantees of correctness and determinism has been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.  % TODO fault tolerance
 However, best-effort relaxation involves important drawbacks (Figure \ref{moreno:fig:best-effort:tradeoffs}).

@@ -13,7 +13,7 @@ Under the hood, event-driven linear genetic programs control cell behavior \cite
 
 To support multiprocessing, DISHTINY routes all cell-cell interaction through a communication layer implemented by the Conduit library \cite{moreno2021conduit}.
 \unskip\footnote{%
-This library is one among many frameworks have arisen to offer useful parallel and distributed programming abstractions, including task-based frameworks \cite{kale1993charm++,bauer2012legion,blumofe1996cilk,reinders2007intel} or domain-specific programming languages \cite{el2006upc,chamberlain2007parallel}.
+This library is one among many frameworks that have arisen to offer useful parallel and distributed programming abstractions, including task-based frameworks \cite{kale1993charm++,bauer2012legion,blumofe1996cilk,reinders2007intel} or domain-specific programming languages \cite{el2006upc,chamberlain2007parallel}.
 However, these frameworks assume a deterministic relationship between tasks or otherwise forbid data races.
 }
 This multiprocessing framework exposes a best-effort interface backed by Message Passing Interface (MPI) intrinsics \cite{gropp1996high}.
@@ -23,7 +23,7 @@ In the case where send buffer capacity is full, communication may be configured 
 MPI guarantees delivery of dispatched messages --- network-layer best-effort relaxations would involve lower-level protocols like InfiniBand Unreliable Datagrams \cite{kashyap2006ip,koop2007high}.
 }
 
-Conduit-based profiling experiments investigated four questions (1) can best-effort relaxations improve scaling efficiency, (2) can quality of service metrics meaningfully detect runtime irregularities introduced by best-effort relaxation, (3) does median quality of service scale robustly, and (4) is median quality of service robust to individual hardware anomalies at scale?
+Conduit-based profiling experiments investigated four questions: (1) can best-effort relaxations improve scaling efficiency, (2) can quality of service metrics meaningfully detect runtime irregularities introduced by best-effort relaxation, (3) does median quality of service scale robustly, and (4) is median quality of service robust to individual hardware anomalies at scale?
 
 \subsection{Profiling Experiment Design}
 \label{moreno:sec:case1:design}
@@ -122,7 +122,7 @@ In all three cases, improvement tests significant across replicates (Wilcoxon te
 \label{moreno:sec:case1:qos-scaling}
 
 Given the benefit of best-effort relaxation to scaling efficiency, we next set out to flesh out a more holistic picture of whether these efficiency gains were accompanied by degraded quality of service.
-For these experiments, comparison was taken between 64- and 256-process allocations, the largest available from our resource provider.
+For these experiments, comparisons were made between 64- and 256-process allocations, the largest available from our resource provider.
 (On account of original plans to incorporate threading-based trials, performance scaling experiments in Section \ref{moreno:sec:case1:scaling-efficiency} were run only to 64 processes.)
 The graph coloring benchmark problem was chosen to allow trials exercising extreme communication-intensity, relative to compute.
 
@@ -232,7 +232,7 @@ In the intranode case, incoming/outgoing traffic imbalance appears likely to hav
 Because these nodes socket two independent CPU dies, cross-socket memory accesses can trigger cache invalidations that stall execution.
 Figure \ref{moreno:fig:cpu:internode} visualizes throughput QoS over the 5-minute course of execution trials (lower is better).
 Replicates are split by whether they exhibited apparent incoming/outgoing imbalance (bottom vs. top row).
-Across all replicates, maximum update walltime spikes during one-second snapshot window --- consistent with a scenario where the background QoS counter polling thread reaches across the NUMA boundary.
+Across all replicates, maximum update walltime spikes during a one-second snapshot window --- consistent with a scenario where the background QoS counter polling thread reaches across the NUMA boundary.
 However, where incoming/outgoing traffic imbalance is detected, minimum update walltime remains largely steady.
 Thus, this imbalance appears likely to have arisen from NUMA effects slowing one process, but not the other --- introducing a traffic mismatch between the process pair.
 
