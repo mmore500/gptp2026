@@ -2,7 +2,7 @@
 
 \input{fig/wse.tex}
 
-In addition to synchronization costs, as highlighted in our first case study (Section \ref{moreno:sec:case1}), best-effort strategies can also be leveraged to accomodate constraints of memory scarcity and data loss from hardware faults.
+In addition to synchronization costs, as highlighted in our first case study (Section \ref{moreno:sec:case1}), best-effort strategies can also be leveraged to accommodate constraints of memory scarcity and data loss from hardware faults.
 These factors have come to the fore in ongoing work conducting agent-based evolution experiments on the Cerebras Wafer-Scale Engine.
 This hardware, primarily developed to target AI/ML workloads, exemplifies the emerging promise of massively-distributed compute power, but also lays bare accompanying challenges.
 
@@ -64,9 +64,9 @@ Digital simulations also serve as a useful testbed for bioinformatics methodolog
 
 To collect ancestry data from WSE experiments, we have adopted strategies inspired by real-world experiments that assume data collection is expensive, limited, and non-deterministic.
 Rather than exhaustively tracking parent-child relationships \cite{dolson2023phylotrackpy}, we adopt an approach akin to how biologists reconstruct ancestry by comparing DNA sequences --- which we call ``hereditary stratigraphy.''
-Inspired synthetic biology techniques for lineage tracking \cite{Masuyama2019}, we use genome barcoding with single-bit markers to shrink memory footprint as low as 96 bits per organism \cite{moreno2025testing}; once budgeted storage capcity fills, barcodes are progressively pruned to maintain an approximate record \cite{moreno2024algorithms}.
+Inspired by synthetic biology techniques for lineage tracking \cite{Masuyama2019}, we use genome barcoding with single-bit markers to shrink memory footprint as low as 96 bits per organism \cite{moreno2025testing}; once budgeted storage capacity fills, barcodes are progressively pruned to maintain an approximate record \cite{moreno2024algorithms}.
 Barcodes remain chronologically attributed, allowing estimation of the point in time when lineages diverged from conflicts \cite{moreno2022hereditary}.
-Reconstsruction of phylogenies comprising many taxa can then be accomplished through an agglomerative trie-based algorithm \cite{moreno2023toward}.
+Reconstruction of phylogenies comprising many taxa can then be accomplished through an agglomerative trie-based algorithm \cite{moreno2023toward}.
 
 \subsection{Robustness of Best-effort Estimation of Evolutionary History}
 \label{moreno:sec:case2:missing}
@@ -80,20 +80,20 @@ Because it tolerates sparse, irregular sampling, reconstruction-based analysis i
 For experiments benchmarking barcode-based phylogeny restruction \cite{singhvi2025scalable}, sample genomes were gathered from WSE-based simulation on a rolling basis using asynchronous device-to-host (D2H) transfers (Figure \ref{moreno:fig:wse:phylogeny}).
 This approach allowed available bandwidth capacity to be dynamically balanced with existing on-chip traffic.
 Experiments evaluated a population size of 190.8 million for 5 million generations, elapsing around 8{\small,}750 generations per second walltime.
-D2H tranfers sampled one genome per PE, and completed on the order of fifteen times per second --- yielding 9{\small,}000 snapshots over the course of 10 minute runtime.
-This volume of havested genomes, nearly 8 billion in total, exceeded downstream capacity, and so was thinned on a rolling basis to 1 billion genomes (~0.0001\% of cumulative individuals).
+D2H transfers sampled one genome per PE, and completed on the order of fifteen times per second --- yielding 9{\small,}000 snapshots over the course of 10 minute runtime.
+This volume of harvested genomes, nearly 8 billion in total, exceeded downstream capacity, and so was thinned on a rolling basis to 1 billion genomes (~0.0001\% of cumulative individuals).
 
 Another practical benefit of reconstruction-based analysis is resilience to data loss from hardware faults.
 Reported phylogeny experiments were conducted using system \texttt{rwse1001-cs-sy01} hosted in Cerebras Cloud.
 Between February 20th and 26th, 2026 this hardware began to produce unreliable D2H transfers localized along row 410 between columns 0 and 248 (Figure \ref{moreno:fig:wse:fault}).
 Between 5 and 6\% of 32-bit values copied from this region encountered bit-flip errors, corrupting around 0.03\% of overall extracted genomes.
-Runtime parity checks confirmed that this phemenon did not compromise integrity of on-device simulation, only capability to collect complete data from the chip.
+Runtime parity checks confirmed that this phenomenon did not compromise integrity of on-device simulation, only capability to collect complete data from the chip.
 
 In this case, best-effort resilience allowed work to continue uninterrupted during the following two months the chip remained in service.
 While narrow localization simplified handling of this particular fault, a minimally invasive checksum strategy could be used to handle more generalized transfer faults with low runtime cost:
 each PE would maintain a running checksum over its exported data, and faults could be detected (at coarse granularity, barring rare collisions) by collecting and auditing final checksum values.
 
-Hardware faults are an inescapable consideration in modern high-performance computing \cite{gupta2017failures,navaux2023challenges}, with upwards of daily occurence in large systems \cite{kokolis2025revisiting}.
+Hardware faults are an inescapable consideration in modern high-performance computing \cite{gupta2017failures,navaux2023challenges}, with upwards of daily occurrence in large systems \cite{kokolis2025revisiting}.
 Faults are typically handled by checkpoint rollbacks \cite{gupta2017failures,zhu2025understanding} --- in flagship workloads, consuming on the order of 100PB of high-bandwidth disk capacity \cite{frontiere2025cosmological}.
 Further, in highly integrated hardware accelerator platforms, such as the WSE, challenges are compounded by the fact that small component failures can compromise much larger hardware units \cite{cerebras2025yield}.
 Where computation can be structured to gracefully degrade under disruption, such costs can be avoided.
@@ -109,7 +109,7 @@ Under conditions of local migration, one pattern that we would expect to see in 
 
 We began by examining evolutionary histories under neutral conditions, where no advantageous mutations were available.
 Under these conditions, lineage histories constitute a random walk in space \cite{lemey2010phylogeography}.
-Color-coding \cite{steiger2015explorative} by the position of samples on the WSE  a surprising pattern, where parallel lineages appeared to disproportionately transition through common gradients (left panels, Figure \ref{moreno:fig:wse:bias}).
+Color-coding \cite{steiger2015explorative} by the position of samples on the WSE revealed a surprising pattern, where parallel lineages appeared to disproportionately transition through common gradients (left panels, Figure \ref{moreno:fig:wse:bias}).
 Closer inspection of sample lineages revealed that many progressed physically across the chip from bottom-to-top (right panels, Figure \ref{moreno:fig:wse:bias}), consistent with a scenario where migration in this direction was slightly more likely.
 
 This finding demonstrates the importance of diagnostic checks on the structure of underlying computation.
@@ -118,7 +118,7 @@ This finding demonstrates the importance of diagnostic checks on the structure o
 % In this case, symmetry in directional migration rates could be rectified in a simple manner --- without invoking global synchronization --- by simply restricting the send rate of each PE to its neighbor to the slowest among neighbors.
 While Quality of Service metrics can flag this kind of issue, their interpretation requires testing against particular hypotheses for biases.
 A key direction for future work should be curation of a standardized panel of QoS diagnostic tests --- such as incoming/outgoing traffic imbalance --- that provide a general-purpose starting point to characterize QoS dynamics and flag potential asymmetries and anomalies.
-However, as illustrated in this example, instrumentation-level analyses in best-effort systems should be coupled with sekptical inspection of simulation dynamics to identify potential biasing factors in a best-effort computation to guard against unknown unknowns.
+However, as illustrated in this example, instrumentation-level analyses in best-effort systems should be coupled with skeptical inspection of simulation dynamics to identify potential biasing factors in a best-effort computation to guard against unknown unknowns.
 % Collecting spatial phylogeny data helped to flag an asymmetry in our island-model evolving population.
 % Specifically, under neutral evolutionary conditions, we saw that lineages appeared biased towards migrating from bottom to top across the chip (Figure \ref{moreno:fig:wse:bias}).
 % Inspection of directional message counts confirmed that, indeed, directional asymmetry existed in the migration rates between islands (\ref{moreno:fig:wse:TODO}).

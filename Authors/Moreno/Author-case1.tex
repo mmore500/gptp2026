@@ -32,7 +32,7 @@ In this case study, we use DISHTINY simulations as a vehicle to investigate the 
 For profiling trials, randomly-initialized populations were evaluated under default conditions over a five-minute execution window.
 Conduit communication was instrumented with counters to track elapsed send, receive, and round-trip touch
 \unskip\footnote{%
-To avoid clock synchronization issues, no cross-process durations timings were taken.
+To avoid clock synchronization issues, no cross-process duration timings were taken.
 Instead, runtime instrumentation maintained independent zero-initialized ``touch counters,'' appended to all dispatched messages.
 By incrementing this value upon receipt, it increases by two for each successful round trip completed.
 }
@@ -230,7 +230,7 @@ In the internode case, imbalance was attributable to an underlying 12\% differen
 
 In the intranode case, incoming/outgoing traffic imbalance appears likely to have arisen as an artifact of Non-Uniform Memory Access architecture within \texttt{lac} nodes.
 Because these nodes socket two independent CPU dies, cross-socket memory accesses can trigger cache invalidations that stall execution.
-Figure \ref{moreno:fig:cpu:internode} visualizes throughput QoS over the 5-minute course of execution trials (lower better).
+Figure \ref{moreno:fig:cpu:internode} visualizes throughput QoS over the 5-minute course of execution trials (lower is better).
 Replicates are split by whether they exhibited apparent incoming/outgoing imbalance (bottom vs. top row).
 Across all replicates, maximum update walltime spikes during one-second snapshot window --- consistent with a scenario where the background QoS counter polling thread reaches across the NUMA boundary.
 However, where incoming/outgoing traffic imbalance is detected, minimum update walltime remains largely steady.
