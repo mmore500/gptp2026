@@ -8,7 +8,7 @@ Under this treatment, full barrier synchronization was performed between each co
 Asynchronicity mode 3 represents fully asynchronous methodology.
 Under this treatment, individual threads or processes performed computational updates freely, incorporating input from other threads or processes on a fully best-effort basis.
 
-All experiments reported in main text3 use either asynchronicity mode 0 or 3, as partial intermediates 1 or 2 did not end up being necessary controls.
+All experiments reported in the main text use either asynchronicity mode 0 or 3, as partial intermediates 1 or 2 did not end up being necessary controls.
 
 During early development of the library, we discovered episodes where unprocessed messages built up faster than they could be processed --- even if they were being skipped over to only get the latest message.
 In some instances, this strongly degraded quality of service or even caused runtime instability.

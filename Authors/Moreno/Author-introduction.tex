@@ -6,21 +6,21 @@ Indeed, at present, detailed simulation at the scope of a single biological cell
 As such, many interesting biological processes remain out of reach of satisfactory modeling experiments.
 Although serial simulation code can achieve rapid generational turnover and high replicate count, generally this is at the cost of small population sizes when working with rich agent models \cite{moreno2022engineering}.
 In the context of ecology, evolutionary biology, and allied fields, key questions such as many-species eco-evolutionary dynamics and evolutionary transitions in individuality (e.g., multicellularity, eusociality) hinge on cross-scale dynamics \cite{penczykowski2016understanding,alizon2012modelling,schreiber2021cross}.
-In the field of artifical life, these questions are key, in particular, to the topic of open-ended evolution --- how and why evolution generates ongoing complexity, novelty, and adaptation \cite{taylor2016open,dolson2021digital,taylor2019evolutionary,ackley2014indefinitely}.
+In the field of artificial life, these questions are key, in particular, to the topic of open-ended evolution --- how and why evolution generates ongoing complexity, novelty, and adaptation \cite{taylor2016open,dolson2021digital,taylor2019evolutionary,ackley2014indefinitely}.
 Indeed, evidence suggests that the generative potential of at least some digital evolution systems is --- at least in part --- meaningfully constrained by computational scale \cite{channon2019maximum}.
 
 In retrospect, connectionist approaches to artificial intelligence turn out to have been profoundly scale-dependent \cite{kaplan2020scaling}.
 The utility and ubiquity of ANNs have exploded in tandem with torrential growth in training set sizes, parameter counts, and training FLOPs \cite{marcus2018deep}.
 Recruitment of multi-GPU training for image classification, accomplished in tailoring underlying deep learning architecture to hardware, is commonly identified as the watershed moment in this transformation
  \cite{krizhevsky2012imagenet}, which launched a decade of commercial investment in AI/ML infrastructure \cite{jouppi2017datacenter}.
-Commercial investment in AI capabilities then set in motion a virtuous cycle of further-enabling hardware advances .
+Commercial investment in AI capabilities then set in motion a virtuous cycle of further-enabling hardware advances.
 
 A major upshot of the deep learning race is the emergence of spectacularly capable next-generation compute accelerators affording up to hundreds of thousands of processing cores (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras)\cite{zhang2016cambricon,emani2021accelerating,jia2019dissecting,medina2020habana}.
 Although engineered around deep learning workloads, these hardware platforms have opportunity to benefit both hypothesis-driven explorations of digital evolution and application-driven evolutionary optimization.
 Indeed, rapid ongoing advances in the capability of accelerator devices are anticipated to advance the leading edge in broader domains of agent-based modeling (ABM) and high-performance computing (HPC) writ large \cite{perumalla2022computer,VanEssendelft2025}.
 % The emerging class of fabric-based accelerators, led by the 880,000 core Cerebras CS-3 Wafer-Scale Engine (WSE) \cite{lauterbach2021path,lie2022cerebras,TODOCS3}, holds particular promise as a vehicle for digital evolution.
 
-To achieve high computational throughput, these emerging accelerator platforms exploit highly-distributed on-chip dataflow architectures to achieve high computational throughput --- but at the cost of aggravating challenges in locality and scarcity of on-device memory.
+To achieve high computational throughput, these emerging accelerator platforms exploit highly-distributed on-chip dataflow architectures --- but at the cost of aggravating challenges in locality and scarcity of on-device memory.
 For instance, to pack 880,000 processors onto a single chip, Cerebras' Wafer-Scale Engine (WSE) platform provisions only 48kB memory per processor, introduces multi-hop message routing, and allows data export only from the chip periphery.
 These constraints exemplify broader emerging challenges in High-Performance Computing (HPC) where data storage and movement are becoming more expensive relative to compute \cite{Buluc2021,khan2021analysis,gholami2024ai}.
 
@@ -51,30 +51,30 @@ Necessary computational resources could be better used elsewhere, such that trad
 
 Here, in addressing the challenge of efficiently scaling up digital evolution, we explore the application of \textit{best-effort computing}.
 This topic concerns relaxing assumption of the reliable digital machine model \cite{heroux2014toward}, in which all steps in an algorithm correspond to deterministic logical transforms --- a near-universal implicit assumption of scientific computing \cite{chakradhar2010best}.
-Though not our primary focus, best-effort computing intertwines with related topics of ``aproximate computing'' (which focuses more heavily on shaving away non-essential computation, e.g., floating point precision, inexact memoization, etc.) and ``randomized algorithms'' (which typically rely on pseudorandom number generation) \cite{Buluc2021,mittal2016survey,menon2023approximate}.
+Though not our primary focus, best-effort computing intertwines with related topics of ``approximate computing'' (which focuses more heavily on shaving away non-essential computation, e.g., floating point precision, inexact memoization, etc.) and ``randomized algorithms'' (which typically rely on pseudorandom number generation) \cite{Buluc2021,mittal2016survey,menon2023approximate}.
 As treated here, best-effort computation can be conceptualized around three pillars: asynchronicity (e.g., transmission delays, data races, jitter and straggler effects), data attrition (e.g., memory constraint, transmission failure, hardware crashout), and data corruption (e.g., soft errors, partial writes, analog approximation) (Figure \ref{moreno:fig:best-effort:types}).
 Due to the reasonable economy of error detection in conventional digital computing \cite{hamming1950error} (e.g., via error correcting codes, checksums, replicate operations, inverse checks, or skeptical assertions), our focus here is limited in narrowing the broader issue of data corruption into the simpler frame of data attrition \cite{ackley2013beyond}.
 
 Best-effort software and hardware that relaxes guarantees of correctness and determinism has been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.  % TODO fault tolerance
 However, best-effort relaxation involves important drawbacks (Figure \ref{moreno:fig:best-effort:tradeoffs}).
 Most obviously, best-effort computation abandons bitwise reproducibility --- the guarantee that repeating a computation will produce the same result.
-More perniciously, however, beyond introducing stochastic noise, such relaxation can also undermine scientific reprodicibility \cite{menon2025reproducibility}, by introducing transient irregularities or structural asymmetries that bias qualitative outcomes.
+More perniciously, however, beyond introducing stochastic noise, such relaxation can also undermine scientific reproducibility \cite{menon2025reproducibility}, by introducing transient irregularities or structural asymmetries that bias qualitative outcomes.
 Computation, in tandem, also becomes more opaque, as it can no longer be fully described by logical abstractions independent from the underlying execution context.
 
 Given these drawbacks, prudent integration of best-effort approaches will require careful consideration to uphold the integrity of underlying computation.
 We suggest, in particular, two mitigations: domain-appropriate scoping of allowed relaxations and, for relaxations that are incorporated, measurement of runtime quality of service (QoS) \cite{karakus2017quality}.
 To structure discussion of these mitigations, we frame a best-effort system's runtime activity in three parts: (1) an underlying \textit{core computation}, (2) \textit{observation} of that computation's intermediate and final states, and (3) \textit{instrumentation} of hardware's actual behavior during execution (Figure \ref{moreno:fig:best-effort:components}).
 In the context of digital evolution, \textit{core computation} would comprise all runtime operations that influence the composition of an end-state population and \textit{observation} might include recording lineage histories, discrete evolutionary events, or aggregate population statistics.
-As for \textit{instrumentation}, possibilites include send/receive counters, timestamps, profiling traces, event logs, and records of exact hardware composition and configuration --- a topic returned to shortly.
+As for \textit{instrumentation}, possibilities include send/receive counters, timestamps, profiling traces, event logs, and records of exact hardware composition and configuration --- a topic returned to shortly.
 
 With respect to scoping allowed relaxations, a key distinction can be drawn between \textit{core computation} and \textit{observation}.
-In scenrios where core computation has iterative structure, runtime irregularities compound and can propagate forward in pathological cascades, possibly even amplifying through positive feedback with the computation's state.
+In scenarios where core computation has iterative structure, runtime irregularities compound and can propagate forward in pathological cascades, possibly even amplifying through positive feedback with the computation's state.
 The consequence of irregularity in observation, by contrast, is restricted to \textit{post hoc} analysis.
 Likewise, the structure of observational blur can typically be more readily documented, reasoned about, and accounted for --- although complications can arise where resource utilization patterns driven by computational state bias observation.
 In exchange, best-effort observation strategies can enable efficiencies exploiting dynamic resource availability and data locality convenience, while providing fault robustness and capped-budget utilization guarantees.
 Such an \textit{inferential observability} paradigm thus allows an intermediate compromise in best-effort tradeoffs, which may suit a broader collection of possible use cases.
 \unskip\footnote{%
-Unique characteristics of epistemeological abstraction and causal contingency may suit digital evolution workloads to best-effort relaxations --- a point taken up in Section \ref{moreno:sec:conclusion}.
+Unique characteristics of epistemological abstraction and causal contingency may suit digital evolution workloads to best-effort relaxations --- a point taken up in Section \ref{moreno:sec:conclusion}.
 }
 
 As for aspects of runtime behavior that should be measured, an exhaustive treatment remains as future work.
@@ -87,15 +87,15 @@ Instead, in this initial exploration, we consider four broad dimensions of quali
 \end{itemize}
 Definition of formal quality of service metrics follows in Section \ref{moreno:sec:case1}.
 
-Likewise, broad considerations exist as to how quality of service should be anlayzed and interpreted.
+Likewise, broad considerations exist as to how quality of service should be analyzed and interpreted.
 Runtime behavior may be considered in average, variance, extremes, and distribution across space and time in physical hardware and logical simulation content --- likely often supplemented by domain-specific considerations.
-In practice, quality of service metrics may be used to tune runtime configuration within acceptable bounds, flag anomolous hardware components, screen for problematic biases and correlations, facilitate empirical reproducibility, and interpret reported computations.
+In practice, quality of service metrics may be used to tune runtime configuration within acceptable bounds, flag anomalous hardware components, screen for problematic biases and correlations, facilitate empirical reproducibility, and interpret reported computations.
 We also suggest QoS to be reported alongside execution speed in scaling benchmarks, to characterize any performance-fidelity tradeoffs (see Section \ref{moreno:sec:case1:qos-scaling}).
 
 % empirical characteristics (scalability and runtime behavior) of
 To explore performance characteristics of best-effort HPC in practice, we present two case studies --- reported next.
 In the first case study, we use proposed QoS metrics to characterize runtime behavior of a best-effort multiprocessing framework for digital evolution experiments, testing the impact of best-effort relaxations on scaling efficiency.
-We also assess QoS robustness in tolerating anamolous hardware and scaling out to larger hardware pools.
+We also assess QoS robustness in tolerating anomalous hardware and scaling out to larger hardware pools.
 In the second case study, we demonstrate best-effort strategies in action on the Cerebras Wafer-Scale Engine, examining fault-robustness and detection of processing asymmetries.
 Discussion includes approximate tracking of spatiotemporal and phylogenetic evolutionary history.
 
