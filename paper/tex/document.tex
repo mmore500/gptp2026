@@ -56,8 +56,11 @@
 \makeatother
 
 \usepackage{makeidx}         % allows index generation
-\usepackage{graphicx}        % standard LaTeX graphics tool
-                             % when including figure files
+\ifdefined\nofake
+  \usepackage{graphicx}      % standard LaTeX graphics tool
+\else
+  \usepackage[demo]{graphicx}% placeholder boxes when bindle/ data unavailable
+\fi
 \usepackage[bottom]{footmisc}% places footnotes at page bottom
 \usepackage{multicol}        % used for the two-column index
 \usepackage{multirow}
@@ -95,7 +98,7 @@
 \usepackage{float}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-\usepackage{underscore}
+\usepackage[strings]{underscore}
 
 \DeclareMathOperator*{\argmin}{argmin}
 \newcommand{\code}{\texttt}
@@ -155,6 +158,6 @@
 
 % \subincludefrom (rather than \includefrom) appends to the parent
 % import path so the parent main.tex's \import{tex/}{...} keeps working.
-\subincludefrom{Authors/Name/}{Author}
+\subincludefrom{Authors/Moreno/}{Author}
 
 \end{document}
