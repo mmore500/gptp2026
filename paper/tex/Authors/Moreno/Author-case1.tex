@@ -3,7 +3,7 @@
 \input{fig/cpu.tex}
 
 Evolutionary transitions in individuality, such as multicellularity and eusociality, are a key facet of biological evolution's surprising constructive power \cite{taylor2016open}.
-Digital evolution experiments exploring can unfold are computationally demanding: life history of each multicell can encompass an independent subpopulation of replicators --- possibly themselves engaged in interaction-intensive developmental and physiological processes.
+Digital evolution experiments exploring how these transitions can unfold are computationally demanding: life history of each multicell can encompass an independent subpopulation of replicators --- possibly themselves engaged in interaction-intensive developmental and physiological processes.
 % Infrastructure for such experiments therefore provides a germane testbed to explore HPC methods for digital evolution.
 
 As a first case study, we test the performance characteristics of a best-effort multiprocessing framework developed to support the DISHTINY platform, which targets such experiments \cite{moreno2019toward}.
@@ -235,5 +235,5 @@ Thus, this imbalance appears likely to have arisen from asymmetric NUMA effects.
 
 The first step to resolving local asymmetries and anomalies is detecting and diagnosing them.
 In the case of NUMA-driven imbalance, allocation flags can be used to restrict process residency.
-In the case of the detected between-0node imbalance, outgoing message rates could be throttled countervailing traffic.
+In the case of the detected between-node imbalance, outgoing message rates could be throttled countervailing traffic.
 Alternatively, such asymmetries could simply be recorded and factored into interpretation of computational results.

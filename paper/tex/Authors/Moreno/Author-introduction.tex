@@ -6,10 +6,10 @@ Indeed, at present, detailed simulation at the scope of individual biological ce
 As such, many interesting biological processes remain out of reach of satisfactory modeling experiments.
 While single-CPU evaluations of evolution can achieve rapid generational turnover, this often comes at the cost of small population sizes \cite{moreno2022engineering}.
 This limitation hinders computational experiments incorporating many-species eco-evolutionary dynamics and evolutionary transitions in individuality (e.g., multicellularity, eusociality) \cite{penczykowski2016understanding,alizon2012modelling,schreiber2021cross}.
-In the field of artificial life, such cross-scale processes of great interest in exploring how evolution can produce ongoing complexity, novelty, and adaptation \cite{taylor2016open,dolson2021digital,taylor2019evolutionary,ackley2014indefinitely}.
-Indeed, evidence suggests such experimentse have been meaningfully constrained by computational scale \cite{channon2019maximum}.
+In the field of artificial life, such cross-scale processes are of great interest in exploring how evolution can produce ongoing complexity, novelty, and adaptation \cite{taylor2016open,dolson2021digital,taylor2019evolutionary,ackley2014indefinitely}.
+Indeed, evidence suggests such experiments have been meaningfully constrained by computational scale \cite{channon2019maximum}.
 
-Analogous limitations in computational scale, in retrosepct, turn out to have profoundly infleunced connectionist approaches to artificial intelligence \cite{kaplan2020scaling}.
+Analogous limitations in computational scale, in retrospect, turn out to have profoundly influenced connectionist approaches to artificial intelligence \cite{kaplan2020scaling}.
 Artificial Neural Networks have gained prominence in tandem with torrential growth in training set sizes, parameter counts, and training FLOPs \cite{marcus2018deep} --- accomplished, in part, by tailoring deep learning architecture to available hardware \cite{krizhevsky2012imagenet}.
 Since, AI/ML workloads have brought to market powerful next-generation compute accelerators affording up to hundreds of thousands of processing cores (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras)\cite{zhang2016cambricon,emani2021accelerating,jia2019dissecting,medina2020habana}.
 These accelerator devices are anticipated to drive advances in both agent-based modeling (ABM) and high-performance computing (HPC) writ large \cite{perumalla2022computer,VanEssendelft2025}; opportunity exists to also meet the needs of digital evolution.
@@ -63,7 +63,7 @@ To structure discussion of these mitigations, we frame a best-effort system's ru
 In the context of digital evolution, \textit{core computation} would comprise runtime operations that influence end-state population composition and \textit{observation} would include recording lineage histories, discrete evolutionary events, or aggregate population statistics.
 As for \textit{instrumentation}, possibilities include send/receive counters, timestamps, profiling traces, event logs, and records of what hardware is used.
 
-In scoping allowed relaxations, key distinction can be drawn between \textit{core computation} and \textit{observation}.
+In scoping allowed relaxations, a key distinction can be drawn between \textit{core computation} and \textit{observation}.
 In scenarios where core computation has iterative structure, runtime irregularities compound and, in the worst case, can propagate forward in a pathological cascade.
 Although systematic biases may still be introduced, irregularity in observation affects only \textit{post hoc} analysis where it may often be more readily reasoned about and accounted for.
 Possible benefits of best-effort observation strategies, by contrast, include efficiencies dynamically exploiting unused bandwidth and memory or convenient data locality, as well as fault robustness and capped-budget utilization guarantees.
