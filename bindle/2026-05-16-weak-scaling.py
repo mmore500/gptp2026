@@ -363,10 +363,10 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             teeplot_show=True,
             teeplot_subdir=pathlib.Path(__file__).stem,
         ) as _g:
-            _g.figure.set_size_inches(9, 2.2)
+            _g.figure.set_size_inches(12, 2)
             _g.set_titles(col_template="{col_name}", row_template="{row_name}")
             _g.set(ylim=(0, None), xlabel="Num Processes", ylabel="")
-            plt.subplots_adjust(hspace=0.2, wspace=0.2)
+            plt.subplots_adjust(hspace=0.2, wspace=0.7)
             for _ax in _g.axes.flat:
                 _ax.ticklabel_format(style="sci", axis="y", scilimits=(-4, 3))
                 _ax.yaxis.get_offset_text().set_x(-0.25)
