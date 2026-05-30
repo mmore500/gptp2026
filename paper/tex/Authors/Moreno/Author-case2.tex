@@ -2,7 +2,7 @@
 
 \input{fig/wse.tex}
 
-In addition to synchronization overhead, as just highlighted in Section \ref{moreno:sec:case1}, best-effort strategies can also heop accommodate memory scarcity and data loss from hardware faults.
+In addition to synchronization overhead, as just highlighted in Section \ref{moreno:sec:case1}, best-effort strategies can also help accommodate memory scarcity and data loss from hardware faults.
 These two factors have come to the fore in ongoing work conducting agent-based evolution simulations on the Cerebras Wafer-Scale Engine (WSE) platform.
 % This hardware, primarily developed to target AI/ML workloads, exemplifies the emerging promise of massively-distributed compute power, but also lays bare accompanying challenges.
 
@@ -22,7 +22,7 @@ Both of these applications target WSE using an island model scheme \cite{bennett
 Further detail on configurations appear in supplementary material \cite{moreno_2026_trust}.
 Case study material here is organized in four parts.
 \begin{enumerate}
-\item overview of approach forapproximate tracking of evolutionary history (Section \ref{moreno:sec:case2:hstrat}),
+\item overview of approach for approximate tracking of evolutionary history (Section \ref{moreno:sec:case2:hstrat}),
 \item application of this approach to tolerate sparse, asynchronous device-to-host data collection and a persistent localized data-corruption fault (Section \ref{moreno:sec:case2:missing}),
 \item use of evolutionary tracking to identify emergent biases in population dynamics (Section \ref{moreno:sec:case2:bias}), and
 \item details of a generalized ring buffer approach used to efficiently record unknown-duration time series data within fixed memory capacity (Section \ref{moreno:sec:case2:timeseries}).
@@ -43,7 +43,7 @@ Case study material here is organized in four parts.
 % Phylogenetic analysis is integral to much of evolution research, whether conducted \textit{in vivo} or \textit{in silico} \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lewinsohnStatedependentEvolutionaryModels2023a,lenski2003evolutionary}.
 In WSE-based experiments, agent migrations across the chip pose substantial logistical challenges in tracking evolutionary history as it unfolds \cite{moreno2024analysis}.
 On WSE, instrumentation must be lightweight --- memory used comes at the direct cost of reduced population capacity.
-Even were sufficient memory and bandwidth available, collecting the entirety of evolutionary history --- upwards of a quadrillion replication events in some simulations \cite{singhvi2025scalable} --- would be of negligible tractability in its entirety; instead, means are needed to extract a reasonable or summary.
+Even were sufficient memory and bandwidth available, collecting the entirety of evolutionary history --- upwards of a quadrillion replication events in some simulations \cite{singhvi2025scalable} --- would be of negligible tractability in its entirety; instead, means are needed to extract a reasonable or representative summary.
 
 In evolutionary studies, a key aspect of history is phylogeny --- the structure of ancestry relationships among organisms \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lenski2003evolutionary}.
 In addition to tracing the history of evolutionary events \cite{dawkins2016ancestor,hedges2015tree,hinchliff2015synthesis}, phylogenetic analysis can characterize more general questions about the underlying mode and tempo of evolution \cite{felsenstein1985phylogenies}.
@@ -62,7 +62,7 @@ Digital phylogenies also serve as a useful testbed for bioinformatics, as ground
 To collect ancestry data from WSE experiments, we have adopted strategies inspired by real-world experiments that assume data collection is expensive, limited, and non-deterministic.
 Rather than exhaustively tracking parent-child relationships \cite{dolson2023phylotrackpy}, we adopt an approach inspired by synthetic biology techniques for lineage tracking \cite{moreno2022hereditary} --- in which progressive random DNA barcode inserts identify closely-related organisms by producing shared commonalities \cite{Masuyama2019}.
 We use analogous barcoding with single-bit markers, budgeting 64-bit capacity per genome \cite{moreno2025testing}.
-Once budgeted capacity fills, barcodes overwrite eachother to maintain an approximate record \cite{moreno2024algorithms}.
+Once budgeted capacity fills, barcodes overwrite each other to maintain an approximate record \cite{moreno2024algorithms}.
 % Barcode origin times can be inferred from storage position, allowing direct estimation of lineage divergence
 % Barcodes remain chronologically attributed, allowing estimation of the point in time when lineages diverged from conflicts \cite{}.
 Reconstruction of phylogenies comprising many taxa is accomplished by agglomerative trie-building over shared barcode prefixes \cite{moreno2023toward}.
@@ -101,7 +101,7 @@ Where computation can be structured to gracefully degrade under disruption, such
 To check the plausibility of reconstructed phylogenies, we examined spatial patterns (i.e., on-chip locality) among related taxa \cite{novembre2008genes,grundler2025geographic}.
 Under neutral conditions, lineage histories should constitute a random walk in space \cite{lemey2010phylogeography}.
 However, to our surprise, parallel lineages appeared to disproportionately follow similar spatial trajectories (left panel, Figure \ref{moreno:fig:wse:bias}).
-Closer inspection of sample lineages revealed that many traversed bottom-to-top across the chip (right panel, Figure \ref{moreno:fig:wse:bias}), suggesting a magration imbalance favoring this direction.
+Closer inspection of sample lineages revealed that many traversed bottom-to-top across the chip (right panel, Figure \ref{moreno:fig:wse:bias}), suggesting a migration imbalance favoring this direction.
 
 This scenario exemplifies the importance of screening asymmetries in underlying computation.
 % Such bias can be easily prevented by throttling each PEs outgoing migration rates to their slowest direction, which we have enacted for future simulations.
