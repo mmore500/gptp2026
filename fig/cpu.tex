@@ -83,16 +83,16 @@
 \caption{
 \textbf{Cluster-based HPC Case Study.}
 \footnotesize
-Case study examines digital evolution and graph coloring benchmarks in a CPU-based compute cluster context (panel \ref{moreno:fig:cpu:architecture}; errorbars SD).
-In scaling from 1 to 64 nodes (one process per node), best-effort relaxations substantially improve speed; for the graph coloring domain where such a measure is available, solution error also benefits.
-In scaling communication-intensive graph coloring from 64 to 256 processes, median quality of service remains stable --- with the sole exception of throughput rate, which decreased (panel \ref{moreno:fig:cpu:qos-scaling}).
-By contrast, the maximal magnitude of quality of service disruptions grew; closer inspection revealed extreme disruptions to stem from node \texttt{lac-417}.
-Further 256-process experiments were conducted excluding \texttt{lac-417}, which revealed median quality of service to remain stable between allocations including and excluding this hardware (panel \ref{moreno:fig:cpu:lac417}).
-In a related experiment, quality-of-service metrics were collected for a pair of graph coloring processes resident on the same node (``intranode'') or split between two nodes (``internode'').
+Case study examines digital evolution and graph coloring benchmarks on a CPU-based compute cluster (panel \ref{moreno:fig:cpu:architecture}).
+Compared to synchronous evaluation, best-effort relaxations improve scaling efficiency (panel \ref{moreno:fig:cpu:performance} one proc per node; errorbars SD).
+For graph coloring, median QoS remained stable between allocation sizes but magnitude of wrost-case QoS disruptions grew (panel \ref{moreno:fig:cpu:qos-scaling}).
+In further 256-process experiments testing impact of anamolous hardware, median QoS remained stable with and without low-QoS node \texttt{lac-417} (panel \ref{moreno:fig:cpu:lac417}).
+In a final experiment, QoS metrics were collected between graph coloring processes resident on the same node (``intranode'') or split between two nodes (``internode'').
 In both cases, negative correlation arose between message send and receive rates (panel \ref{moreno:fig:cpu:balance}).
-For intranode configuration, this imbalance likely reflects asymmetry with respect to Non-Uniform Memory Access (NUMA) disruptions introduced during counter snapshots for quality of service metrics (panel \ref{moreno:fig:cpu:intranode}).
-Shaded areas show slowest-fastest throughput spread (higher values worse), overlaid translucently per-replicate.
-For internode configuration, apparent send/receive imbalance seems to have arisen from speed mismatch between hosting nodes used (panel \ref{moreno:fig:cpu:internode}).
+For within-node configuration, this imbalance likely reflects asymmetric Non-Uniform Memory Access (NUMA) disruptions ().
+Filled strips in panel \ref{moreno:fig:cpu:intranode} shows spread between fastest and slowest process (higher values worse; replicates overlaid), which respond to QoS polling thread activity (shaded intervals).
+For internode configuration, send/receive imbalance relates to disparate process speeds between host nodes (panel \ref{moreno:fig:cpu:internode}).
+Where significance annotated, ** $p<0.01$ and *** $p < 0.001$.
 }
 \label{moreno:fig:cpu}
 \end{figure}
