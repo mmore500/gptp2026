@@ -776,7 +776,7 @@ def _(filtered_procs, mpl, np, pathlib, pd, plt, sns, tp):
 
 
 @app.cell
-def _(filtered_procs, mpl, pathlib, pd, sns, tp):
+def _(filtered_procs, mpl, np, pathlib, pd, plt, sns, tp):
     def _lighten(_c, _amt):
         _r, _g, _b = mpl.colors.to_rgb(_c)
         return (
@@ -879,11 +879,11 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
                     _ax.text(
                         _x[-1] * 0.92,
                         _y[-1],
-                        "sync",
-                        ha="right",
-                        va="top",
+                        "  sync",
+                        ha="left",
+                        va="center",
                         color=_darken(_gray, 0.5),
-                        fontsize=8,
+                        fontsize=9,
                         zorder=7,
                     )
                 else:
@@ -891,11 +891,11 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
                     _ax.text(
                         _x[-1],
                         _y[-1] + 0.04 * _lines_y[0].max(),
-                        "best\neffort",
-                        ha="right",
-                        va="bottom",
+                        "\n\n\n  best\n  effort\n\n\n\n",
+                        ha="left",
+                        va="center",
                         color=_green,
-                        fontsize=8,
+                        fontsize=9,
                         zorder=7,
                     )
 
@@ -916,62 +916,42 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
                 _signif1, _signif2 = _signif_by_panel[_panel][_mode]
 
                 for _xpos, _ysrc, _signif in (
-                    ((98, 155)[_li], _y[0], _signif1),
+                    # ((98, 155)[_li], _y[0], _signif1),
                     ((245, 389)[_li], _y[2], _signif2),
                 ):
                     _lo, _hi = min(_ysrc, _y[3]), max(_ysrc, _y[3])
                     _pct = ((_y[3] - _ysrc) / abs(_ysrc)) * 100
 
                     _ax.plot(
-                        [_xpos, _xpos],
+                        [16, 64],
                         [_lo, _hi],
                         color=_line_c,
                         lw=1.5,
+                        linestyle=":",
                         solid_capstyle="butt",
                         zorder=5,
-                        clip_on=False,
-                    )
-                    _ax.plot(
-                        [_xpos],
-                        [_lo],
-                        marker="o",
-                        ms=4.5,
-                        markerfacecolor="white",
-                        markeredgecolor=_line_c,
-                        markeredgewidth=1.3,
-                        zorder=6,
-                        clip_on=False,
-                    )
-                    _ax.plot(
-                        [_xpos],
-                        [_hi],
-                        marker="o",
-                        ms=4.5,
-                        markerfacecolor=_line_c,
-                        markeredgecolor=_line_c,
-                        markeredgewidth=1.3,
-                        zorder=6,
                         clip_on=False,
                     )
                     if _li == 0:
                         # synchronous: hang from the top value, nudged
                         # right of the bar into the between zone
-                        _tx, _ty = _xpos * 1.13, _hi
-                        _ha, _va = "right", "top"
+                        _ha, _va = "center", "bottom"
+                        _rot = 26.5
                     else:
                         # best-effort: rise directly above the green bar
-                        _tx, _ty = _xpos, _hi + 0.08 * _panel_top
-                        _ha, _va = "left", "center"
+                        _ha, _va = "center", "bottom"
+                        _rot = 0
+
                     _ax.text(
-                        _tx,
-                        _ty,
+                        32,
+                        np.average([_y[3], _y[2]], weights=[1.5, 1.0]),
                         f"+{_pct:.0f}%{_signif}",
-                        rotation=90,
+                        rotation=_rot,
                         rotation_mode="anchor",
                         ha=_ha,
                         va=_va,
                         color=_text_c,
-                        fontsize=7,
+                        fontsize=8,
                         zorder=7,
                         clip_on=False,
                     )
@@ -1000,19 +980,28 @@ def _(filtered_procs, mpl, pathlib, pd, sns, tp):
 
         _g.set(ylim=(0, None))
         _g.set(xscale="log")
-        _g.figure.set_size_inches(9, 2)
-        _g.set_titles(col_template="{col_name}", row_template="")
+        _g.set_titles(col_template="", row_template="")
+        plt.subplots_adjust(wspace=0.4)
+        _g.figure.set_size_inches(9, 1.2)
 
         for _ax in _g.axes.flat:
             _ax.minorticks_off()
-            _ax.set_xlim(0.85, 468)
-            _ax.set_xticks([1, 4, 16, 64, 123, 309])
+            # _ax.set_xlim(0.85, 468)
+            _ax.set_xticks([1, 4, 16, 64])
             _ax.set_xticklabels(
-                ["1", "4", "16", "64", "Δ\n1-64", "Δ\n16-64"],
+                ["1", "4", "16", "         64 procs"],
             )
             _ax.set_ylabel("")
-            _ax.set_xlabel("Num Processes")
             _ax.set_title(_ax.get_title(), fontsize=11)
+
+        for _col, _ax in zip(_col_order, _g.axes.flat):
+            _col = {
+                "Digital Evo Walltime (ms)": "Digital Evo (ms per update)",
+                "Graph Color Walltime (ms)": "Graph Color (ms per update)",
+                "Graph Color Solution Error": "Graph Color (solution error)",
+            }[_col]
+            _ax.set_xlabel("")
+            _ax.set_title(_col, fontsize=10)
     return
 
 
