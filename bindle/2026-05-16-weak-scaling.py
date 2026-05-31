@@ -236,11 +236,11 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
     _data_all = pd.concat([data_max, data_median], ignore_index=True).replace(
         {
             "Metric": {
-                "Simstep Period Outlet (ms)": "Update Walltime\n(ms)",
-                "Latency Simsteps Outlet": "Latency\n(updates)",
-                "Latency Walltime Outlet (ms)": "Latency\n(ms)",
-                "Delivery Clumpiness": "Bunching",
-                "Delivery Failure Rate": "Message\nDrop Rate",
+                "Simstep Period Outlet (ms)": "Throughput QoS\n(ms per update)",
+                "Latency Simsteps Outlet": "Latency QoS\n(updates)",
+                "Latency Walltime Outlet (ms)": "Latency QoS\n(ms)",
+                "Delivery Clumpiness": "Bunching QoS\n(consolidation)",
+                "Delivery Failure Rate": "Attrition QoS\n(drop rate)",
             },
         },
     )
@@ -335,11 +335,11 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             data=_cond_df,
             col="Metric",
             col_order=[
-                "Update Walltime\n(ms)",
-                "Latency\n(ms)",
-                "Latency\n(updates)",
-                "Message\nDrop Rate",
-                "Bunching",
+                "Throughput QoS\n(ms per update)",
+                "Latency QoS\n(ms)",
+                "Latency QoS\n(updates)",
+                "Attrition QoS\n(drop rate)",
+                "Bunching QoS\n(consolidation)",
             ],
             row="Kind",
             x="Num Processes",
