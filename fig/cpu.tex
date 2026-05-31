@@ -9,8 +9,11 @@
 \vspace{-0.5ex}
 \centering
 \subfigure[\footnotesize comparison of best-effort vs. synchronous performance scaling; higher values worse]{
+\begin{minipage}{\linewidth}
   \includegraphics[width=\linewidth]{../bindle/bindle-2026-05-16-perf-quality/bindle/teeplots/2026-05-16-perf-quality/col=panel+hue=asynchronicity-mode+kind=line+viz=perf-quality-delta-onerow+x=ncpus+y=value+ext=.pdf}
   \label{moreno:fig:cpu:performance}
+\vspace{-5ex}
+\end{minipage}%
 }
 
 \vspace{-0.5ex}
@@ -18,8 +21,9 @@
 \subfigure[\footnotesize stability of median and extreme QoS under best-effort scaling; higher worse]{
 \begin{minipage}{\linewidth}
   \centering
-\includegraphics[width=0.8\linewidth]{../bindle/bindle-2026-05-16-weak-scaling/bindle/teeplots/2026-05-16-weak-scaling/col=metric+cpus_per_node=1+hue=significance+kind=strip+marker=x+num_simels_per_cpu=2048+row=kind+viz=catplot+x=num-processes+y=value+ext=.pdf}
+\includegraphics[width=\linewidth]{../bindle/bindle-2026-05-16-weak-scaling/bindle/teeplots/2026-05-16-weak-scaling/col=metric+cpus_per_node=1+hue=significance+kind=strip+marker=x+num_simels_per_cpu=2048+row=kind+viz=catplot+x=num-processes+y=value+ext=.pdf}
   \label{moreno:fig:cpu:qos-scaling}
+  \vspace{-2ex}
 \end{minipage}%
 }
 
@@ -28,9 +32,10 @@
 \subfigure[\footnotesize effect of anomalous node on median and extreme QoS; higher worse]{
 \begin{minipage}{\linewidth}
   \centering
-  \includegraphics[width=0.8\linewidth]{../bindle/bindle-2026-05-16-lac-417/bindle/teeplots/2026-05-16-lac-417/col=metric+hue=significance+kind=strip+marker=x+row=kind+viz=catplot+x=0-sans-lac-417-1-with-lac-417+y=value+ext=.pdf}
+  \includegraphics[width=\linewidth]{../bindle/bindle-2026-05-16-lac-417/bindle/teeplots/2026-05-16-lac-417/col=metric+hue=significance+kind=strip+marker=x+row=kind+viz=catplot+x=0-sans-lac-417-1-with-lac-417+y=value+ext=.pdf}
   \label{moreno:fig:cpu:lac417}
-\end{minipage}
+\vspace{-2ex}
+\end{minipage}%
 }
 
 \vspace{-0.5ex}
@@ -38,9 +43,9 @@
 \subfigure[\footnotesize intranode snapshot cycle profiles]{
 \begin{minipage}{0.45\linewidth}
 \centering
-\begin{minipage}[t]{0.7\linewidth}
+\begin{minipage}[t]{0.65\linewidth}
 \vspace{0pt} % Forces the alignment point to the top
-\includegraphics[width=1in,angle=90]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement-ts/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement-ts/hue=special+kind=line+row=special+viz=relplot+x=rank3+y=ms-per-update+ext=.pdf}%
+\includegraphics[width=1.1in,angle=90]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement-ts/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement-ts/hue=special+kind=line+row=special+viz=relplot+x=rank3+y=ms-per-update+ext=.pdf}%
 \end{minipage}%
 \begin{minipage}[t]{0.28\linewidth}
   \vspace{0pt} % Forces the alignment point to the top
@@ -48,10 +53,11 @@
   \tiny
   ~\\[2.75em]
   NUMA-\\[0.5em]
-  symmetric\\[2em]
+  symmetric\\[2.6em]
   NUMA-\\[0.5em]
   asymmetric
 \end{minipage}
+\vspace{-1.5ex}
 \end{minipage}
 \label{moreno:fig:cpu:intranode}
 }%
@@ -60,6 +66,7 @@
 \centering
   \includegraphics[height=1in]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement/col=multiprocessing+hue=hostname+kind=line+style=indexx+viz=relplot+x=type+y=count-per-second+ext=.pdf}%
   \label{moreno:fig:cpu:balance}%
+  \vspace{0.6ex}
 \end{minipage}
 }%
 \subfigure[\footnotesize internode perf.]{
@@ -67,6 +74,7 @@
 \centering
   \includegraphics[height=1in]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement/hue=hostname+kind=box+viz=catplot+x=hostname+y=ms-per-update+ext=.pdf}%
   \label{moreno:fig:cpu:internode}%
+  \vspace{0.6ex}
 \end{minipage}
 }%
 
