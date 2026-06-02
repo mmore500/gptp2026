@@ -16,8 +16,8 @@
 \usepackage{hyperref} % Let's you add links (\url{<link>}) and clickable labels to naviguate through the document
 \usepackage{microtype} % Improves the typesetting of your document by managing better the space between letters, hyphens etc.
 \usepackage{amsmath}
-\usepackage{bibunits}
-\usepackage{natbib}
+% \usepackage{bibunits}
+% \usepackage{natbib}
 \usepackage{siunitx}
 \usepackage{numprint}
 \npthousandsep{\,}
@@ -26,9 +26,6 @@
 
 % Tells LaTeX where all graphs and tables are so you don't need to
 % write the full path when you want to integrate them.
-
-\defaultbibliography{Authors/Moreno/reference}
-\defaultbibliographystyle{apalike-ejor}
 
 %-------Info---------
 \title{Supplement for ``Trust, but Verify: Rigorously Profiling Best-Effort HPC''}
@@ -44,8 +41,6 @@
 
   \onehalfspacing % Sets line spacing to 1.5 after the title for the rest of the document
 
-  Further methodological details on CPU-based experiments are available as \citep{moreno2022best}.
-
   \input{sup/digital-evolution-benchmark}
   \input{sup/graph-coloring-benchmark}
   \input{sup/quality-of-service-experiments}
@@ -58,4 +53,11 @@
   \clearpage
   \section{Supplementary Figures}
   \input{fig/weak-scaling}
+
+  \clearpage
+{\small
+\bibliographystyle{spmpsci}
+\bibliography{Authors/Moreno/reference}
+}
+
 \end{document} % Don't forget this last one.
