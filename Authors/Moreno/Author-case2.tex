@@ -82,7 +82,7 @@ D2H transfers sampled one genome per PE, and completed approximately 15 times pe
 This volume of harvested genomes (nearly 8 billion in total) exceeded downstream analysis capacity, and so was thinned on a rolling basis to 1.1 billion genomes ($\sim0.0001\%$ of cumulative individuals).
 
 Another benefit afforded by reconstruction-based analysis is resilience to data loss from hardware faults.
-Reported runs used Cerebras Cloud system \texttt{rwse1001-cs-sy01}.
+Reported runs used Cerebras Cloud system \texttt{rwse1001-\allowbreak cs-\allowbreak sy01}.
 After February 26th, 2026, this hardware began to exhibit unreliable D2H transfers along PE row 410 between columns 0 and 248 (Figure \ref{moreno:fig:wse:fault}).
 Around 5\% of 32-bit words copied from this region had bit-flip errors, corrupting 0.03\% of overall extracted genomes.
 Runtime parity checks confirmed that this phenomenon did not compromise on-device simulation, only D2H export.
