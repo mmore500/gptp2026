@@ -7,15 +7,15 @@ Digital evolution experiments exploring how these transitions unfold can be comp
 % Infrastructure for such experiments therefore provides a germane testbed to explore HPC methods for digital evolution.
 
 In this case study, we test the performance characteristics of a best-effort multiprocessing framework developed to support the DISHTINY platform, which targets such experiments \cite{moreno2019toward}.
-This system tracks a fixed-capacity population of virtual cells controlled by event-driven linear genetic programs \cite{lalejini2018evolving}, which may form cooperative groups with local neighbors \cite{moreno2021exploring}
+This system tracks a fixed-capacity population of virtual cells controlled by event-driven linear genetic programs \cite{lalejini2018evolving}, which may form cooperative groups with local neighbors \cite{moreno2021exploring}.
 
 To support multiprocessing, DISHTINY routes all cell-cell interaction through a communication layer implemented by the Conduit library \cite{moreno2021conduit}.
 \unskip\footnote{%
-The Conduit library is one among many frameworks have arisen to offer useful parallel and distributed programming abstractions, including task-based frameworks \cite{kale1993charm++,bauer2012legion,blumofe1996cilk,reinders2007intel} or domain-specific programming languages \cite{el2006upc,chamberlain2007parallel}.
+The Conduit library is one among many frameworks that have arisen to offer useful parallel and distributed programming abstractions, including task-based frameworks \cite{kale1993charm++,bauer2012legion,blumofe1996cilk,reinders2007intel} or domain-specific programming languages \cite{el2006upc,chamberlain2007parallel}.
 However, these frameworks generally assume a deterministic relationship between tasks or otherwise forbid data races.
 }
 This multiprocessing framework exposes a best-effort interface backed by MPI intrinsics \cite{gropp1996high}.
-In the case where two neighboring cells reside on differen processes, a configurable-capacity send buffer asynchronously dispatches triggered interactions and synchronizes local state.
+In the case where two neighboring cells reside on different processes, a configurable-capacity send buffer asynchronously dispatches triggered interactions and synchronizes local state.
 In the case where send buffer capacity is full, communication may be configured to drop rather than blocking.
 These best-effort relaxations allow per-processor subpopulations to proceed in a fully asynchronous manner.
 \unskip\footnote{%
@@ -124,14 +124,14 @@ On account of original plans to incorporate threading-based trials, preceding ex
 }
 Graph coloring benchmarks were conducted to exercise communication intensity.
 
-Figure \ref{moreno:fig:best-effort:qos} compares maximum (i.e., worst within allocation) and median (i.e., typical within allocation) QoS metrics between 64- and 256-process jobs.
+Figure \ref{moreno:fig:cpu:qos-scaling} compares maximum (i.e., worst within allocation) and median (i.e., typical within allocation) QoS metrics between 64- and 256-process jobs.
 % Top row values report the worst quality of service seen at any individual process, per replicate.
-All reported QoS metrics --- unsurprisingly --- exhibited more extreme tail values in larger process pools (Wilcoxon tests, $\alpha = 0.05$; Figure \ref{moreno:fig:best-effort:qos}, top row).
+All reported QoS metrics --- unsurprisingly --- exhibited more extreme tail values in larger process pools (Wilcoxon tests, $\alpha = 0.05$; Figure \ref{moreno:fig:cpu:qos-scaling}, top row).
 % Given more samples, it is not surprising to see larger-magnitude outliers --- however, for problem domains sensitive to worst-case degradation, this tendency would prove adverse.
-By contrast, median QoS tolerates scaling between 64 and 256 processes (Figure \ref{moreno:fig:best-effort:qos}, bottom row).
+By contrast, median QoS tolerates scaling between 64 and 256 processes (Figure \ref{moreno:fig:cpu:qos-scaling}, bottom row).
 Across metrics, no detectable degradation arose between process pool sizes (Wilcoxon tests, $\alpha = 0.05$), and throughput, in fact, improved by 4\% (Wilcoxon test, $p < 0.001$).
 
-Scaling between 64- and 256-process allocations under even more challenging conditions with extreme communication inensity (1 graph coloring node per process) produced similar QoS outcomes.
+Scaling between 64- and 256-process allocations under even more challenging conditions with extreme communication intensity (1 graph coloring node per process) produced similar QoS outcomes.
 Among median QoS readings, only throughput detectably degraded by 8\% (Wilcoxon tests, $\alpha = 0.05$; Supplementary Figure TODO \cite{moreno_2026_trust}).
 
 % Multiprocess performance scales well under the best-effort approach, with overlapping performance estimate intervals for 16 and 64 processor counts on both surveyed benchmark problems.
@@ -194,13 +194,13 @@ Among median QoS readings, only throughput detectably degraded by 8\% (Wilcoxon 
 
 % \input{fig/with-lac-417-vs-sans-lac-417/with-lac-417-vs-sans-lac-417.tex}
 The extreme magnitude of QoS outliers observed in 256-process allocations prompted closer inspection, which revealed extreme outliers all involved cluster node \texttt{lac-417}.
-So, we performed further tests acquiring two separate 256 process allocations on the lac cluster: one including \texttt{lac-417} and one excluding \texttt{lac-417}.
+So, we performed further tests acquiring two separate 256-process allocations on the lac cluster: one including \texttt{lac-417} and one excluding \texttt{lac-417}.
 
-Figure \ref{moreno:fig:cpu:qos-scaling} compares the distributions of QoS metrics between 256-node allocations with and without \texttt{lac-417}.
+Figure \ref{moreno:fig:cpu:lac417} compares the distributions of QoS metrics between 256-process allocations with and without \texttt{lac-417}.
 For throughput QoS, worst-case slowdowns were comparable between allocations (Wilcoxon test, $\alpha = 0.05$).
-For all other QoS measures, \texttt{lac-417} introduced orders-of-magnitude more extreme outlying QoS values: latencies of $>1$ second, loss of more than half of local message traffic, and batched delivery reaching upwards of 10 messages at a time (Wilcoxon tests, $p$ annotated; Figure \ref{moreno:fig:cpu:qos-scaling}).
+For all other QoS measures, \texttt{lac-417} introduced orders-of-magnitude more extreme outlying QoS values: latencies of $>1$ second, loss of more than half of local message traffic, and batched delivery reaching upwards of 10 messages at a time (Wilcoxon tests, $p$ annotated; Figure \ref{moreno:fig:cpu:lac417}).
 
-Despite extreme outliers, across all metrics median QoS values were comparable between allocations (Wilcoxon tests, $\alpha = 0.05$; Figure \ref{moreno:fig:cpu:qos-scaling}, lower panel).
+Despite extreme outliers, across all metrics median QoS values were comparable between allocations (Wilcoxon tests, $\alpha = 0.05$; Figure \ref{moreno:fig:cpu:lac417}, lower panel).
 Thus, in this case, global QoS robustly tolerated local disruptions.
 % Though such robustness should not be expected universally across all best-effort systems, such quality of service metrics provide a proactive means to detect any such widespread disruption arising from defective or degraded hardware components.
 
@@ -220,11 +220,11 @@ Interestingly, in the case of intranode communication, an apparent bimodal distr
 % https://github.com/mmore500/gptp2026/blob/821b93caadfc3be3873b288ebbbbb2e9e4b62f5a/bindle/2026-05-15-mp-vs-mt-beleagurement.ipynb
 % Further investigation allowed us to diagnose the underlying causes of these incoming/outgoing imbalances.
 % (123668.565545 - 110151.855758) / 110151.855758 = 0.12
-In the between-node experiment, imbalance arose from an underlying 12\% disparity in execution speed between host nodes (Figure \ref{moreno:fig:cpu:intranode}); after accounting for this factor, no detectable traffic imbalance remained (GLM, $p = 0.15$).
+In the between-node experiment, imbalance arose from an underlying 12\% disparity in execution speed between host nodes (Figure \ref{moreno:fig:cpu:internode}); after accounting for this factor, no detectable traffic imbalance remained (GLM, $p = 0.15$).
 
 In the within-node case, traffic imbalance appears likely to have arisen as an artifact of Non-Uniform Memory Access (NUMA) architecture.
 Because host cluster nodes use two independent CPU sockets, conflicting memory accesses can trigger cache invalidations that stall execution.
-Figure \ref{moreno:fig:cpu:internode} visualizes throughput QoS within process pairs over the 5-minute course of execution trials.
+Figure \ref{moreno:fig:cpu:intranode} visualizes throughput QoS within process pairs over the 5-minute course of execution trials.
 % Replicates are split by whether they exhibited apparent incoming/outgoing imbalance (bottom vs. top row).
 Across all replicates, at least one process slows during one-second snapshot windows --- consistent with a scenario where the background polling thread violates NUMA.
 Where incoming/outgoing imbalance arose, only one process slows; otherwise, both processes slow.
