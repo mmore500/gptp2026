@@ -66,7 +66,7 @@ def delimit_prep_data(mo):
 
 
 @app.cell
-def _(requests, retrieve_and_prepare_delta_dataframes):
+def _(np, requests, retrieve_and_prepare_delta_dataframes):
     for slug in "2rdj6", "9utpr":
         with open(f"/tmp/{slug}", "wb") as _fp:
             _fp.write(
@@ -75,10 +75,22 @@ def _(requests, retrieve_and_prepare_delta_dataframes):
                 ).content,
             )
 
-    _, df_snapshot_diffs = retrieve_and_prepare_delta_dataframes(
+    (
+        _df_finalized_observations,
+        df_snapshot_diffs,
+    ) = retrieve_and_prepare_delta_dataframes(
         df_inlet_url="/tmp/2rdj6",
         df_outlet_url="/tmp/9utpr",
     )
+
+    df_snapshot_diffs["Delivery Clumpiness"] = 1 - (
+        df_snapshot_diffs["Num Pulls That Were Laden Immediately"]
+        / np.minimum(
+            df_snapshot_diffs["Num Pulls Attempted"],
+            df_snapshot_diffs["Net Flux Through Duct"],
+        )
+    )
+
     return (df_snapshot_diffs,)
 
 
@@ -290,16 +302,17 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             _treatment = _grp.loc[
                 _grp["Num Processes"] == 256, "Value"
             ].to_numpy()
-            _n = min(len(_baseline), len(_treatment))
+            assert len(_baseline) == len(_treatment)
+            _n = len(_baseline)
+            assert _n
             _p = np.nan
-            if _n < 1:
+
+            try:
+                _, _p = scipy_stats.mannwhitneyu(_baseline, _treatment)
+                _sig = _pvalue_to_sig(_p, _baseline, _treatment)
+            except ValueError:
+                print("singularity")
                 _sig = "n.s."
-            else:
-                try:
-                    _, _p = scipy_stats.mannwhitneyu(_baseline, _treatment)
-                    _sig = _pvalue_to_sig(_p, _baseline, _treatment)
-                except ValueError:
-                    _sig = "n.s."
             _mask = (
                 (_cond_df["Metric"] == _metric)
                 & (_cond_df["Kind"] == _kind)
