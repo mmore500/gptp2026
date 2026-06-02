@@ -69,6 +69,7 @@ def delimit_prep_data(mo):
 @app.cell
 def _(
     find_treat_idx_mapped_col,
+    np,
     requests,
     retrieve_and_prepare_delta_dataframes,
 ):
@@ -81,13 +82,21 @@ def _(
             )
 
     merge_df, (
-        df_finalized_observations,
+        _df_finalized_observations,
         df_snapshot_diffs,
     ) = retrieve_and_prepare_delta_dataframes(
         df_inlet_url="/tmp/jgpnv",
         df_outlet_url="/tmp/ncdfq",
         treatment_column="Allocation",
         return_merge_df=True,
+    )
+
+    df_snapshot_diffs["Delivery Clumpiness"] = 1 - (
+        df_snapshot_diffs["Num Pulls That Were Laden Immediately"]
+        / np.minimum(
+            df_snapshot_diffs["Num Pulls Attempted"],
+            df_snapshot_diffs["Net Flux Through Duct"],
+        )
     )
 
     allocation_idx_mapped_title = find_treat_idx_mapped_col(df_snapshot_diffs)
@@ -392,11 +401,11 @@ def _(
         _treatment = _grp.loc[
             _grp[allocation_idx_mapped_title] == "With\nlac-417", "Value"
         ].to_numpy()
-        _n = min(len(_baseline), len(_treatment))
+        print(len(_baseline), len(_treatment))
         _p = np.nan
         try:
-            _, _p = scipy_stats.wilcoxon(_baseline[:_n], _treatment[:_n])
-            _sig = _pvalue_to_sig(_p, _baseline[:_n], _treatment[:_n])
+            _, _p = scipy_stats.mannwhitneyu(_baseline, _treatment)
+            _sig = _pvalue_to_sig(_p, _baseline, _treatment)
         except ValueError:  # all zeros
             _sig = "n.s."
 
