@@ -78,8 +78,8 @@ Because it tolerates sparse, irregular sampling, reconstruction-based analysis i
 In reported runs \cite{singhvi2025scalable}, sample genomes were gathered from WSE-based simulation on a rolling basis using asynchronous device-to-host (D2H) transfers (Figure \ref{moreno:fig:wse:phylogeny}).
 This approach allowed available bandwidth capacity to be dynamically balanced with existing on-chip traffic.
 Experiments evaluated a population of 190.8 million agents for 5 million generations, elapsing about 8{\small,}750 generations per second walltime.
-D2H transfers sampled one genome per PE, and completed approximately 15 times per second --- yielding 9{\small,}000 snapshots over the course of 10 minute runtime.
-This volume of harvested genomes (nearly 8 billion in total) exceeded downstream analysis capacity, and so was thinned on a rolling basis to 1 billion genomes (\~0.0001\% of cumulative individuals).
+D2H transfers sampled one genome per PE, and completed approximately 15 times per second --- yielding 9{\small,}000 snapshots over the course of a 10-minute runtime.
+This volume of harvested genomes (nearly 8 billion in total) exceeded downstream analysis capacity, and so was thinned on a rolling basis to 1 billion genomes ($\sim0.0001\%$ of cumulative individuals).
 
 Another benefit afforded by reconstruction-based analysis is resilience to data loss from hardware faults.
 Reported runs used Cerebras Cloud system \texttt{rwse1001-cs-sy01}.
@@ -93,7 +93,7 @@ While clear localization in this case made excluding bad data easy, a lightweigh
 Hardware faults are inescapable in large-scale HPC \cite{gupta2017failures,navaux2023challenges}, reaching upwards of daily occurrence in some systems \cite{kokolis2025revisiting}.
 Faults are typically handled by checkpoint rollbacks \cite{gupta2017failures,zhu2025understanding} --- in some flagship workloads, consuming on the order of 100PB of high-bandwidth disk capacity \cite{frontiere2025cosmological}.
 In highly integrated platforms, such as the WSE, challenges are compounded by the fact that small failures can compromise much larger hardware units \cite{cerebras2025yield}.
-Where computation can be structured to instead gracefully degrade under disruption, costs can greatly reduced, and possibilities for suitable computational substrates can be greatly widened \cite{markovi2020physics,ackley2011pursue,dreslinski2010near}.
+Where computation can be structured to instead gracefully degrade under disruption, costs can be greatly reduced, and possibilities for suitable computational substrates can be greatly widened \cite{markovi2020physics,ackley2011pursue,dreslinski2010near}.
 
 \subsection{Detection of Bias in Population Dynamics}
 \label{moreno:sec:case2:bias}
@@ -109,7 +109,7 @@ This scenario highlights the importance of screening asymmetries in underlying c
 % In this case, symmetry in directional migration rates could be rectified in a simple manner --- without invoking global synchronization --- by simply restricting the send rate of each PE to its neighbor to the slowest among neighbors.
 % While QoS metrics can help, finding such an issue ultimately requires looking for it.
 In addition to domain-specific inspection of simulation dynamics, systematizing generic QoS-based screens represents an important direction for future work.
-Likely, these approaches will prove be most effective in conjunction.
+Likely, these approaches will prove most effective in conjunction.
 % However, as illustrated in this example, instrumentation-level analyses in best-effort systems should be coupled with skeptical inspection of simulation dynamics to identify potential biasing factors in a best-effort computation to guard against unknown unknowns.
 % Collecting spatial phylogeny data helped to flag an asymmetry in our island-model evolving population.
 % Specifically, under neutral evolutionary conditions, we saw that lineages appeared biased towards migrating from bottom to top across the chip (Figure \ref{moreno:fig:wse:bias}).
