@@ -65,7 +65,7 @@ Reported metrics measure four dimensions of runtime QoS (Figure \ref{moreno:fig:
 
 To ensure consistent interpretation, all metrics quantify QoS degradation --- such that higher values indicate worse quality of service.
 % These metrics may be calculated in aggregate over execution in its entirety, or on an instantaneous basis within shorter ``snapshot'' windows.
-For simplicity, we focus on aggregate measures taken over entire execution here.
+To reflect runtime volatility, QoS measurements were captured during 1-second sample windows.
 Formulas to calculate these metrics from timestamped instrumentation counter values are provided in Supplemental Material \cite{moreno_2026_trust}.
 
 % MPI's nonblocking communication primitives, in particular, are sufficient to program distributed computations with relaxed synchronization requirements.
@@ -98,21 +98,23 @@ Allocations were configured with one process per cluster node at constant proble
 Best-effort relaxation substantially improved scaling efficiency of the compute-intensive digital evolution workload.
 % 1/1.08 = 92.5%
 % 1/2.14 = 47%
-Scaling DISHTINY between 1 and 64 processes, best-effort relaxation maintained 92\% efficiency --- significantly better than 47\% efficiency under synchronous execution (Wilcoxon test, $p<0.01$; leftmost panel, Figure \ref{moreno:fig:cpu:performance}).
+% https://github.com/mmore500/gptp2026/blob/d4e3af1b4719800889b98ff58286ab64e76153c3/bindle/2026-05-16-perf-quality.ipynb
+Scaling DISHTINY between 1 and 64 processes, best-effort relaxation maintained 92\% efficiency --- significantly better than 47\% efficiency under synchronous execution (Mann-Whitney test, $p<0.001$; leftmost panel, Figure \ref{moreno:fig:cpu:performance}).
 % 1/1.51 = 66%
-Past 16 processes, best-effort relaxation maintained stable performance, while synchronous execution degraded by 34\% (Wilcoxon tests, $\alpha = 0.05$; leftmost panel of Figure \ref{moreno:fig:cpu:performance}).
+Past 16 processes, best-effort relaxation maintained stable performance, while synchronous execution degraded by 34\% (Mann-Whitney tests, $\alpha = 0.05$ and $p < 0.001$; leftmost panel of Figure \ref{moreno:fig:cpu:performance}).
 For this workload, benefit from asynchrony likely stems from easing imbalances in evaluation of heterogeneous genetic program content.
 
 Communication-intensive graph-coloring workloads also benefited from best-effort relaxation.
 % 1/21.60 = 4.6%
 % 1/1.57 = 64%
-Between 1 and 64 processes, execution throughput degraded 95\% under synchronous execution --- while best-effort evaluation proved more efficient, degrading only 36\% (Wilcoxon test, $p < 0.01$; center panel, Figure \ref{moreno:fig:cpu:performance}).
+Between 1 and 64 processes, execution throughput degraded 95\% under synchronous execution --- while best-effort evaluation proved more efficient, degrading only 36\% (Mann-Whitney test, $p < 0.001$; center panel, Figure \ref{moreno:fig:cpu:performance}).
 Likewise, solution error fared better under best-effort evaluation ($1.3\times$ vs. $4.5\times$ increase; right panel, Figure \ref{moreno:fig:cpu:performance}).
 % 1 / 3.66 = 0.27
-Scaling past 16 processes, execution throughput and solution error remained stable under best-effort relaxation (Wilcoxon test, $\alpha = 0.05$), but degraded 72\% and $0.8\times$, respectively, under synchronous evaluation (Wilcoxon tests, both $p < 0.001$).
+Scaling past 16 processes, solution error remained stable under best-effort relaxation (Mann-Whitney test, $\alpha = 0.05$), but degraded $0.8\times$ under synchronous evaluation (Mann-Whitney test, $p < 0.001$).
+In this window, execution speed degraded 6\% under best-effort relaxation (Mann-Whitney test, $p < 0.05$) but 72\% under synchronous evaluation (Mann-Whitney test, $p < 0.001$).
 
 Across the board, best-effort relaxation improved efficiency at 64-process scale: providing $2.1\times$ speedup to compute-intense workload (DISHTINY) and --- for communication-intense workload (graph coloring) --- $12.5\times$ speedup with 73\% reduction in solution error.
-In all three cases, improvement is significant (Wilcoxon tests, all $p < 0.01$).
+In all three cases, improvement is significant (Mann-Whitney tests, all $p < 0.001$).
 
 \subsection{Quality of Service Scaling}
 \label{moreno:sec:case1:qos-scaling}
@@ -126,13 +128,13 @@ Graph coloring benchmarks were conducted to exercise communication intensity.
 
 Figure \ref{moreno:fig:cpu:qos-scaling} compares maximum (i.e., worst within allocation) and median (i.e., typical within allocation) QoS metrics between 64- and 256-process jobs.
 % Top row values report the worst quality of service seen at any individual process, per replicate.
-All reported QoS metrics --- unsurprisingly --- exhibited more extreme tail values in larger process pools (Wilcoxon tests, $\alpha = 0.05$; Figure \ref{moreno:fig:cpu:qos-scaling}, top row).
+All reported QoS metrics --- unsurprisingly --- exhibited more extreme tail values in larger process pools (Mann-Whitney tests, all $p < 0.001$; Figure \ref{moreno:fig:cpu:qos-scaling}, top row).
 % Given more samples, it is not surprising to see larger-magnitude outliers --- however, for problem domains sensitive to worst-case degradation, this tendency would prove adverse.
 By contrast, median QoS tolerates scaling between 64 and 256 processes (Figure \ref{moreno:fig:cpu:qos-scaling}, bottom row).
-Across metrics, no detectable degradation arose between process pool sizes (Wilcoxon tests, $\alpha = 0.05$), and throughput, in fact, improved by 4\% (Wilcoxon test, $p < 0.001$).
+Across metrics, no detectable degradation arose between process pool sizes (Mann-Whitney tests, $\alpha = 0.05$), and throughput, in fact, improved by 4\% (Mann-Whitney test, $p < 0.001$).
 
 Scaling between 64- and 256-process allocations under even more challenging conditions with extreme communication intensity (1 graph coloring node per process) produced similar QoS outcomes.
-Among median QoS readings, only throughput detectably degraded by 8\% (Wilcoxon tests, $\alpha = 0.05$; Supplementary Figure TODO \cite{moreno_2026_trust}).
+Among median QoS readings, only throughput detectably degraded by 8\% (Mann-Whitney tests, $\alpha = 0.05$; Supplementary Figure TODO \cite{moreno_2026_trust}).
 
 % Multiprocess performance scales well under the best-effort approach, with overlapping performance estimate intervals for 16 and 64 processor counts on both surveyed benchmark problems.
 % This section aims to flesh out a more holistic picture of the effects of increasing processor count on best-effort computation by considering a comprehensive suite of quality of service metrics.
@@ -197,10 +199,12 @@ The extreme magnitude of QoS outliers observed in 256-process allocations prompt
 So, we performed further tests acquiring two separate 256-process allocations on the lac cluster: one including \texttt{lac-417} and one excluding \texttt{lac-417}.
 
 Figure \ref{moreno:fig:cpu:lac417} compares the distributions of QoS metrics between 256-process allocations with and without \texttt{lac-417}.
-For throughput QoS, worst-case slowdowns were comparable between allocations (Wilcoxon test, $\alpha = 0.05$).
-For all other QoS measures, \texttt{lac-417} introduced orders-of-magnitude more extreme outlying QoS values: latencies of $>1$ second, loss of more than half of local message traffic, and batched delivery reaching upwards of 10 messages at a time (Wilcoxon tests, $p$ annotated; Figure \ref{moreno:fig:cpu:lac417}).
+For throughput QoS, worst-case slowdowns were comparable between allocations (Mann-Whitney test, $\alpha = 0.05$).
+For other measures, \texttt{lac-417} introduced up to orders-of-magnitude more extreme outlying QoS values (Mann-Whitney tests, all $p<0.001$; Figure \ref{moreno:fig:cpu:lac417}).
 
-Despite extreme outliers, across all metrics median QoS values were comparable between allocations (Wilcoxon tests, $\alpha = 0.05$; Figure \ref{moreno:fig:cpu:lac417}, lower panel).
+Despite extreme outliers, median QoS values remained stable across all metrics (Mann-Whitney tests, $\alpha = 0.05$; Figure \ref{moreno:fig:cpu:lac417}, lower panel).
+% https://github.com/mmore500/gptp2026/blob/d4e3af1b4719800889b98ff58286ab64e76153c3/bindle/2026-05-16-lac-417.ipynb
+Incorporating \texttt{lac-417}, in fact, produced a marginal 0.5\% improvement in throughput (Mann-Whitney test, $p=0.04$).
 Thus, in this case, global QoS robustly tolerated local disruptions.
 % Though such robustness should not be expected universally across all best-effort systems, such quality of service metrics provide a proactive means to detect any such widespread disruption arising from defective or degraded hardware components.
 
