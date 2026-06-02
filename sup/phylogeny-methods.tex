@@ -1,0 +1,28 @@
+\section{Wafer-Scale Phylogeny Trials}
+
+
+To conduct these simulations, we used an extension of the island-model genetic algorithm framework presented in \cite{moreno2024trackable}.
+This framework organizes simulated organisms into independent subpopulations hosted on each PE.
+Synchronous tournament selection of size 2 is applied within each PE.
+Between generations, agents are migrated between PEs asynchronously.
+
+%The purpose of this simulation was to generate large-scale data using a simple model that can be explicitly manipulated to explore evolutionary regimes differing substantially in the depth of shared ancestry between organisms (known as phylogenetic richness).
+
+A simple genome model was used, comprised of a single floating point value representing fitness.
+Reproduction occurred asexually, with this value subject to a normally-distributed mutation with 30\% probability.
+(In the case of the purifying-regime treatment, the negative absolute value of a sampled mutation delta was applied.)
+In tournament competitions to select parents for the subsequent generation, the parent was selected according to the higher fitness value with 5\% probability and was otherwise selected randomly.
+Genomes were augmented with hstrat annotations comprising 64 single-bit markers, managed at runtime using a \texttt{tilted} curation policy, which favors dense retention of more recent marker data \cite{moreno2024algorithms}.
+
+To generate data representative of differing evolutionary conditions, two treatments were applied: an \textit{adaptive regime} and a \textit{purifying regime}.
+Under the adaptive regime, mutations increasing fitness were allowed, introducing the possibility of selective sweeps.
+By contrast, the purifying regime treatment allowed only deleterious mutations.
+Previous work with this system demonstrated the purifying regime to exhibit substantially greater phylogenetic richness, in line with expectations for selective sweeps to diminish population-level phylogenetic diversity \cite{moreno2024trackable}.
+
+Reported neutral conditions correspond to purifying regime.
+
+Materials are available via the Open Science Framework at\url{https://osf.io/yn3wx} \cite{foster2017open}.
+% To enable the simulation scale necessary for this work, we employed Graphics Processing Unit (GPU) and Wafer-Scale Engine (WSE) hardware accelerators, which contain large collections of worker processors specialized for numerical computation.
+WSE hardware was Cerebras CS-3 in Cerebras Cloud with Cerebras SDK v1.4.0 \cite{buitrago2021neocortex}.
+
+Further methodological details on WSE phylogeny reconstructions are available as \cite{singhvi2025scalable}.
