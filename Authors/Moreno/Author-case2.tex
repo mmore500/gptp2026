@@ -18,7 +18,7 @@ This case study explores incorporation of best-effort strategies in wafer-scale 
 \item work scaling up an existing model of mutator allele evolution to explore dynamics in large, spatially-distributed populations \cite{raynes2018sign,moreno2025hypermutatorsc}.
 \end{enumerate}
 Both of these applications target WSE using an island model scheme \cite{bennett1999building}, where each PE hosts an independent subpopulation and exchanges migrants with neighbors.
-Further detail on configurations appear in supplementary material \cite{moreno_2026_trust}.
+Further details on configurations appear in supplementary material \cite{moreno_2026_trust}.
 Case study material here is presented in four parts,
 \begin{enumerate}
 \item overview of approach for approximate tracking of evolutionary history (Section \ref{moreno:sec:case2:hstrat});
@@ -86,7 +86,7 @@ After February 26th, 2026, this hardware began to exhibit unreliable D2H transfe
 Around 5\% of 32-bit words copied from this region had bit-flip errors, corrupting 0.03\% of overall extracted genomes.
 Runtime parity checks confirmed that this phenomenon did not compromise on-device simulation, only D2H export.
 
-In this case, best-effort resilience allowed work to continue uninterrupted over the following two months the chip remained in service.
+In this case, best-effort resilience allowed work to continue uninterrupted over the following two months that the chip remained in service.
 While clear localization in this case made excluding bad data easy, a lightweight checksum over each PE's exported data could readily handle more generalized transfer faults (barring rare checksum collisions).
 
 Hardware faults are inescapable in large-scale HPC \cite{gupta2017failures,navaux2023challenges}, reaching upwards of daily occurrence in some systems \cite{kokolis2025revisiting}.
@@ -135,7 +135,7 @@ To explore how selection acts on such ``mutator alleles'' in spatially-structure
 % Hardware for this experiment was WSE-2, rather than WSE-3.
 
 A key challenge in this work was balancing limited on-device memory between simulation content and data recording.
-To economize memory use in experiments requiring time series measurements of mutator prevalence, we applied algorithms that generalize ring buffer storage to manage timeseries data \cite{moreno2024algorithms,gunther2014algorithm}.
+To economize memory use in experiments requiring time series measurements of mutator prevalence, we applied algorithms that generalize ring buffer storage to manage time series data \cite{moreno2024algorithms,gunther2014algorithm}.
 Successive local samples were recorded as single bits within a flat, fixed-size buffer.
 Crucially, because recording duration (e.g., until mutator allele extinction) is unknown \textit{a priori}, this approach dynamically downsamples recording density via overwrites once storage capacity is reached --- strictly bounding memory use.
 

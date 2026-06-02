@@ -16,7 +16,7 @@ However, these frameworks generally assume a deterministic relationship between 
 }
 This multiprocessing framework exposes a best-effort interface backed by MPI intrinsics \cite{gropp1996high}.
 In the case where two neighboring cells reside on different processes, a configurable-capacity send buffer asynchronously dispatches triggered interactions and synchronizes local state.
-In the case where send buffer capacity is full, communication may be configured to drop rather than blocking.
+In the case where send buffer capacity is full, communication may be configured to drop rather than block.
 These best-effort relaxations allow per-processor subpopulations to proceed in a fully asynchronous manner.
 \unskip\footnote{%
 MPI guarantees delivery of dispatched messages --- network-layer best-effort relaxations would involve lower-level protocols like InfiniBand Unreliable Datagrams \cite{kashyap2006ip,koop2007high}.
@@ -33,7 +33,7 @@ Underlying Conduit communication was instrumented with counters to tally elapsed
 \unskip\footnote{%
 To avoid clock synchronization issues, no cross-process duration timings were taken.
 Instead, runtime instrumentation maintained independent zero-initialized ``touch counters,'' appended to all dispatched messages.
-By incrementing this value upon receipt, it increases by two for each successful round trip completed.
+Because this value is incremented upon receipt, it increases by two for each successful round trip completed.
 }.
 In addition to recording final counter values at completion, a background thread polled counters once per minute to collect values bookending a one-second ``snapshot'' window.
 
@@ -195,7 +195,7 @@ Among median QoS readings, only throughput detectably degraded by 8\% (Mann-Whit
 \label{moreno:sec:with-lac-417-vs-sans-lac-417}
 
 % \input{fig/with-lac-417-vs-sans-lac-417/with-lac-417-vs-sans-lac-417.tex}
-The extreme magnitude of QoS outliers observed in 256-process allocations prompted closer inspection, which revealed extreme outliers all involved cluster node \texttt{lac-417}.
+The extreme magnitude of QoS outliers observed in 256-process allocations prompted closer inspection, which revealed that extreme outliers all involved cluster node \texttt{lac-417}.
 So, we performed further tests acquiring two separate 256-process allocations on the lac cluster: one including \texttt{lac-417} and one excluding \texttt{lac-417}.
 
 Figure \ref{moreno:fig:cpu:lac417} compares the distributions of QoS metrics between 256-process allocations with and without \texttt{lac-417}.
