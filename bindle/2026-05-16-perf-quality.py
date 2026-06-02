@@ -124,17 +124,18 @@ def _(cliffs_delta, ds_proc, pd, scipy_stats):
             _group.loc[_group["ncpus"] == 1, "Update Walltime (ms)"],
             _group.loc[_group["ncpus"] == 64, "Update Walltime (ms)"],
         )
+        assert len(_g1) == len(_g2)
 
         _res.append(
             {
                 "mode": _mode,
                 "exec": _exec,
-                "n": len(_group),
+                "n": len(_g1),
                 "%": 100 * (_g2.mean() / _g1.mean() - 1),
                 **dict(
                     zip(
-                        ["wstat", "p"],
-                        scipy_stats.wilcoxon(_g1, _g2, alternative="less"),
+                        ["ustat", "p"],
+                        scipy_stats.mannwhitneyu(_g1, _g2),
                     )
                 ),
                 **dict(zip(["delta", "interp"], cliffs_delta(_g1, _g2))),
@@ -155,17 +156,18 @@ def _(cliffs_delta, filtered_procs, pd, scipy_stats):
             _group.loc[_group["ncpus"] == 16, "Update Walltime (ms)"],
             _group.loc[_group["ncpus"] == 64, "Update Walltime (ms)"],
         )
+        assert len(_g1) == len(_g2)
 
         _res.append(
             {
                 "mode": _mode,
                 "exec": _exec,
-                "n": len(_group),
+                "n": len(_g1),
                 "%": 100 * (_g2.mean() / _g1.mean() - 1),
                 **dict(
                     zip(
-                        ["wstat", "p"],
-                        scipy_stats.wilcoxon(_g1, _g2, alternative="less"),
+                        ["ustat", "p"],
+                        scipy_stats.mannwhitneyu(_g1, _g2),
                     )
                 ),
                 **dict(zip(["delta", "interp"], cliffs_delta(_g1, _g2))),
@@ -186,17 +188,18 @@ def _(cliffs_delta, filtered_procs, pd, scipy_stats):
             _group.loc[_group["ncpus"] == 1, "Update Walltime (ms)"],
             _group.loc[_group["ncpus"] == 64, "Update Walltime (ms)"],
         )
+        assert len(_g1) == len(_g2)
 
         _res.append(
             {
                 "mode": _mode,
                 "exec": _exec,
-                "n": len(_group),
+                "n": len(_g1),
                 "%": 100 * (_g2.mean() / _g1.mean() - 1),
                 **dict(
                     zip(
-                        ["wstat", "p"],
-                        scipy_stats.wilcoxon(_g1, _g2, alternative="less"),
+                        ["ustat", "p"],
+                        scipy_stats.mannwhitneyu(_g1, _g2),
                     )
                 ),
                 **dict(zip(["delta", "interp"], cliffs_delta(_g1, _g2))),
@@ -231,8 +234,8 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
             zip(
                 _g.axes.flat,
                 [
-                    ("**", "n.s."),
-                    ("***", "n.s."),
+                    ("*", "n.s."),
+                    ("***", "*"),
                     ("***", "***"),
                     ("***", "***"),
                 ],
@@ -320,23 +323,10 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
     return
 
 
-@app.cell(hide_code=True)
+@app.cell
 def delimit_besteffort_sync(mo):
     mo.md("""
     ## Best-Effort vs. Synchronous Comparisons
-
-    The tables above compare problem sizes within a fixed asynchronicity
-    mode. The tables below instead compare the two asynchronicity modes
-    against each other --- best-effort (mode 3) vs. synchronous (mode 0)
-    --- at each problem size, for each performance measure: digital
-    evolution speed, graph coloring speed, and graph coloring error.
-
-    Each row reports a two-sided Wilcoxon signed-rank test (paired by
-    replicate) alongside Cliff's delta, mirroring the scaling tables
-    above. The `%` column gives the synchronous mean relative to the
-    best-effort mean, so positive values mean synchronous ran slower
-    (walltime) or accrued more error (conflicts). A negative `delta`
-    likewise indicates lower best-effort values than synchronous.
     """)
     return
 
@@ -354,17 +344,18 @@ def _(cliffs_delta, filtered_procs, pd, scipy_stats):
                 _group["asynchronicity mode"] == 0, "Update Walltime (ms)"
             ],
         )
+        assert len(_g1) == len(_g2)
 
         _res.append(
             {
                 "ncpus": _ncpus,
                 "exec": "dishtiny",
-                "n": len(_group),
+                "n": len(_g1),
                 "%": 100 * (_g2.mean() / _g1.mean() - 1),
                 **dict(
                     zip(
-                        ["wstat", "p"],
-                        scipy_stats.wilcoxon(
+                        ["ustat", "p"],
+                        scipy_stats.mannwhitneyu(
                             _g1, _g2, alternative="two-sided"
                         ),
                     )
@@ -390,17 +381,18 @@ def _(cliffs_delta, filtered_procs, pd, scipy_stats):
                 _group["asynchronicity mode"] == 0, "Update Walltime (ms)"
             ],
         )
+        assert len(_g1) == len(_g2)
 
         _res.append(
             {
                 "ncpus": _ncpus,
                 "exec": "channel_selection",
-                "n": len(_group),
+                "n": len(_g1),
                 "%": 100 * (_g2.mean() / _g1.mean() - 1),
                 **dict(
                     zip(
-                        ["wstat", "p"],
-                        scipy_stats.wilcoxon(
+                        ["ustat", "p"],
+                        scipy_stats.mannwhitneyu(
                             _g1, _g2, alternative="two-sided"
                         ),
                     )
@@ -423,17 +415,18 @@ def _(cliffs_delta, filtered_procs, pd, scipy_stats):
             _group.loc[_group["ncpus"] == 1, "conflicts per cpu"],
             _group.loc[_group["ncpus"] == 64, "conflicts per cpu"],
         )
+        assert len(_g1) == len(_g2)
 
         _res.append(
             {
                 "mode": _mode,
                 "exec": _exec,
-                "n": len(_group),
+                "n": len(_g1),
                 "%": 100 * (_g2.mean() / _g1.mean() - 1),
                 **dict(
                     zip(
-                        ["wstat", "p"],
-                        scipy_stats.wilcoxon(_g1, _g2, alternative="less"),
+                        ["ustat", "p"],
+                        scipy_stats.mannwhitneyu(_g1, _g2),
                     )
                 ),
                 **dict(zip(["delta", "interp"], cliffs_delta(_g1, _g2))),
@@ -454,17 +447,18 @@ def _(cliffs_delta, filtered_procs, pd, scipy_stats):
             _group.loc[_group["ncpus"] == 16, "conflicts per cpu"],
             _group.loc[_group["ncpus"] == 64, "conflicts per cpu"],
         )
+        assert len(_g1) == len(_g2)
 
         _res.append(
             {
                 "mode": _mode,
                 "exec": _exec,
-                "n": len(_group),
+                "n": len(_g1),
                 "%": 100 * (_g2.mean() / _g1.mean() - 1),
                 **dict(
                     zip(
-                        ["wstat", "p"],
-                        scipy_stats.wilcoxon(_g1, _g2, alternative="less"),
+                        ["ustat", "p"],
+                        scipy_stats.mannwhitneyu(_g1, _g2),
                     )
                 ),
                 **dict(zip(["delta", "interp"], cliffs_delta(_g1, _g2))),
@@ -605,17 +599,18 @@ def _(cliffs_delta, filtered_procs, pd, scipy_stats):
                 _group["asynchronicity mode"] == 0, "conflicts per cpu"
             ],
         )
+        assert len(_g1) == len(_g2)
 
         _res.append(
             {
                 "ncpus": _ncpus,
                 "exec": "channel_selection",
-                "n": len(_group),
+                "n": len(_g1),
                 "%": 100 * (_g2.mean() / _g1.mean() - 1),
                 **dict(
                     zip(
-                        ["wstat", "p"],
-                        scipy_stats.wilcoxon(
+                        ["ustat", "p"],
+                        scipy_stats.mannwhitneyu(
                             _g1, _g2, alternative="two-sided"
                         ),
                     )
@@ -686,9 +681,9 @@ def _(filtered_procs, mpl, np, pathlib, pd, plt, sns, tp):
         # annotations transferred from the two upstream per-metric figures;
         # flat order is row-major over (row=async mode, col=panel)
         _signif_grid = [
-            ("**", "n.s."),
-            ("***", "n.s."),
-            ("n.s.", "n.s."),
+            ("*", "n.s."),
+            ("***", "*"),
+            ("*", "n.s."),
             ("***", "***"),
             ("***", "***"),
             ("***", "***"),
@@ -826,11 +821,11 @@ def _(filtered_procs, mpl, np, pathlib, pd, plt, sns, tp):
     # (panel, asynchronicity mode); first entry is the 1-64 delta and
     # the second is the 16-64 delta
     _signif_by_panel = {
-        "Digital Evo Walltime (ms)": {0: ("***", "***"), 3: ("**", "n.s.")},
-        "Graph Color Walltime (ms)": {0: ("***", "***"), 3: ("***", "n.s.")},
+        "Digital Evo Walltime (ms)": {0: ("***", "***"), 3: ("***", "n.s.")},
+        "Graph Color Walltime (ms)": {0: ("***", "***"), 3: ("***", "*")},
         "Graph Color Solution Error": {
             0: ("***", "***"),
-            3: ("n.s.", "n.s."),
+            3: ("*", "n.s."),
         },
     }
 
