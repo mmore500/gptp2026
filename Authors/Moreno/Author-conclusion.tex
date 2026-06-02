@@ -115,7 +115,7 @@ As developments in conventional hardware continue to shift the cost-benefit bala
 % We observed the greatest relative speedup under distributed communication-heavy workloads --- about $7.8\times$ on the graph coloring benchmark.
 % In the case of the graph coloring benchmark, we found that best-effort communication can help achieve tangibly better solution quality within a fixed time constraint.
 % Because real-time volatility affects the outcome of computation under the best-effort model, raw execution speed performance does not suffice to fully understand the consequences of the best-effort communication model.
-% In order to characterize the real-time dynamics under the best-effort model, we designed and measured a suite of quality of service metrics: simstep period, simstep latency, wall-time latency, delivery failure rate, and delivery clumpiness.
+% In order to characterize the real-time dynamics under the best-effort model, we designed and measured a suite of quality of service metrics: simstep period, simstep latency, wall-time latency, delivery failure rate, and delivery bunching.
 % We performed several experiments to validate and characterize these metrics.
 % Comparing quality of service between multithreading and multiprocessing, we found that multithreading had lower runtime overhead cost but that multiprocessing reduced delivery erraticity, curbing especially extreme poor quality of service outlier events.
 % We found better quality of service, especially with respect to latency, for processes occupying the same node.

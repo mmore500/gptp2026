@@ -74,17 +74,17 @@ So, we can calculate
   }.
 \end{align*}
 
-\subsubsection{Delivery Clumpiness} \label{moreno:sec:delivery-clumpiness-metric}
+\subsubsection{Delivery Bunching} \label{moreno:sec:delivery-bunching-metric}
 
-Delivery clumpiness quantifies the extent to which message arrival is consolidated to a subset of message pull attempts.
+Delivery bunching quantifies the extent to which message arrival is consolidated to a subset of message pull attempts.
 That is, the extent to which independently dispatched messages arrive in batches rather than as an even stream.
 
-If messages all arrive in independent pull attempts, then clumpiness will be zero.
-At the point where the pigeonhole principle applies (i.e., $\mathrm{num\,arriving\,messages} >= \mathrm{num\,pull\,attempts}$), clumpiness will also be zero so long as every pull attempt is laden.
-If all messages arrive during a single pull attempt, then clumpiness will approach 1.
+If messages all arrive in independent pull attempts, then bunching will be zero.
+At the point where the pigeonhole principle applies (i.e., $\mathrm{num\,arriving\,messages} >= \mathrm{num\,pull\,attempts}$), bunching will also be zero so long as every pull attempt is laden.
+If all messages arrive during a single pull attempt, then bunching will approach 1.
 
-We formulate clumpiness as the complement of steadiness.
-(Reporting clumpiness provides a lower-is-better interpretation consistent with the rest of the quality of service metrics.)
+We formulate bunching as the complement of steadiness.
+(Reporting bunching provides a lower-is-better interpretation consistent with the rest of the quality of service metrics.)
 Steadiness, in turn, stems from three component statistics,
 \begin{align*}
 \mathrm{num\,laden\,pulls\,elapsed} =& \mathrm{laden\,pull\,count\,after} \\
@@ -113,4 +113,4 @@ Then, to calculate steadiness,
   }.
 \end{align*}
 
-Delivery clumpiness follows as $1 - \mathrm{steadiness}$.
+Delivery bunching follows as $1 - \mathrm{steadiness}$.
