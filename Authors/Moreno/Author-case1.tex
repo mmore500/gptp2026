@@ -231,6 +231,6 @@ Where incoming/outgoing imbalance arose, only one process slows; otherwise, both
 Thus, observed imbalance appears likely due to asymmetric NUMA effects.
 
 The first step to resolving local asymmetries and anomalies is detecting and diagnosing them.
-In the case of NUMA-driven imbalance, allocation flags can be used to restrict process residency.
-In the case of the detected between-node imbalance, outgoing message rates could be throttled countervailing traffic.
+In the case of NUMA-driven imbalance, allocation flags can be used to assign process residency.
+In the case of the rate-driven imbalance, outgoing message rates could be throttled to countervailing traffic.
 Alternatively, such asymmetries could simply be recorded and factored into interpretation of computational results.

@@ -1,58 +1,58 @@
 \section{Conclusion} \label{moreno:sec:conclusion}
 
-We have presented two case studies exploring how best-effort strategies can help address HPC challenges in scaling digital evolution work to large compute cluster process counts and in harnessing the resource-constrained processing power of next-generation AI/ML hardware accelerator devices.
+We have presented two case studies exploring how best-effort strategies can help scale digital evolution work to large compute cluster allocations and accomodate resource constraints to harness processing power of next-generation AI/ML hardware accelerator platforms.
 
 Takeaway findings from our first case study on best-effort cluster-based multiprocessing include:
 \begin{enumerate}
-\item best-effort communication and synchronization can improve scaling efficiency and solution quality for both communication-heavy workloads and compute-heavy, heterogeneous workloads;
-\item median quality of service (QoS) metrics remained generally stable under scale-out, including scenarios involving degraded hardware; and
-\item QoS instrumentation can help flag runtime anomalies and diagnose underlying hardware causes.
+\item best-effort communication and synchronization can improve scaling efficiency and solution quality for both homogenous, communication-heavy workloads and heterogenous, compute-heavy workloads;
+\item median quality of service (QoS) metrics remained generally stable under scale-out, including scenarios that introduce degraded hardware; and
+\item QoS instrumentation can help flag and diagnose anomalies in runtime behavior.
 \end{enumerate}
 
 Our second case study explored incorporation of best-effort strategies into wafer-scale digital evolution experiments.
 Takeaway findings include:
 \begin{enumerate}
-\item best-effort ``inferential observability'' strategies --- inspired by techniques developed to study natural history --- can provide rich visibility into evolutionary history with lean on-device data movement and storage;
-\item best-effort inferential observability strategies can readily tolerate otherwise disruptive data loss from hardware faults; and
+\item best-effort ``inferential observability'' strategies --- inspired by techniques developed to study natural history --- can provide rich visibility into evolutionary history with lean data movement and storage;
+\item such best-effort inferential observability strategies can readily tolerate otherwise disruptive data loss from hardware faults; and
 \item domain-specific analyses (e.g., spatiotemporal phylogenies) can complement QoS metrics in screening for computational biases.
 \end{enumerate}
 
-While case study computations were amenable to best-effort relaxations, suitability will vary widely between HPC problem domains.
+Beyond the scope of case study computations, suitability of best-effort relaxations will vary widely between HPC problem domains.
 Some domains are clear-cut in favor of the reliable digital machine model \cite{heroux2014toward} --- for example, due to regulatory issues \cite{dongarra2014applied}.
 Certain problem characteristics, however, can help tolerate nondeterministic computation.
-Heuristic optimization algorithms can fall into this category, a notable example being stochastic gradient descent \cite{dean2012large,zhao2019elastic,niu2011hogwild,noel2014dogwild,rhodes2020real}.
-Likewise, algorithms relying on randomized methods, which already exploit stochasticity, also make good candidates \cite{chakrapani2008probabilistic,chakradhar2010best}.
+Heuristic optimization algorithms have made good candidates, a notable example being stochastic gradient descent \cite{dean2012large,zhao2019elastic,niu2011hogwild,noel2014dogwild,rhodes2020real}.
+Likewise, algorithms relying on randomized methods, which already exploit stochasticity, also perform well \cite{chakrapani2008probabilistic,chakradhar2010best}.
 
-Digital evolution notably exhibits both these problem characteristics.
-Lending further robustness, replicators readily repopulate and, by natural selection, purge degeneracy.
-In the case of application-oriented evolutionary computation, like other optimization domains, worst-case outcomes simply waste resources, rather than producing junk science.
+Digital evolution exhibits both these problem characteristics.
+Lending further robustness is the fact that replicators readily repopulate and, by natural selection, purge degeneracy.
+In the case of application-oriented evolutionary computation, like other optimization domains, worst-case outcomes simply waste resources --- rather than producing junk science.
 
 Even in the case of hypothesis-driven work, however, digital evolution enjoys unusual computational malleability.
 While typical simulation seeks to describe a concrete ``real-world'' analog, this is not necessarily the case in digital evolution.
-The field often studies evolutionary processes in abstracted terms, by instantiating variation, heredity, and replication in artificial substrates (e.g., self-replicating computer programs) \cite{pennock2007models,bonabeau1994we}.
-
-In the case of such models capturing ``life-as-it-could-be,’’ broad leeway exists in model composition.
-While best-effort relaxations can make a system less useful in being more difficult to interpret, they do not necessarily invalidate a model \textit{ipso facto}.
-Even in the case of more literal models aligned to a concrete real-world analog, moderate disruptions and irregularities may arguably, to an extent, more faithfully reflect biological reality.
+The field often studies evolutionary processes in abstracted terms, by instantiating variation, heredity, and replication within artificial substrates (such as self-replicating computer programs) \cite{pennock2007models,bonabeau1994we}. Studying ``life-as-it-could-be’’ allows broad leeway.
+While best-effort relaxations can make a system less useful in becoming more difficult to interpret, relaxations do not necessarily invalidate such a model's integrity \textit{ipso facto}.
+Even in the case of more literalistic models aligned to a concrete real-world analog, moderate disruptions and irregularities may arguably, in fact, more faithfully reflect biological reality.
 % \unskip\footnote{%
 % It is certainly the case that large-scale disruptions can fundamentally redirect and systematically bias evolutionary outcomes.
 % Likewise, systematic biases, such as directional migration bias, could undermine population genetics simulations.
 % }
 
-Given the vast, noisy nature of biology, many experimental designs tolerate imperfect control over system behavior.
-Perfect reproducibility and observability have certainly, in cases, enabled digital evolution experiments to tackle otherwise intractable questions \cite{pontes2020evolutionary,lenski2003evolutionary,grabowski2013case,dolson2020interpreting,fortuna2019coevolutionary,goldsby2014evolutionary,covert2013experiments,zaman2011rapid,bundy2021footprint,dolson2017spatial}, but the reliable digital machine model is not strictly necessary for all such work.
+% Given the vast, noisy nature of biology, many experimental designs tolerate imperfect control over system behavior.
+At the level of experimental design, perfect reproducibility and observability have certainly, in cases, enabled digital evolution experiments to tackle otherwise intractable questions \cite{pontes2020evolutionary,lenski2003evolutionary,grabowski2013case,dolson2020interpreting,fortuna2019coevolutionary,goldsby2014evolutionary,covert2013experiments,zaman2011rapid,bundy2021footprint,dolson2017spatial}.
+However, a reliable digital machine model is not strictly necessary for all such work.
 In natural systems, many questions are approached observationally (e.g., phylodynamics, metagenomics, biorepositories) or by limited-scale interventions (e.g., mark recapture, \textit{ex situ} cultivation, knockout analyses).
 
-For these reasons, digital evolution has a unique opportunity to contribute in the development of post-deterministic computing approaches.
+For these reasons, digital evolution has a unique opportunity to contribute in the development of post-deterministic computing.
 Indeed, such work exists already in artificial life \cite{ray1995proposal,moreno2021exploring} and evolutionary computation research \cite{izzo2009parallel}.
-Particularly ambitious, and provocative, work pioneering post-deterministic computing has been led by Dave Ackley \cite{ackley2014indefinitely}.
-Ackley's work \cite{Ackley2023,ganapati2009modular}, alongside many existing studies of best-effort computing \cite{chippa2014scalable,ackley2011homeostatic,cho2012ersa,chakrapani2008probabilistic,rhodes2020real}, has largely focused on bespoke experimental hardware.
-While notable custom hardware projects have been realized at frontier scale, leading edge capability and capacity will overwhelmingly cater to a common denominator (e.g., for the foreseeable future, AI/ML).
-Adapting to the constraints of emerging hardware accelerator architectures thus represents a key strategic priority for digital evolution --- and HPC writ large.
+Particularly ambitious, and outspoken, exploration of the post-deterministic frontier has been led by Dave Ackley \cite{ackley2014indefinitely}.
 
-Misappropriation of available resources for unintended purposes is a quite familiar concept in digital evolution.
-Best-effort relaxations will, without doubt, be put to the test by the peculiar tendency of evolution to adversarially exploit its evaluation context \cite{Thompson1997,Lehman2020}.
-As developments in conventional hardware continue to shift the cost-payoff balance of strict deterministic computing, lessons learned stand to guide practice that is both rigorous and pragmatic.
+Ackley's work \cite{Ackley2023,ganapati2009modular}, alongside many existing studies of best-effort computing \cite{chippa2014scalable,ackley2011homeostatic,cho2012ersa,chakrapani2008probabilistic,rhodes2020real}, have targeted bespoke experimental hardware.
+Despite notable exceptions \cite{mayr2019spinnaker210million}, frontier resources overwhelmingly cater to a common denominator (e.g., for the foreseeable future, AI/ML).
+Adapting to the constraints of emerging AI/ML accelerator architectures thus represents a key strategic priority for digital evolution --- and HPC writ large.
+
+Such misappropriation of available resources for unintended purposes is familiar territory.
+Indeed, best-effort relaxations will undoubtedly be put to the test by the peculiar tendency of evolution to adversarially exploit its evaluation context \cite{Thompson1997,Lehman2020}.
+As developments in conventional hardware continue to shift the cost-benefit balance of strict deterministic computing, lessons learned stand to guide practice that is both rigorous and pragmatic.
 
 % These challenges can be especially pernicious in the case of evolutionary studies, where evolving genotypes can adopt strategies that depend on or even exploit unintentional features of their virtual environment .
 % By translating these approaches into mainstream high-performance computing writ large, digital evolution may play a role in laying a principled, rigorous, and generalizable foundation for broader development of post-deterministic computing writ large.
