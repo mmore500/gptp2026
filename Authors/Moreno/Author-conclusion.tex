@@ -56,7 +56,6 @@ As developments in conventional hardware continue to shift the cost-benefit bala
 
 % These challenges can be especially pernicious in the case of evolutionary studies, where evolving genotypes can adopt strategies that depend on or even exploit unintentional features of their virtual environment .
 % By translating these approaches into mainstream high-performance computing writ large, digital evolution may play a role in laying a principled, rigorous, and generalizable foundation for broader development of post-deterministic computing writ large.
-% TODO \cite{mayr2019spinnaker210million}
 
 % Within this group, certain characteristics of digital evolution make it uniquely suited to best-effort computing approaches.
 % Digital evolution falls into the latter case of systems well-suited to best-effort methods.
@@ -66,7 +65,7 @@ As developments in conventional hardware continue to shift the cost-benefit bala
 % For example, evolutionary algorithms commonly use guided stochastic methods (i.e., selection and mutation operators) resulting in a search process that does not guarantee optimality, but typically produces a diverse range of high-quality results.
 % Further, among all such methods, contingent and stochastic dynamics, in which small differences can propagate out into profound effects can make meaningful identical outcomes dubious at scale unless huge effort is invested to ensure bit-level reproducibility.
 
-% Among disruptions encountered by biological evolution \cite{TODO}, the scale of node outages and network fluctuations pale in comparison.
+% Among disruptions encountered by biological evolution \cite{DOTO}, the scale of node outages and network fluctuations pale in comparison.
 % It is certainly the case that large-scale disruptions can fundamentally redirect and systematically bias evolutionary outcomes.
 % As such, digital evolution projects will vary in their tolerance for best-effort relaxation.
 % For simulations meant to directly and literally depict a specific biological analog --- in order to study it --- flexibility will be lower.
@@ -84,8 +83,8 @@ As developments in conventional hardware continue to shift the cost-benefit bala
 % With respect to hypothesis-driven digital evolution work --- whether in evolutionary biology, or in developing evolutionary computation methods --- robust existing methods and statistics for accounting for data limitations in field biology, experimental evolution, and public health make simulations in the sphere of ecology, evolution, and epidemiology an ideal testbed for applications in HPC.
 % For instance, evolutionary epidemiologists working \textit{in vivo} already employ analogous, mature sampling-based surveillance methods (e.g., wastewater monitoring, viral sequencing) as do ecologists (e.g., mark recapture, quadrats, metagenomics) and evolutionary biologists (e.g., phylodynamics, \textit{ex situ} cultivation, biorepositories).
 
-% As has been pointed out by Dave Ackley \cite{TODO}, for these reasons artificial life and, more broadly, digital evolution has a unique opportunity to play in exploring and pushing the boundaries of post-deterministic computing.
-% Ackley's work \cite{machinaTODO}, as with much of existing studies of best-effort computing \cite{chippa2014scalable,ackley2011homeostatic,cho2012ersa,chakrapani2008probabilistic,rhodes2020real}, has focused on bespoke experimental hardware.
+% As has been pointed out by Dave Ackley \cite{DOTO}, for these reasons artificial life and, more broadly, digital evolution has a unique opportunity to play in exploring and pushing the boundaries of post-deterministic computing.
+% Ackley's work \cite{machinaDOTO}, as with much of existing studies of best-effort computing \cite{chippa2014scalable,ackley2011homeostatic,cho2012ersa,chakrapani2008probabilistic,rhodes2020real}, has focused on bespoke experimental hardware.
 % By contrast, here, we focus on exploring best-effort relaxations among parallel and distributed elements within existing, commercially-available hardware at the heart of mainstream high-performance computing, including both traditional CPU-based HPC and the emerging next-generation Cerebras Wafer-Scale Engine hardware accelerator platform.
 % Developing large-scale, high-power hardware requires enormous investment, and so it is not surprising that the most powerful available hardware is designed around mainstream use cases in traditional high-performance computing and, increasingly, deep learning-powered AI/ML use cases.
 % Insofar as the most ambitious objectives in realizing truly vast computational systems, the most pragmatic way forward is to show how traditional systems can benefit from adopting best-effort relaxations --- and influence further development of these mainstream platforms in that direction --- rather than building from scratch.
@@ -93,7 +92,7 @@ As developments in conventional hardware continue to shift the cost-benefit bala
 % Where effort is needed, therefore, is in algorithm design and software development --- and hardware will follow.
 % By translating these approaches into mainstream high-performance computing writ large, digital evolution may play a role in laying a principled, rigorous, and generalizable foundation for broader development of post-deterministic computing writ large.
 
-% TODO scraps
+% scraps
 % The upcoming CS-3 chip, for instance, supports clustering potentially thousands of constituent accelerators --- potentially reaching upwards of a billion individually-programmable processors \cite{moore2024cerebras}.
 % Untapped potential exists to translate and extend experimental design, sampling techniques, and statistical methods from natural sciences to facilitate extreme-scale scientific computing under bandwidth/memory constraint, runtime anomalies and hardware faults, and asymmetries in data accessibility.
 % In the case of digital evolution, and in particular artificial life,
@@ -107,7 +106,7 @@ As developments in conventional hardware continue to shift the cost-benefit bala
 % Real-time control systems that cannot afford to pause or retry, by necessity, fall into the best-effort category \cite{rahmati2011computing, rhodes2020real}.
 
 % Indeed, longstanding and productive exchange has existed between evolution \textit{in silico} and \textit{in vivo} \cite{pennock2007models,dolson2021digital}.
-% While experimental approaches to the study of evolution have gained substantial traction \cite{TODO}, simulation approaches have enabled study designs infeasible to observe on human timescales or otherwise difficult to engineer \cite{wiser2013long,Stroud2025}.
+% While experimental approaches to the study of evolution have gained substantial traction \cite{DOTO}, simulation approaches have enabled study designs infeasible to observe on human timescales or otherwise difficult to engineer \cite{wiser2013long,Stroud2025}.
 
 % We found that the best-effort approach significantly increases performance at high CPU count.
 % This finding was consistent across the communication-intensive graph coloring benchmark and the computation-intensive digital evolution benchmark.

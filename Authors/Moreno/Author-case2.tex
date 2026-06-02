@@ -56,7 +56,6 @@ Finally, digital phylogenies additionally serve as a useful testbed for bioinfor
 % Our ultimate goal of building these ancestry trees is to provide visibility into large-scale evolution experiments running on the WSE.
 % Structural composition of ancestry trees can reveal key evolutionary dynamics, such as discovery of beneficial mutations (adaptation).
 % Notably, in this domain, phylogeny data underpins core metrics for measuring ongoing system change \cite{dolson2019modes}.
-% In the bioinformatics testbed domain, which also makes heavy use of phylogeny data, limitations of simulation scale can obscure the relationships of population size and sampling density with sensitivity and accuracy \cite{moreno2025extending,TODO}.
 
 To collect ancestry data from WSE experiments, we have adopted strategies inspired by real-world experiments that assume data collection is expensive, limited, and non-deterministic.
 Rather than exhaustively tracking parent-child relationships \cite{dolson2023phylotrackpy}, we adopt an approach inspired by bioengineered lineage tracking \cite{moreno2022hereditary} --- in which progressive DNA barcode inserts identify closely-related organisms by shared commonalities \cite{Masuyama2019}.
@@ -113,8 +112,6 @@ Likely, these approaches will prove most effective in conjunction.
 % However, as illustrated in this example, instrumentation-level analyses in best-effort systems should be coupled with skeptical inspection of simulation dynamics to identify potential biasing factors in a best-effort computation to guard against unknown unknowns.
 % Collecting spatial phylogeny data helped to flag an asymmetry in our island-model evolving population.
 % Specifically, under neutral evolutionary conditions, we saw that lineages appeared biased towards migrating from bottom to top across the chip (Figure \ref{moreno:fig:wse:bias}).
-% Inspection of directional message counts confirmed that, indeed, directional asymmetry existed in the migration rates between islands (\ref{moreno:fig:wse:TODO}).
-
 
 \subsection{Best-effort Time Series Recording}
 \label{moreno:sec:case2:timeseries}
@@ -171,5 +168,5 @@ Among other results, time series data revealed that even in circumstances where 
 % % https://github.com/mmore500/hypermutator-dynamics/blob/90422b30f2dd9ca29baad273cbcc676dbfeab55f/binder/wse-denovo-spatial2d-explicitsite-genomes.ipynb
 % In scenarios where mutators fix, surviving patches of nonmutators dwindle away entirely (panel \ref{fig:dynamics:fixation}).
 % Where nonmutators persist, they re-establish via concentric growth from surviving pockets (panel \ref{fig:dynamics:no-fixation}).
-% This TODO allowed us to assess the fact that mutators transiently peak at well above the majority of population composition.
+% This DOTO allowed us to assess the fact that mutators transiently peak at well above the majority of population composition.
 % \input{fig/peaksweep}

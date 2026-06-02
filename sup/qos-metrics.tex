@@ -3,13 +3,13 @@
 The best-effort communication model eschews effort to insulate computation from real-time message delivery dynamics.
 Because these dynamics are difficult to predict \textit{a priori} and can bias computation, thorough, empirical runtime measurements are necessary to understand results of such computation.
 To this end, we developed a suite of quality of service metrics.
-Figure \ref{moreno:fig:cpu:TODO} provides space-time diagrams illustrating the metrics presented in this section.
+% Figure \ref{moreno:fig:cpu:DOTO} provides space-time diagrams illustrating the metrics presented in this section.
 
 For the purposes of these metrics, we assume that simulations proceed in an iterative fashion with alternating compute and communication phases.
 For short, we refer to a single compute-communication cycle as a ``simstep.''
 We derive formulas for metrics in terms of independent observations preceding and succeeding a ``snapshot'' window, during which the simulation and any associated best-effort communication proceeds unimpeded.
 Snapshot observations are taken at one minute intervals over the course of each of our replicate experiments.
-The following section, \ref{moreno:fig:cpu:TODO}, details the experimental apparatus used to generate quality of service metrics reported in this work.
+% The following section, \ref{moreno:fig:cpu:DOTO}, details the experimental apparatus used to generate quality of service metrics reported in this work.
 
 \subsubsection{Simstep Period} \label{moreno:sec:simstep-period-metric}
 
@@ -21,12 +21,12 @@ We calculate the amount of wall-time elapsed per simulation update cycle (``Sims
   \mathrm{walltime\,after} - \mathrm{walltime\,before}
 }.
 \end{align*}
-Figure \ref{moreno:fig:cpu:TODO} compares a scenario with low simstep period to a scenario with a higher simstep period.
+% Figure \ref{moreno:fig:cpu:DOTO} compares a scenario with low simstep period to a scenario with a higher simstep period.
 
 \subsubsection{Simstep Latency} \label{moreno:sec:wall-time-latency-metric}
 
 This metric reports the number of simulation iterations that elapse between message dispatch and message delivery.
-Figure \ref{moreno:fig:cpu:TODO} compares a scenario with low latency to a scenario with a higher latency.
+% Figure \ref{moreno:fig:cpu:DOTO} compares a scenario with low latency to a scenario with a higher latency.
 
 To prevent interfering effects of imperfect clock synchronization, we estimate one-way wall-time latency from a round-trip measure.
 As part of our instrumentation, each simulation element maintains an independent zero-initialized ``touch counter'' for each neighbor simulation element it communicates with.
@@ -45,7 +45,7 @@ We therefore calculate one-way latency during a snapshot window as,
 \end{align*}
 Note that, in the case where no touches elapse, we bound our latency measure to snapshot duration.
 
-%TODO reference @rodsan's derivation and proof
+%DOTO reference @rodsan's derivation and proof
 
 \subsubsection{Wall-time Latency} \label{moreno:sec:simulation-time-latency-metric}
 
@@ -58,7 +58,7 @@ To calculate wall-time latency we apply a conversion to simstep latency based on
 This metric directly tells the real-time performance of message transmission.
 Although it directly follows from the interaction between simstep period and wall-time latency, it complements simstep latency's convenient interpretation in terms of potential simulation mechanics (e.g., simulation elements tending to see data from two updates ago versus from ten).
 
-In addition to simstep latency, Figure \ref{moreno:fig:cpu:TODO} is also representative of wall-time latency --- simply interpreting the $y$ axis in terms of wall-time instead of elapsed simulation updates.
+% In addition to simstep latency, Figure \ref{moreno:fig:cpu:DOTO} is also representative of wall-time latency --- simply interpreting the $y$ axis in terms of wall-time instead of elapsed simulation updates.
 
 \subsubsection{Delivery Failure Rate} \label{moreno:sec:delivery-failure-rate-metric}
 
