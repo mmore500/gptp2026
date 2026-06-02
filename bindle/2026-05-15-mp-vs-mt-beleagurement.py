@@ -353,7 +353,6 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
             frameon=False,
             fontsize="x-small",
         )
-
     return
 
 
