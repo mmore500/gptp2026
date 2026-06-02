@@ -44,13 +44,13 @@ However, past a certain point, data precision becomes of essentially negligible 
 \input{fig/best-effort.tex}
 
 Here, we explore incorporating \textit{best-effort computing} approaches into digital evolution work.
-This paradigm broadens processing beyond deterministic logical transforms --- a near-universal assumption of scientific computing \cite{chakradhar2010best}.
+This paradigm broadens processing beyond deterministic logical transforms --- a near-universal assumption of scientific computing \cite{chakradhar2010best,rinard2012unsynchronized}.
 Though outside our primary focus, best-effort computing intertwines with related topics of \textit{approximate computing} (which emphasizes bypassing non-essential computation) and \textit{randomized algorithms} (which typically harness statistical properties of pseudorandomness) \cite{Buluc2021,mittal2016survey,menon2023approximate}.
 
 Best-effort relaxations can allow \textit{asynchronicity} (e.g., transmission delays, data races, jitter, straggler effects), \textit{data attrition} (e.g., memory constraint, transmission failure, hardware crashout), and \textit{data corruption} (e.g., soft errors, partial writes, analog approximation) (Figure \ref{moreno:fig:best-effort:types}).
 Due to the economy of error detection in digital computing \cite{hamming1950error} (e.g., via parity, checksums, duplicate operations, inverse checks, or skeptical assertions), we narrow focus to handle data corruption as simple data attrition \cite{ackley2013beyond}.
 
-In existing work, best-effort relaxations have been shown to improve speed \cite{chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, and scalability \cite{meng2009best}.  % TODO fault tolerance
+In existing work, best-effort relaxations have been shown to improve speed \cite{kasap2018dynamic,chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, solution quality \cite{rinard2013parallel}, and scalability \cite{meng2009best}.  % TODO fault tolerance
 Best-effort approaches, however, involve important drawbacks (Figure \ref{moreno:fig:best-effort:tradeoffs}).
 Most obviously, best-effort computation abandons bitwise reproducibility --- the guarantee that repeating a computation will produce an identical result \cite{menon2025reproducibility}.
 In addition to introducing stochastic noise, such relaxation can undermine qualitative integrity and reproducibility by unpredictably biasing results.
