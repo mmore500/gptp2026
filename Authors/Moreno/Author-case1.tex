@@ -33,7 +33,7 @@ Underlying Conduit communication was instrumented with counters to tally elapsed
 \unskip\footnote{%
 To avoid clock synchronization issues, no cross-process duration timings were taken.
 Instead, runtime instrumentation maintained independent zero-initialized ``touch counters,'' appended to all dispatched messages.
-Because this value is incremented upon receipt, it increases by two for each successful round trip completed.
+By incrementing this value upon receipt, it increases by two for each successful round trip completed.
 }.
 In addition to recording final counter values at completion, a background thread polled counters once per minute to collect values bookending a one-second ``snapshot'' window.
 
