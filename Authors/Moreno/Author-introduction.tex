@@ -27,7 +27,7 @@ Effectively harnessing AI/ML accelerators for scientific computing thus poses su
 In the case of digital evolution, a key challenge is tracking population dynamics across a vast, highly-distributed fabric of memory-constrained processors.
 Such data collection can be essential to digital evolution work.
 Hypothesis-driven computational experiments are only scientifically useful insofar as they are interpretable and observable \cite{casti1997wouldbe}.
-Likewise, in the context of application-oriented evolutionary computation, diagnostic information is necessary to troubleshoot, tune parameters, and develop theory \cite{hernandez2022dossier,Hooker1995}.
+Likewise, in the context of application-oriented evolutionary computation (EC), diagnostic information is necessary to troubleshoot, tune parameters, and develop theory \cite{hernandez2022dossier,Hooker1995}.
 
 In some regards, computational costs and constraints arising around data storage and movement resemble the logistical costs and constraints faced in research studying real-world systems.
 Rather than ``complete,'' deterministic data observability, most real-world studies instead rely on dynamic, query-driven sampling --- a paradigm we term ``inferential observability.''
@@ -54,7 +54,7 @@ In existing work, best-effort relaxations have been shown to improve speed \cite
 Best-effort approaches, however, involve important drawbacks (Figure \ref{moreno:fig:best-effort:tradeoffs}).
 Most obviously, best-effort computation abandons bitwise reproducibility --- the guarantee that repeating a computation will produce an identical result \cite{menon2025reproducibility}.
 In addition to introducing stochastic noise, such relaxation can undermine qualitative integrity and reproducibility by unpredictably biasing results.
-For instance, in the context of evolutionary computation, asynchronous fitness evaluation can implicitly disfavor slower-to-evaluate solutions \cite{scott2015understanding,scott2016evaluation,scott2022avoiding,guijt2023impact,karns2025evaluation}.
+For instance, in the context of EC, asynchronous fitness evaluation can implicitly disfavor slower-to-evaluate solutions \cite{scott2015understanding,scott2016evaluation,scott2022avoiding,guijt2023impact,karns2025evaluation}.
 In tandem, algorithms become more opaque, as they are no longer fully described independent from an underlying execution context.
 
 Given these drawbacks, prudent integration of best-effort approaches will require careful considerations.
