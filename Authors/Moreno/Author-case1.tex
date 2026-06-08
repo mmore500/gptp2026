@@ -1,4 +1,6 @@
+\vspace{-4.0ex}
 \section{Best-effort Case Study: Cluster-based HPC} \label{moreno:sec:case1}
+\vspace{-2.0ex}
 
 \input{fig/cpu.tex}
 
@@ -24,8 +26,10 @@ MPI guarantees delivery of dispatched messages --- network-layer best-effort rel
 
 Our case study examines this best-effort framework, testing four questions: (1) can best-effort relaxations improve scaling efficiency, (2) can quality of service metrics detect runtime irregularities arising from relaxations, (3) does typical quality of service (QoS) scale robustly, and (4) is typical quality of service robust to hardware anomalies.
 
+\vspace{-4.0ex}
 \subsection{Materials and Methods}
 \label{moreno:sec:case1:design}
+\vspace{-2.0ex}
 
 Default-condition DISHTINY simulations were used as an example digital evolution workload for runtime profiling of best-effort relaxations.
 % For profiling trials, randomly-initialized populations were evaluated under default conditions over a five-minute execution window.
@@ -52,8 +56,10 @@ QoS experiments utilized Michigan State University's \texttt{lac} cluster, consi
 Hostnames and node configurations are recorded for each collected observation.
 Further details on methods are included with Supplemental Material \cite{moreno_2026_trust}.
 
+\vspace{-4.0ex}
 \subsection{Quality of Service (QoS) Metrics}
 \label{moreno:sec:case1:metrics}
+\vspace{-2.0ex}
 
 Reported metrics measure four dimensions of runtime QoS (Figure \ref{moreno:fig:best-effort:qos}):
 \begin{enumerate}
@@ -80,8 +86,10 @@ Formulas to calculate these metrics from timestamped instrumentation counter val
 % \item quality of service metrics flagged an anomolous laggard node, and allowed us to determine that quality of service and performance nonetheless remained stable across the computation.
 % \end{enumerate}
 
+\vspace{-4.0ex}
 \subsection{Best-effort Scaling Efficiency}
 \label{moreno:sec:case1:scaling-efficiency}
+\vspace{-2.0ex}
 
 To test whether best-effort relaxations can improve scaling efficiency, we compared execution speeds across trials harnessing 1, 4, 16, and 64 processes.
 Allocations were configured with one process per cluster node at constant problem size per process (i.e., weak scaling).
@@ -116,8 +124,10 @@ In this window, execution speed degraded 6\% under best-effort relaxation (Mann-
 Across the board, best-effort relaxation improved efficiency at 64-process scale: providing $2.1\times$ speedup to compute-intense workload (DISHTINY) and --- for communication-intense workload (graph coloring) --- $12.5\times$ speedup with 73\% reduction in solution error.
 In all three cases, improvement is significant (Mann-Whitney tests, all $p < 0.001$).
 
+\vspace{-4.0ex}
 \subsection{Quality of Service Scaling}
 \label{moreno:sec:case1:qos-scaling}
+\vspace{-2.0ex}
 
 Having seen best-effort relaxation benefit scaling efficiency, we next set out to test whether efficiency came at the cost of degraded QoS.
 For these experiments, comparison was taken between 64- and 256-process allocations, the largest available from our resource provider.
@@ -191,8 +201,10 @@ Among median QoS readings, only throughput detectably degraded by 8\% (Mann-Whit
 % Using OLS regression, we found no evidence of mean bunching worsening with increased process count.
 % In fact, over 16, 64, and 256 processes bunchiness significantly decreased with process count (both mean and median regressions).
 
+\vspace{-4.0ex}
 \subsection{Robustness to Anomalous Hardware}
 \label{moreno:sec:with-lac-417-vs-sans-lac-417}
+\vspace{-2.0ex}
 
 % \input{fig/with-lac-417-vs-sans-lac-417/with-lac-417-vs-sans-lac-417.tex}
 The extreme magnitude of QoS outliers observed in 256-process allocations prompted closer inspection, which revealed that extreme outliers all involved cluster node \texttt{lac-417}.
@@ -208,8 +220,10 @@ Incorporating \texttt{lac-417}, in fact, produced a marginal 0.5\% improvement i
 Thus, in this case, global QoS robustly tolerated local disruptions.
 % Though such robustness should not be expected universally across all best-effort systems, such quality of service metrics provide a proactive means to detect any such widespread disruption arising from defective or degraded hardware components.
 
+\vspace{-4.0ex}
 \subsection{Diagnosis of QoS Asymmetry}
 \label{moreno:sec:case1:asymmetry}
+\vspace{-2.0ex}
 
 Having examined QoS metrics in aggregate across process allocations, we next sought to examine whether these metrics could detect and diagnose localized QoS asymmetries emerging at the level of individual processes.
 In a final pair of experiments, we benchmarked two-process allocations --- either split between cluster nodes (``internode'') or co-located on the same node (``intranode'').

@@ -1,4 +1,7 @@
-\section{Best-effort Case Study: Accelerator-based HPC} \label{moreno:sec:case2}
+\vspace{-4.0ex}
+\section{Best-effort Case Study: Accelerator-based HPC}
+\label{moreno:sec:case2}
+\vspace{-2.0ex}
 
 \input{fig/wse.tex}
 
@@ -35,8 +38,10 @@ Case study material here is presented in four parts,
 % \end{enumerate}
 
 
+\vspace{-4.0ex}
 \subsection{Reconstruction-based Estimation of Evolutionary History}
 \label{moreno:sec:case2:hstrat}
+\vspace{-2.0ex}
 
 % The structure of evolutionary ancestry relationships arising in phylogenies is a cornerstone of inquiry in modern evolutionary biology .
 % Phylogenetic analysis is integral to much of evolution research, whether conducted \textit{in vivo} or \textit{in silico} \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lewinsohnStatedependentEvolutionaryModels2023a,lenski2003evolutionary}.
@@ -65,7 +70,9 @@ Once budgeted capacity fills, barcodes overwrite each other to maintain an appro
 % Barcodes remain chronologically attributed, allowing estimation of the point in time when lineages diverged from conflicts \cite{}.
 Phylogenies incorporating multiple organisms can be constructed by agglomerative trie-building over shared barcode prefixes \cite{moreno2023toward}.
 
+\vspace{-4.0ex}
 \subsection{Robustness of Best-effort Estimation of Evolutionary History}
+\vspace{-2.0ex}
 \label{moreno:sec:case2:missing}
 
 A key advantage of reconstruction-based evolutionary analysis is flexibility with respect to the number of taxa sampled (i.e., phylogeny tree tips).
@@ -94,8 +101,10 @@ Faults are typically handled by checkpoint rollbacks \cite{gupta2017failures,zhu
 In highly integrated platforms, such as the WSE, challenges are compounded by the fact that small failures can compromise much larger hardware units \cite{cerebras2025yield}.
 Where computation can be structured to instead gracefully degrade under disruption, costs can be greatly reduced, and possibilities for suitable computational substrates can be greatly widened \cite{markovi2020physics,ackley2011pursue,dreslinski2010near}.
 
+\vspace{-4.0ex}
 \subsection{Detection of Bias in Population Dynamics}
 \label{moreno:sec:case2:bias}
+\vspace{-2.0ex}
 
 To check the plausibility of reconstructed phylogenies, we examined spatial patterns (i.e., on-chip locality) among related taxa \cite{novembre2008genes,grundler2025geographic}.
 Under neutral conditions, lineage histories should constitute a random walk in space \cite{lemey2010phylogeography}.
@@ -113,8 +122,10 @@ Likely, these approaches will prove most effective in conjunction.
 % Collecting spatial phylogeny data helped to flag an asymmetry in our island-model evolving population.
 % Specifically, under neutral evolutionary conditions, we saw that lineages appeared biased towards migrating from bottom to top across the chip (Figure \ref{moreno:fig:wse:bias}).
 
+\vspace{-4.0ex}
 \subsection{Best-effort Time Series Recording}
 \label{moreno:sec:case2:timeseries}
+\vspace{-2.0ex}
 
 % Transient dynamics
 % % While this scheme allowed maximization of on-device resources, as a consequence the set of sampled time points varied depending on how long nonmutator alleles persisted.
