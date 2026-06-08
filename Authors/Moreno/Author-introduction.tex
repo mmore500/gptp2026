@@ -33,7 +33,7 @@ In some regards, computational costs and constraints arising around data storage
 Rather than ``complete,'' deterministic data observability, most real-world studies instead rely on dynamic, query-driven sampling --- a paradigm we term ``inferential observability.''
 Such approaches can degrade gracefully under resource scarcity and intermittent disruptions.
 
-By contrast, most computational research has historically assumed complete observability of model state.
+By contrast, most computaional research assumes complete observability of model state.
 Indeed, the ability to measure the otherwise infeasible is a major benefit of computational experiments \cite{lenski2003evolutionary}.
 % However, as the scale of these models increases, the cost of data collection becomes a serious obstacle.
 % Thus, experiments exist that are intractable in the real world because they rely on data that are physically impossible to measure, but are also intractable in digital models because storing the necessary data to answer the questions at hand is infeasible.
@@ -44,7 +44,7 @@ However, past a certain point, data precision becomes of essentially negligible 
 \input{fig/best-effort.tex}
 
 Here, we explore incorporating \textit{best-effort computing} approaches into digital evolution work.
-This paradigm broadens processing beyond deterministic logical transforms --- a near-universal assumption of scientific computing \cite{chakradhar2010best,rinard2012unsynchronized}.
+This paradigm broadens processing beyond deterministic logical transforms --- a near-universal assumption of scientific computing \cite{chakradhar2010best,rinard2012unsynchronized}, except in unsual circumstances \cite{desell2009robust}.
 Though outside our primary focus, best-effort computing intertwines with related topics of \textit{approximate computing} (which emphasizes bypassing non-essential computation) and \textit{randomized algorithms} (which typically harness statistical properties of pseudorandomness) \cite{Buluc2021,mittal2016survey,menon2023approximate}.
 
 Best-effort relaxations can allow \textit{asynchronicity} (e.g., transmission delays, data races, jitter, straggler effects), \textit{data attrition} (e.g., memory constraint, transmission failure, hardware crashout), and \textit{data corruption} (e.g., soft errors, partial writes, analog approximation) (Figure \ref{moreno:fig:best-effort:types}).
@@ -54,6 +54,7 @@ In existing work, best-effort relaxations have been shown to improve speed \cite
 Best-effort approaches, however, involve important drawbacks (Figure \ref{moreno:fig:best-effort:tradeoffs}).
 Most obviously, best-effort computation abandons bitwise reproducibility --- the guarantee that repeating a computation will produce an identical result \cite{menon2025reproducibility}.
 In addition to introducing stochastic noise, such relaxation can undermine qualitative integrity and reproducibility by unpredictably biasing results.
+For instance, in the context of evolutionary computation, asynchronous fitness evaluation can implicitly disfavor slower-to-evaluate solutions \cite{scott2015understanding,scott2016evaluation,scott2022avoiding,guijt2023impact,karns2025evaluation}.
 In tandem, algorithms become more opaque, as they are no longer fully described independent from an underlying execution context.
 
 Given these drawbacks, prudent integration of best-effort approaches will require careful considerations.
