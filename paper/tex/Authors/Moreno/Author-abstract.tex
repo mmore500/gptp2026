@@ -21,22 +21,23 @@
 % Development of this library stemmed from a practical need for a general-purpose, prepackaged framework for best-effort communication.
 % We hope that free availability of this library, which includes built-in tools to measure quality of service metrics, can facilitate broader incorporation of best-effort communication into HPC applications.
 %
-Developments in high-performance computing (HPC) technology continue to drastically increase quantities of available processor cores, driven in large part by advances in compute-dense hardware accelerator devices.
+Developments in high-performance computing (HPC) technology continue to drastically increase quantities of available processor cores, driven in large part by compute-dense hardware accelerator devices.
 % In the context of evolutionary biology, these technologies offer new opportunities for digital experiments exploring cross-scale biological phenomena — such as many-species eco-evolutionary dynamics and evolutionary transitions in individuality (e.g., multicellularity, eusociality).
 In the context of digital evolution, this explosive growth offers opportunity to advance both hypothesis-driven explorations of multi-scale biological phenomena and application-driven evolutionary optimization targeting hard problem domains.
-Available processing power, however, is by nature vastly distributed --- a challenge exemplified by emerging next-generation AI/ML hardware accelerator platforms.
+Available processing power, however, is by nature vastly distributed --- a challenge exemplified by emerging next-generation AI/ML hardware accelerator platforms, such as the 880,000-processor Cerebras Wafer-Scale Engine (WSE).
 % memory, bandwidth, fault-tolerance, and synchronization arise in harnessing it
 % (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras), which rely on highly-distributed on-chip dataflow architectures comprising hundreds or thousands of cores.
-For instance, to pack 880,000 processors onto a single chip, the Cerebras Wafer-Scale Engine (WSE) provisions just 48kB of on-device memory per processor, requires multi-hop routing for point-to-point communication, and supports data export only from the chip periphery.
-Such constraints, compounded by inevitable hardware anomalies at scale, may motivate partial relaxations of the traditional deterministic computing paradigm.
-Best-effort approaches, however, require care to maintain reproducibility and mitigate bias in the face of hardware stochasticity and anomalies.
+% For instance, to pack 880,000 processors onto a single chip, the Cerebras Wafer-Scale Engine (WSE) provisions just 48kB of on-device memory per processor, requires multi-hop routing for point-to-point communication, and supports data export only from the chip periphery.
+Strict constraints in on-device data storage and movement, compounded by vulnerability to component failures, may favor partial relaxations of the traditional deterministic computing paradigm.
+Such best-effort relaxations, however, complicate reproducibility and risk introducing artifactual biases.
+% Best-effort approaches, however, require care to maintain reproducibility and mitigate bias in the face of hardware stochasticity and anomalies.
 % Such best-effort relaxations may accept potentially-incomplete data collection, or .
 % one using  and the other using .
 % collection, a paradigm we term ``inferential observability,'' or be extended to underlying core computation.
-Here, we develop a framework to characterize runtime behavior of best-effort code and apply it to two case studies of best-effort computing approaches in digital evolution projects.
-The first case study applies best-effort strategies to CPU-based multiprocessing, testing scaling efficiency, runtime quality-of-service, and their robustness to hardware anomalies.
-The second case study examines WSE-based evolution simulations, testing best-effort strategies to track population history under constraints in memory, bandwidth, and data fidelity.
-In sum, cataloging potential forms and scopes of best-effort relaxation, we argue that digital evolution is uniquely positioned to contribute in exploring post-deterministic HPC.
+We explore these concerns, developing a framework to measure runtime behavior of best-effort code and examining case studies of best-effort computing in digital evolution projects.
+The first case study applies best-effort CPU-cluster multiprocessing to a digital multicell workload, which provides 92\% scaling efficiency at 64 processes ($2.1\times$ speedup) and exhibits robust median quality of service, even under hardware anomalies.
+The second case study examines WSE-based simulations, demonstrating best-effort strategies to track spatiotemporal population history --- through sparse, asynchronous device-to-host sampling that tolerates hardware faults.
+In sum, across potential forms and scopes of best-effort relaxation, we argue that digital evolution is uniquely positioned to contribute in developing post-deterministic HPC paradigms.
 % In the latter case, to mitigate potential bias and improve reproducibility, we argue that instrumentation on real-time performance of simulation on hardware can help to understand the underlying structure of the computation actually being performed.
 % Here, we review two case studies of best-effort computing infrastructure developed for digital evolution projects --- one using traditional HPC nodes and the other using the Cerebras Wafer-Scale Engine --- and show how best-effort computing can improve scalability, and how suggest possible instrumentation to identify and mitigate potential biases.
 % Evolution is uniquely amenable to disturbances --- including major extinctions --- and stochasticity, and out of necessity rich methods exist to overcome such challenges in allied fields of ecology and evolutionary biology.
