@@ -267,6 +267,5 @@ jobs:
         with:
           path: deploy
       - name: Deploy to GitHub Pages
-        if: startsWith(github.ref, 'refs/tags/v')
         id: deployment
         uses: actions/deploy-pages@v4
