@@ -67,9 +67,9 @@ In the context of digital evolution, \textit{core computation} would comprise ru
 As for \textit{instrumentation}, possibilities include send/receive counters, timestamps, profiling traces, event logs, and records of what hardware is used.
 
 In scoping allowed relaxations, distinction can be drawn between \textit{core computation} and \textit{observation}.
-In scenarios where core computation has iterative structure, runtime irregularities compound and --- in the worst case --- can produce a pathological cascade.
-Although systematic biases may still be introduced, irregularity in observation affects only \textit{post hoc} analysis, where it may often be more readily reasoned about and accounted for.
-Possible benefits of best-effort observation strategies, by contrast, include efficiencies in dynamically exploiting convenient data locality or available openings in unused bandwidth and memory, as well as fault robustness and capped-budget utilization guarantees.
+For core computation, early irregularities propagate through later steps, which may spiral out of control.
+By contrast, although systematic biases may still be introduced, irregularity in observation affects only \textit{post hoc} analysis --- where it may often be more readily reasoned about and accounted for.
+Accepting such best-effort observation can, in exchange, allow efficiencies in dynamically exploiting convenient data locality or available openings in unused bandwidth and memory, as well as fault robustness and capped-budget utilization guarantees.
 Such an \textit{inferential observability} paradigm thus strikes an intermediate compromise, which may suit a broader swath of use cases.
 % \unskip\footnote{%
 % Unique characteristics of digital evolution may especially best-effort relaxations --- a point taken up in Section \ref{moreno:sec:conclusion}.
