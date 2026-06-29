@@ -55,7 +55,7 @@ Classically, these analyses have been applied to species-level macroevolution; h
 Phylogeny data can also be leveraged in proactive efforts to influence the trajectory of an evolving population \cite{Scott2018}.
 % Such scenarios arise in clinical and public health fields, managing therapy-resistant tumors, antibiotic resistance, and infectious disease \cite{Scott2018}.
 % Notable objective-oriented contexts arise also in computing, where evolution can be leveraged as an optimization algorithm.
-In application-oriented EC, phylogenetic information can help guide evolution toward desired outcomes \cite{lalejini2024phylogeny,lalejini2024runtime,murphy2008simple,burke2003increased}; it also can provide informative diagnostics to practitioners \cite{hernandez2022can,shahbandegan2022untangling}.
+In the case of application-oriented EC, such strategies can help guide evolution toward desired outcomes \cite{lalejini2024phylogeny,lalejini2024runtime,murphy2008simple,burke2003increased,gabor2018inheritancebased,gabor2018preparing}; phylogeny can also provide informative diagnostics to practitioners \cite{hernandez2022can,shahbandegan2022untangling}.
 Finally, digital phylogenies additionally serve as a useful testbed for bioinformatics because of capability to configure ground truth conditions directly \cite{daudey2024aevol,haller2023slim,moreno2025extending}.
 
 % Our ultimate goal of building these ancestry trees is to provide visibility into large-scale evolution experiments running on the WSE.
@@ -64,12 +64,10 @@ Finally, digital phylogenies additionally serve as a useful testbed for bioinfor
 
 To collect ancestry data from WSE experiments, we have adopted strategies inspired by real-world experiments that assume data collection is expensive, limited, and non-deterministic.
 Rather than exhaustively tracking parent-child relationships \cite{dolson2023phylotrackpy}, we adopt an approach inspired by bioengineered lineage tracking \cite{moreno2022hereditary} --- in which progressive DNA barcode inserts identify closely-related organisms by shared commonalities \cite{Masuyama2019,konno2022deep,jones2020inference,kebschull2018cellular,pan2026integrative,jones2024spatiotemporal}.
-We use analogous barcoding with single-bit markers, budgeting a 64-bit capacity per genome \cite{moreno2025testing}.
-Once budgeted capacity fills, barcodes overwrite each other to maintain an approximate record \cite{moreno2024algorithms}.
-% Barcode origin times can be inferred from storage position, allowing direct estimation of lineage divergence
-% Barcodes remain chronologically attributed, allowing estimation of the point in time when lineages diverged from conflicts \cite{}.
-Phylogenies incorporating multiple organisms can be constructed by agglomerative trie-building over shared barcode prefixes \cite{moreno2023toward}.
-While this methodology primarily targets tracking of asexual lineages (i.e., without recombination/crossover), possibilities exist for extensions to sexual phylogenies  \cite{moreno2024methods} which are exhibit important structural differences \cite{mcphee2016using,godindubois2024apoget}.
+We implement this approach using single-bit markers as barcodes \cite{moreno2025testing}, stored within a fixed-capacity 64-bit genome region; once full, markers overwrite each other to maintain an approximate record \cite{moreno2024algorithms}.
+In contrast to scenarios where the chronological order of random mutations is unknown \cite{gabor2017genealogical,moreno2021case},
+the known timing of injected barcodes allows reconstruction of phylogenetic trees by simple agglomerative trie-building over shared prefix sequences \cite{moreno2023toward,singhvi2025scalable}.
+While this methodology primarily targets tracking of asexual lineages (i.e., without recombination/crossover), possibilities exist for extensions to sexual phylogenies  \cite{moreno2024methods} which exhibit important structural differences \cite{mcphee2016using,godindubois2024apoget,burlacu2015methods}.
 
 \vspace{-4.0ex}
 \subsection{Robustness of Best-effort Estimation of Evolutionary History}
