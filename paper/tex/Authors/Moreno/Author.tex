@@ -22,10 +22,15 @@
 \input{Author-acknowledgement}
 
 \vspace{-8.0ex}
-{\footnotesize
+\begingroup
+\let\oldbibliography\thebibliography
+
+\renewcommand{\thebibliography}[1]{%
+  \oldbibliography{#1}%
+  \fontsize{7.5pt}{9pt}\selectfont
+}
+
 \renewcommand{\refname}{References \vspace{-2.0ex}}
-% \def\urlstyle#1{}
-% \def\UrlFont{\rmfamily\scriptsize}
 \bibliographystyle{spmpsci}
 \bibliography{Authors/Moreno/reference}
-}
+\endgroup
