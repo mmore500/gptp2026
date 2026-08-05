@@ -33,12 +33,12 @@
 \caption{
 \textbf{Conceptual framework for best-effort computing.}
 \footnotesize
-Best-effort computing strategies may tolerate asynchronicity, data attrition (e.g., packet loss, dynamic eviction, crashout), or data corruption (panel \ref{moreno:fig:best-effort:types}).
-While such strategies can improve robustness and efficiency, departing from a reliable deterministic execution model sacrifices computational reproducibility and can degrade computational results by introducing noise and bias (panel \ref{moreno:fig:best-effort:tradeoffs}).
-In the context of scientific computing, distinction can often be drawn between an \textit{underlying computation} (e.g., a simulation kernel) and \textit{observations} performed to document its behavior (panel \ref{moreno:fig:best-effort:components});
+Best-effort computing strategies may tolerate asynchronicity, data attrition (e.g., packet loss, dynamic eviction, crashout), or data corruption (panel \subref{moreno:fig:best-effort:types}).
+While such strategies can improve robustness and efficiency, departing from a reliable deterministic execution model sacrifices computational reproducibility and can degrade computational results by introducing noise and bias (panel \subref{moreno:fig:best-effort:tradeoffs}).
+In the context of scientific computing, a distinction can be drawn between an \textit{underlying computation} (e.g., a simulation kernel) and \textit{observations} performed to document its behavior (panel \subref{moreno:fig:best-effort:components});
 to balance efficiency and integrity, best-effort relaxation may be restricted to just data collection (``inferential observability'').
-As a best practice, projects incorporating best-effort strategies should consider \textit{instrumentation} to monitor runtime behavior of relaxations (panel \ref{moreno:fig:best-effort:components}).
-Panel \ref{moreno:fig:best-effort:qos} suggests several quality of service metrics that may be collected.
+As a best practice, projects incorporating best-effort strategies should consider \textit{instrumentation} to monitor runtime behavior of relaxations (panel \subref{moreno:fig:best-effort:components}).
+Panel \subref{moreno:fig:best-effort:qos} suggests several quality of service metrics that may be collected.
 }
 \label{moreno:fig:best-effort}
 \end{figure}

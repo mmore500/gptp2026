@@ -83,15 +83,15 @@
 \caption{
 \textbf{Cluster-based HPC Case Study.}
 \footnotesize
-Case study examines digital evolution and graph coloring benchmarks on a CPU-based compute cluster (panel \ref{moreno:fig:cpu:architecture}).
-Compared to synchronous evaluation, best-effort relaxations improve scaling efficiency (panel \ref{moreno:fig:cpu:performance} one proc per node; errorbars SD).
-For graph coloring, median QoS remained stable between allocation sizes but magnitude of worst-case QoS disruptions grew (panel \ref{moreno:fig:cpu:qos-scaling}).
-In further 256-process experiments testing impact of anomalous hardware, median QoS remained stable with and without low-QoS node \texttt{lac-417} (panel \ref{moreno:fig:cpu:lac417}).
+Case study examines digital evolution and graph coloring benchmarks on a CPU-based compute cluster (panel \subref{moreno:fig:cpu:architecture}).
+Compared to synchronous evaluation, best-effort relaxations improve scaling efficiency (panel \subref{moreno:fig:cpu:performance} one proc per node; errorbars SD).
+For graph coloring, median QoS remained stable between allocation sizes but magnitude of worst-case QoS disruptions grew (panel \subref{moreno:fig:cpu:qos-scaling}).
+In further 256-process experiments testing impact of anomalous hardware, median QoS remained stable with and without low-QoS node \texttt{lac-417} (panel \subref{moreno:fig:cpu:lac417}).
 In a final experiment, QoS metrics were collected between graph coloring processes resident on the same node (``intranode'') or split between two nodes (``internode'').
-In both cases, negative correlation arose between message send and receive rates (panel \ref{moreno:fig:cpu:balance}).
+In both cases, negative correlation arose between message send and receive rates (panel \subref{moreno:fig:cpu:balance}).
 For within-node configuration, this imbalance likely reflects asymmetric Non-Uniform Memory Access (NUMA) disruptions.
-Filled strips in panel \ref{moreno:fig:cpu:intranode} show spread between fastest and slowest process (higher values worse; replicates overlaid), which respond to QoS polling thread activity (shaded intervals).
-For internode configuration, send/receive imbalance relates to disparate process speeds between host nodes (panel \ref{moreno:fig:cpu:internode}).
+Filled strips in panel \subref{moreno:fig:cpu:intranode} show spread between fastest and slowest process (higher values worse; replicates overlaid), which respond to QoS polling thread activity (shaded intervals).
+For internode configuration, send/receive imbalance relates to disparate process speeds between host nodes (panel \subref{moreno:fig:cpu:internode}).
 Where significance annotated, * $p<0.05$ and *** $p < 0.001$.
 }
 \label{moreno:fig:cpu}
