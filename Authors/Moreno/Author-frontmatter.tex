@@ -26,6 +26,11 @@ Michigan State University, East Lansing, MI, USA%
 % stuck on the pre-chapter numbering while \caption-produced figure
 % numbers (e.g. "Fig. 1.1") pick up the fix. Re-point \p@subfigure at the
 % now-correct \thefigure so subfigure \ref output matches captions.
+% \p@subfigure is a plain (non-\global) \let, so it reverts once this
+% \begingroup closes -- matched by \endgroup at the end of Author.tex --
+% keeping the fix scoped to this chapter rather than leaking into
+% whatever chapter follows when the editors splice chapters together.
+\begingroup
 \makeatletter
 \let\p@subfigure\thefigure
 \makeatother
