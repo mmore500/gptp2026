@@ -23,19 +23,19 @@
 %
 Developments in high-performance computing (HPC) technology continue to drastically increase quantities of available processing power.
 % In the context of evolutionary biology, these technologies offer new opportunities for digital experiments exploring cross-scale biological phenomena — such as many-species eco-evolutionary dynamics and evolutionary transitions in individuality (e.g., multicellularity, eusociality).
-In the context of digital evolution, this explosive growth offers opportunity to advance both hypothesis-driven explorations of multi-scale biological phenomena and application-driven evolutionary optimization targeting hard problem domains.
-Particular opportunity arises from emerging next-generation AI/ML hardware accelerator platforms, such as the 880,000-processor Cerebras Wafer-Scale Engine (WSE).
+In the context of digital evolution, this explosive growth offers opportunities to advance both hypothesis-driven explorations of multi-scale biological phenomena and application-driven evolutionary optimization targeting hard problem domains.
+A particular opportunity arises from emerging next-generation AI/ML hardware accelerator platforms, such as the 880,000-processor Cerebras Wafer-Scale Engine (WSE).
 % memory, bandwidth, fault-tolerance, and synchronization arise in harnessing it
 % (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras), which rely on highly-distributed on-chip dataflow architectures comprising hundreds or thousands of cores.
 % For instance, to pack 880,000 processors onto a single chip, the Cerebras Wafer-Scale Engine (WSE) provisions just 48kB of on-device memory per processor, requires multi-hop routing for point-to-point communication, and supports data export only from the chip periphery.
 Such hardware, however, constrains on-device data storage and movement --- a challenge compounded by vulnerability to failures arising over numerous device components.
-Best-effort relaxations that depart from a traditional deterministic computing paradigm can help accomodate such constraints, but complicate reproducibility and risk introducing artifactual biases.
+Best-effort relaxations that depart from a traditional deterministic computing paradigm can help accommodate such constraints, but complicate reproducibility and risk introducing artifactual biases.
 % Best-effort approaches, however, require care to maintain reproducibility and mitigate bias in the face of hardware stochasticity and anomalies.
 % Such best-effort relaxations may accept potentially-incomplete data collection, or .
 % one using  and the other using .
 % collection, a paradigm we term ``inferential observability,'' or be extended to underlying core computation.
 We explore these concerns, developing a framework to measure runtime behavior of best-effort code and examining case studies of best-effort computing in digital evolution projects.
-The first case study applies best-effort CPU-cluster multiprocessing to a digital multicell workload, which provides 92\% scaling efficiency at 64 processes ($2.1\times$ speedup) and exhibits robust median quality of service, even under hardware anomalies.
+The first case study applies best-effort CPU-cluster multiprocessing to a multicellularity evolution model, which provides 92\% scaling efficiency at 64 processes ($2.1\times$ speedup) and exhibits robust median quality of service, even under hardware anomalies.
 The second case study examines WSE-based simulations, demonstrating best-effort strategies to track spatiotemporal population history --- through sparse, asynchronous device-to-host sampling that tolerates hardware faults.
 In sum, across potential forms and scopes of best-effort relaxation, we argue that digital evolution is uniquely positioned to contribute in developing post-deterministic HPC paradigms.
 % In the latter case, to mitigate potential bias and improve reproducibility, we argue that instrumentation on real-time performance of simulation on hardware can help to understand the underlying structure of the computation actually being performed.
