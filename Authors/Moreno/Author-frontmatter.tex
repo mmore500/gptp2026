@@ -18,3 +18,14 @@ Michigan State University, East Lansing, MI, USA%
 }
 
 \maketitle
+
+% The (obsolete) subfigure package caches the figure-numbering prefix via
+% \let\p@subfigure=\thefigure at \usepackage-time, i.e. before svmult's
+% \title (above) switches \thefigure from plain arabic to chapter.arabic
+% numbering. That leaves \ref'd subfigure labels (e.g. "Figure 1(a)")
+% stuck on the pre-chapter numbering while \caption-produced figure
+% numbers (e.g. "Fig. 1.1") pick up the fix. Re-point \p@subfigure at the
+% now-correct \thefigure so subfigure \ref output matches captions.
+\makeatletter
+\let\p@subfigure\thefigure
+\makeatother
