@@ -14,11 +14,11 @@ Indeed, evidence suggests such experiments have been meaningfully constrained by
 Analogous limitations in computational scale, in retrospect, turn out to have profoundly influenced connectionist approaches to artificial intelligence \cite{kaplan2020scaling}.
 Deep learning has gained prominence in tandem with growth in training set sizes, parameter counts, and training FLOPs \cite{marcus2018deep}.
 % --- accomplished, in part, by tailoring deep learning architecture to available hardware \cite{krizhevsky2012imagenet}.
-Since, AI/ML workloads have brought to market powerful next-generation compute accelerators affording up to hundreds of thousands of processing cores (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras) \cite{zhang2016cambricon,emani2021accelerating,jia2019dissecting,medina2020habana}.
+Since then, AI/ML workloads have brought to market powerful next-generation compute accelerators affording up to hundreds of thousands of processing cores (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras) \cite{zhang2016cambricon,emani2021accelerating,jia2019dissecting,medina2020habana}.
 These accelerator devices are anticipated to drive advances in both agent-based modeling (ABM) and high-performance computing (HPC) writ large \cite{perumalla2022computer,VanEssendelft2025}, and opportunity exists to benefit digital evolution.
 % The emerging class of fabric-based accelerators, led by the 880,000 core Cerebras CS-3 Wafer-Scale Engine (WSE) \cite{lauterbach2021path,lie2022cerebras,TODOCS3}, holds particular promise as a vehicle for digital evolution.
 
-To maximize compute throughput, emerging accelerator platforms exploit highly-distributed dataflow architectures --- though this can come at the cost of on-device memory scarcity and locality.
+To maximize compute throughput, emerging accelerator platforms exploit highly distributed dataflow architectures --- though this can come at the cost of on-device memory scarcity and locality.
 For instance, to pack 880,000 processors onto a single chip, the Cerebras Wafer-Scale Engine (WSE) platform provisions only 48kB memory per processor, introduces multi-hop message routing, and allows data export only from the chip periphery.
 These constraints mirror broader trends in HPC where data storage and movement are becoming more expensive relative to compute \cite{Buluc2021,khan2021analysis,gholami2024ai}.
 
@@ -26,21 +26,21 @@ These constraints mirror broader trends in HPC where data storage and movement a
 % As such, the computational capacity of high-performance computing (HPC) clusters has become increasingly dependent on the cooperation of larger and larger collections of hardware components.
 
 Effectively harnessing AI/ML accelerators for scientific computing thus poses substantial, but broadly pertinent, engineering challenges.
-In the case of digital evolution, a key challenge is tracking population dynamics across a vast, highly-distributed fabric of memory-constrained processors.
+In the case of digital evolution, a key challenge is tracking population dynamics across a vast, highly distributed fabric of memory-constrained processors.
 Such data collection can be essential to digital evolution work.
-Hypothesis-driven computational experiments are only scientifically useful insofar as they are interpretable and observable \cite{casti1997wouldbe}.
+Hypothesis-driven computational experiments are scientifically useful only insofar as they are interpretable and observable \cite{casti1997wouldbe}.
 Likewise, in the context of application-oriented evolutionary computation (EC), diagnostic information is necessary to troubleshoot, tune parameters, and develop theory \cite{hernandez2022dossier,Hooker1995}.
 
 In some regards, computational costs and constraints arising around data storage and movement resemble the logistical costs and constraints faced in research studying real-world systems.
 Rather than ``complete,'' deterministic data observability, most real-world studies instead rely on dynamic, query-driven sampling --- a paradigm we term ``inferential observability.''
 Such approaches can degrade gracefully under resource scarcity and intermittent disruptions.
 
-By contrast, most computaional research assumes complete observability of model state.
+By contrast, most computational research assumes complete observability of model state.
 Indeed, the ability to measure the otherwise infeasible is a major benefit of computational experiments \cite{lenski2003evolutionary}.
 % However, as the scale of these models increases, the cost of data collection becomes a serious obstacle.
 % Thus, experiments exist that are intractable in the real world because they rely on data that are physically impossible to measure, but are also intractable in digital models because storing the necessary data to answer the questions at hand is infeasible.
 % We propose that, through careful algorithm development, we can solve this problem by recording a smaller amount of data that enables us to draw the desired scientific inferences at a fraction of the computational cost.
-However, past a certain point, data precision becomes of essentially negligible practical value, such that trading some precision for efficient scaling and hardware accelerator compatibility might be highly worthwhile.
+However, past a certain point, data precision has essentially negligible practical value, such that trading some precision for efficient scaling and hardware accelerator compatibility might be highly worthwhile.
 % invested in producing this excessive level of precision
 
 \input{fig/best-effort.tex}
@@ -59,7 +59,7 @@ In addition to introducing stochastic noise, such relaxation can undermine quali
 For instance, in the context of EC, asynchronous fitness evaluation can implicitly disfavor slower-to-evaluate solutions \cite{scott2015understanding,scott2016evaluation,scott2022avoiding,guijt2023impact,karns2025evaluation}.
 In tandem, algorithms become more opaque, as they are no longer fully described independent from an underlying execution context.
 
-Given these drawbacks, prudent integration of best-effort approaches will require careful considerations.
+Given these drawbacks, prudent integration of best-effort approaches will require careful consideration.
 We suggest, in particular, two mitigations: domain-appropriate scoping of allowed relaxations and, for relaxations that are incorporated, monitoring of runtime quality of service (QoS) \cite{karakus2017quality}.
 
 To structure discussion of these mitigations, we frame a best-effort system's runtime activity in three parts: (1) an underlying \textit{core computation}, (2) \textit{observation} of that computation's intermediate and final states, and (3) \textit{instrumentation} of runtime behavior (Figure \ref{moreno:fig:best-effort:components}).
