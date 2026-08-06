@@ -10,8 +10,9 @@ For an exact accounting of hardware architectures used, these hostnames can be c
 Code for the distributed graph coloring benchmark is available at \url{https://github.com/mmore500/conduit} under \\ \texttt{demos/channel\_selection}.
 Code for the digital evolution simulation benchmark is available at \url{https://github.com/mmore500/dishtiny}.
 Exact versions of software used are recorded with each benchmark data point.
-Data is available via the Open Science Framework at \url{https://osf.io/7jkgp/} \citep{foster2017open}.
-Notebook code for all reported statistics and data visualizations is available at \url{https://hopth.ru/ci}.
+Data is available via the Open Science Framework at \url{https://osf.io/7jkgp} \cite{foster2017open}.
+Notebook code for reported statistics and data visualizations is available at \url{https://github.com/mmore500/gptp2026}.
+% Notebook code for all reported statistics and data visualizations is available at \url{https://hopth.ru/ci}.
 
 \subsection{Quality of Service Experiments}
 
@@ -28,3 +29,5 @@ This effect can snowball the partnership intended for even, two-way message exch
 To interrupt such a scenario, we use the bulk message pull call \verb|MPI_Testsome| to ensure fast message consumption under backlogged conditions.
 So, receiver workload remains closer to constant under high traffic situations (instead of having to pull messages down one-by-one).
 Larger receive buffer size, as configured for the quality of service experiments, increases the effectiveness of the bulk message consumption countermeasure.
+
+Further methodological details on CPU-based experiments are available as \cite{moreno2022best}.

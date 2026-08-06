@@ -57,11 +57,9 @@ def do_watermark(mo, watermark):
 
 @app.cell(hide_code=True)
 def delimit_prep_data(mo):
-    mo.md(
-        """
+    mo.md("""
     ## Prep Data
-    """
-    )
+    """)
     return
 
 
@@ -90,7 +88,6 @@ def _(np, requests, retrieve_and_prepare_delta_dataframes):
             df_snapshot_diffs["Net Flux Through Duct"],
         )
     )
-
     return (df_snapshot_diffs,)
 
 
