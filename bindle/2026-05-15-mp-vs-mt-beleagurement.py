@@ -322,8 +322,41 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
         _g.set_titles(template="{col_name}")
         _g.set(ylim=(0, None), ylabel="Message per Sec", xlabel=None)
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-        _g.figure.set_size_inches(3, 2)
-        _ax.yaxis.get_offset_text().set_x(-0.2)
+        _g.figure.set_size_inches(2.5, 1.3)
+        # push the ylabel further left to make room for "1e5" without colliding
+        _ax.yaxis.labelpad += 2
+        _ax.yaxis.label.set_fontsize(_ax.yaxis.label.get_fontsize() * 0.65)
+        _offset_text = _ax.yaxis.get_offset_text()
+        _offset_text.set_x(-0.32)
+        # canvas shrunk 1.3/2 to enlarge other text on the page; hold this
+        # element's on-page size constant by counter-scaling its font size
+        _offset_text.set_fontsize(_offset_text.get_fontsize() * 117.36 / 144.45)
+
+        # matplotlib auto-raises the intranode facet's title at draw time to
+        # dodge its "1e5" offset text (internode has no offset text, so its
+        # title stays put); passing an explicit y disables that autoposition
+        # (sets Axes._autotitlepos = False) so it won't get bumped again by
+        # the draw inside teeplot's savefig
+        for _a in _g.axes.flat:
+            _a.set_title(
+                _a.title.get_text(),
+                y=1.02,
+                fontsize=_a.title.get_fontsize() * 0.9,
+            )
+
+        # left-align "Recv" so its "R" sits at the left axis and
+        # right-align "Sent" so its "t" sits at the right axis, instead of
+        # each label centering on its tick (which crowds them together);
+        # zero the categorical x-margin so the Recv/Sent ticks actually sit
+        # at the axes edges (otherwise the default margin leaves a gap
+        # between the tick and the spine that the alignment can't close)
+        for _a in _g.axes.flat:
+            _a.margins(x=0)
+            for _t in _a.get_xticklabels():
+                if _t.get_text() == "Recv":
+                    _t.set_ha("left")
+                elif _t.get_text() == "Sent":
+                    _t.set_ha("right")
 
         # Left facet legend — NUMA symmetry, bottom
         _ax0 = _g.axes.flat[0]
@@ -337,6 +370,9 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
             ncol=1,
             frameon=False,
             fontsize="x-small",
+            handlelength=0.6,
+            handleheight=0.7,
+            handletextpad=0.4,
         )
 
         # Right facet legend — Hostname, top
@@ -352,6 +388,8 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
             ncol=1,
             frameon=False,
             fontsize="x-small",
+            handlelength=1.0,
+            handleheight=0.7,
         )
     return
 
@@ -443,8 +481,16 @@ def _(data, mo, palette, pathlib, plt, scipy_stats, sns, tp):
         _g.set_titles(template="{col_name}")
         _g.set(ylabel="ms per Update", xlabel=None)
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-        _g.figure.set_size_inches(1, 2)
-        _ax.yaxis.get_offset_text().set_x(-0.2)
+        # width is free to grow (only height drives on-page size, since
+        # this panel is placed with height=1in in the document); widen it
+        # to keep the lac-220/lac-221 tick labels from crowding together
+        _g.figure.set_size_inches(0.95, 1.28)
+        _offset_text = _ax.yaxis.get_offset_text()
+        _offset_text.set_x(-0.2)
+        # canvas shrunk from the original 2in to enlarge other text on the
+        # page; hold this element's on-page size constant by counter-scaling
+        # its font size against the original (pre-shrink) bbox height
+        _offset_text.set_fontsize(_offset_text.get_fontsize() * 115.7 / 161.118)
         _ax.set_xticklabels(["lac\n220", "lac\n221"])
 
     _pivot2 = _data2.pivot(
