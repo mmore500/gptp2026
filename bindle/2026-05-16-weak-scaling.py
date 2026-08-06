@@ -387,6 +387,13 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
                 _ax.yaxis.get_offset_text().set_x(-0.3)
                 _ax.yaxis.get_offset_text().set_y(0.5)
                 _ax.yaxis.get_offset_text().set_fontsize(9)
+            # matplotlib auto-raises a facet's title at draw time to dodge
+            # its offset text (columns without offset text keep their
+            # titles at the default position, creating a ragged title
+            # row); passing an explicit y disables that autoposition so
+            # all titles line up
+            for _a in _g.axes.flat:
+                _a.set_title(_a.title.get_text(), y=1.02)
             for _ax in _g.axes[1, :].flat:
                 _ax.set_ylim(1.6 * np.array(_ax.get_ylim()))
             sns.despine(fig=_g.figure, bottom=True)
