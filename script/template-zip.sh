@@ -81,8 +81,11 @@ sed -i 's#\\bibliography{Authors/Moreno/reference}#\\bibliography{reference}#' \
 # \orcidlink needs hyperref+tikz loaded from a preamble, which Author.tex
 # doesn't have (it's \input into the book's \begin{document}), and the
 # submission guidelines ask to avoid unusual packages -- so swap the icon
-# macro for a plain-text ORCID mention instead of shipping orcidlink.sty
-sed -i -E 's/\\orcidlink\{([^}]*)\}/(ORCID~\1)/g' \
+# macro for a small but plain-text (machine-readable, not just an icon)
+# ORCID mention instead of shipping orcidlink.sty. A real \footnote/\thanks
+# doesn't work here -- svmult's \institute block swallows or discards them
+# (see script history) -- so just shrink the font instead.
+sed -i -E 's/\\orcidlink\{([^}]*)\}/{\\footnotesize~(ORCID~\1)}/g' \
   "${stage}/Authors/Moreno/Author.tex"
 
 rm -f "${out_zip}"
