@@ -113,11 +113,15 @@ echo "wrote ${out_zip}"
   sed 's#\\subincludefrom{Authors/Moreno/}{Author}#\\input{Author}#' tex/document.tex
 } > "${stage}/Authors/Moreno/test-build.tex"
 
-(
+if ! (
   cd "${stage}/Authors/Moreno"
-  latexmk -pdf -silent -interaction=nonstopmode -halt-on-error \
-    -pdflatex="pdflatex -interaction=nonstopmode -halt-on-error" \
+  latexmk -pdf -silent -interaction=nonstopmode -file-line-error -halt-on-error \
+    -pdflatex="pdflatex -interaction=nonstopmode -file-line-error -halt-on-error" \
     test-build.tex
-)
+); then
+  echo "template zip test-build failed; dumping test-build.log:" >&2
+  cat "${stage}/Authors/Moreno/test-build.log" >&2 || true
+  exit 1
+fi
 
 echo "verified ${out_zip} builds standalone"
