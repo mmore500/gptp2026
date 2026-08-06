@@ -64,9 +64,11 @@ def do_watermark(mo, watermark):
 
 @app.cell(hide_code=True)
 def delimit_prep_data(mo):
-    mo.md("""
+    mo.md(
+        """
     ## Prep Data
-    """)
+    """
+    )
     return
 
 
@@ -178,9 +180,11 @@ def _():
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""
+    mo.md(
+        r"""
     ## Helpers
-    """)
+    """
+    )
     return
 
 
@@ -200,9 +204,11 @@ def _(plt):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""
+    mo.md(
+        """
     ## Example Plot
-    """)
+    """
+    )
     return
 
 
@@ -316,7 +322,7 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
         _g.set_titles(template="{col_name}")
         _g.set(ylim=(0, None), ylabel="Message per Sec", xlabel=None)
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-        _g.figure.set_size_inches(3, 2)
+        _g.figure.set_size_inches(2.5, 1.3)
         _ax.yaxis.get_offset_text().set_x(-0.2)
 
         # Left facet legend — NUMA symmetry, bottom
@@ -437,7 +443,7 @@ def _(data, mo, palette, pathlib, plt, scipy_stats, sns, tp):
         _g.set_titles(template="{col_name}")
         _g.set(ylabel="ms per Update", xlabel=None)
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-        _g.figure.set_size_inches(1, 2)
+        _g.figure.set_size_inches(0.8, 1.5)
         _ax.yaxis.get_offset_text().set_x(-0.2)
         _ax.set_xticklabels(["lac\n220", "lac\n221"])
 
