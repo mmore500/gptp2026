@@ -393,7 +393,11 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             # row); passing an explicit y disables that autoposition so
             # all titles line up
             for _a in _g.axes.flat:
-                _a.set_title(_a.title.get_text(), y=1.02)
+                _a.set_title(
+                    _a.title.get_text(),
+                    y=1.02,
+                    fontsize=_a.title.get_fontsize() * 0.9,
+                )
             for _ax in _g.axes[1, :].flat:
                 _ax.set_ylim(1.6 * np.array(_ax.get_ylim()))
             sns.despine(fig=_g.figure, bottom=True)
