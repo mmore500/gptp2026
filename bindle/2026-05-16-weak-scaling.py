@@ -384,9 +384,9 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             plt.subplots_adjust(hspace=0.2, wspace=0.7)
             for _ax in _g.axes.flat:
                 _ax.ticklabel_format(style="sci", axis="y", scilimits=(-4, 3))
-                _ax.yaxis.get_offset_text().set_x(-0.45)
+                _ax.yaxis.get_offset_text().set_x(-0.3)
                 _ax.yaxis.get_offset_text().set_y(0.5)
-                _ax.yaxis.get_offset_text().set_fontsize(7)
+                _ax.yaxis.get_offset_text().set_fontsize(9)
             for _ax in _g.axes[1, :].flat:
                 _ax.set_ylim(1.6 * np.array(_ax.get_ylim()))
             sns.despine(fig=_g.figure, bottom=True)
