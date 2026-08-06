@@ -78,6 +78,17 @@ cp "${chapter_dir}/svmult.cls" "${stage}/Authors/Moreno/"
 sed -i 's#\\bibliography{Authors/Moreno/reference}#\\bibliography{reference}#' \
   "${stage}/Authors/Moreno/Author.tex"
 
+# abbreviate author names to initials in the \institute affiliation block
+# (matched only where immediately followed by \orcidlink, so the \author
+# byline up top keeps full names) to keep that line compact
+sed -i \
+  -e 's/Matthew Andres Moreno \\orcidlink/MAM \\orcidlink/' \
+  -e 's/Luis Zaman \\orcidlink/LHZ \\orcidlink/' \
+  -e 's/Santiago Rodriguez Papa  \\orcidlink/SRP \\orcidlink/' \
+  -e 's/Charles Ofria \\orcidlink/CAO \\orcidlink/' \
+  -e 's/Emily Dolson \\orcidlink/ELD \\orcidlink/' \
+  "${stage}/Authors/Moreno/Author.tex"
+
 # \orcidlink needs hyperref+tikz loaded from a preamble, which Author.tex
 # doesn't have (it's \input into the book's \begin{document}), and the
 # submission guidelines ask to avoid unusual packages -- so swap the icon
