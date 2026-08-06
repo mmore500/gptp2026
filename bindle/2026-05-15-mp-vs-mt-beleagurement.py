@@ -343,14 +343,19 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
                 fontsize=_a.title.get_fontsize() * 0.9,
             )
 
-        # nudge "Recv"/"Sent" apart so they don't crowd together
+        # left-align "Recv" so its "R" sits at the left axis and
+        # right-align "Sent" so its "t" sits at the right axis, instead of
+        # each label centering on its tick (which crowds them together);
+        # zero the categorical x-margin so the Recv/Sent ticks actually sit
+        # at the axes edges (otherwise the default margin leaves a gap
+        # between the tick and the spine that the alignment can't close)
         for _a in _g.axes.flat:
-            _a.set_xticklabels(
-                [
-                    f"{_t.get_text()}   " if _t.get_text() == "Recv" else f"   {_t.get_text()}"
-                    for _t in _a.get_xticklabels()
-                ]
-            )
+            _a.margins(x=0)
+            for _t in _a.get_xticklabels():
+                if _t.get_text() == "Recv":
+                    _t.set_ha("left")
+                elif _t.get_text() == "Sent":
+                    _t.set_ha("right")
 
         # Left facet legend — NUMA symmetry, bottom
         _ax0 = _g.axes.flat[0]
