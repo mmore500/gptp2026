@@ -983,7 +983,7 @@ def _(filtered_procs, mpl, np, pathlib, pd, plt, sns, tp):
         _g.set(xscale="log")
         _g.set_titles(col_template="", row_template="")
         plt.subplots_adjust(wspace=0.4)
-        _g.figure.set_size_inches(6.3, 0.85)
+        _g.figure.set_size_inches(7.4, 1.0)
 
         for _ax in _g.axes.flat:
             _ax.minorticks_off()
