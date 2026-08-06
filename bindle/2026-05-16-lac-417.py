@@ -504,6 +504,9 @@ def _(
             _ax.yaxis.get_offset_text().set_x(-0.3)
             _ax.yaxis.get_offset_text().set_y(0.5)
             _ax.yaxis.get_offset_text().set_fontsize(9)
+            # widen the gap between the "Base line"/"With lac-417" x-tick
+            # labels, which otherwise crowd together at this panel's width
+            _ax.margins(x=0.3)
         # matplotlib auto-raises a facet's title at draw time to dodge its
         # offset text (columns without offset text keep their titles at the
         # default position, creating a ragged title row); passing an
