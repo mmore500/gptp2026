@@ -64,11 +64,9 @@ def do_watermark(mo, watermark):
 
 @app.cell(hide_code=True)
 def delimit_prep_data(mo):
-    mo.md(
-        """
+    mo.md("""
     ## Prep Data
-    """
-    )
+    """)
     return
 
 
@@ -180,11 +178,9 @@ def _():
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     ## Helpers
-    """
-    )
+    """)
     return
 
 
@@ -204,11 +200,9 @@ def _(plt):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        """
+    mo.md("""
     ## Example Plot
-    """
-    )
+    """)
     return
 
 
