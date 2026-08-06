@@ -35,6 +35,8 @@ jobs:
         run: |
           trap 'cat tex/*.log || true >> "$GITHUB_OUTPUT"' EXIT
           cd tex && latexmk -pdf -interaction=nonstopmode -file-line-error ../supplement.tex
+      - name: Build template zip
+        run: make ${{ github.event.repository.name }}-template.zip
       - name: Prepare deploy directory
         run: |
           mkdir -p deploy
@@ -51,6 +53,11 @@ jobs:
         with:
           name: supplement
           path: tex/supplement.pdf
+      - name: Upload template zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: template-zip
+          path: ${{ github.event.repository.name }}-template.zip
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
