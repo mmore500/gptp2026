@@ -329,6 +329,23 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
         # element's on-page size constant by counter-scaling its font size
         _offset_text.set_fontsize(_offset_text.get_fontsize() * 117.36 / 144.45)
 
+        # matplotlib auto-raises the intranode facet's title at draw time to
+        # dodge its "1e5" offset text (internode has no offset text, so its
+        # title stays put); passing an explicit y disables that autoposition
+        # (sets Axes._autotitlepos = False) so it won't get bumped again by
+        # the draw inside teeplot's savefig
+        for _a in _g.axes.flat:
+            _a.set_title(_a.title.get_text(), y=1.06)
+
+        # nudge "Recv"/"Sent" apart so they don't crowd together
+        for _a in _g.axes.flat:
+            _a.set_xticklabels(
+                [
+                    f"{_t.get_text()} " if _t.get_text() == "Recv" else f" {_t.get_text()}"
+                    for _t in _a.get_xticklabels()
+                ]
+            )
+
         # Left facet legend — NUMA symmetry, bottom
         _ax0 = _g.axes.flat[0]
         _numa_handles = [
@@ -341,6 +358,9 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
             ncol=1,
             frameon=False,
             fontsize="x-small",
+            handlelength=0.6,
+            handleheight=0.7,
+            handletextpad=0.4,
         )
 
         # Right facet legend — Hostname, top
@@ -356,6 +376,8 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
             ncol=1,
             frameon=False,
             fontsize="x-small",
+            handlelength=1.0,
+            handleheight=0.7,
         )
     return
 
