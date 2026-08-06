@@ -309,7 +309,7 @@ def _(
                     1: "With\nlac-417",
                 },
                 "Metric": {
-                    "Simstep Period Outlet (ms)": "Throughput QoS\n(ms per update)",
+                    "Simstep Period Outlet (ms)": "Straggling QoS\n(ms per update)",
                     "Latency Simsteps Outlet": "Latency QoS\n(updates)",
                     "Latency Walltime Outlet (ms)": "Latency QoS\n(ms)",
                     "Delivery Clumpiness": "Bunching QoS\n(consolidation)",
@@ -319,7 +319,7 @@ def _(
         ),
         col="Metric",
         col_order=[
-            "Throughput QoS\n(ms per update)",
+            "Straggling QoS\n(ms per update)",
             "Latency QoS\n(ms)",
             "Latency QoS\n(updates)",
             "Attrition QoS\n(drop rate)",
@@ -374,7 +374,7 @@ def _(
         {
             allocation_idx_mapped_title: {0: "Base\nline", 1: "With\nlac-417"},
             "Metric": {
-                "Simstep Period Outlet (ms)": "Throughput QoS\n(ms per update)",
+                "Simstep Period Outlet (ms)": "Straggling QoS\n(ms per update)",
                 "Latency Simsteps Outlet": "Latency QoS\n(updates)",
                 "Latency Walltime Outlet (ms)": "Latency QoS\n(ms)",
                 "Delivery Clumpiness": "Bunching QoS\n(consolidation)",
@@ -464,7 +464,7 @@ def _(
         data=_data_combined,
         col="Metric",
         col_order=[
-            "Throughput QoS\n(ms per update)",
+            "Straggling QoS\n(ms per update)",
             "Latency QoS\n(ms)",
             "Latency QoS\n(updates)",
             "Attrition QoS\n(drop rate)",
