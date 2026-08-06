@@ -247,7 +247,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
     _data_all = pd.concat([data_max, data_median], ignore_index=True).replace(
         {
             "Metric": {
-                "Simstep Period Outlet (ms)": "Throughput QoS\n(ms per update)",
+                "Simstep Period Outlet (ms)": "Straggling QoS\n(ms per update)",
                 "Latency Simsteps Outlet": "Latency QoS\n(updates)",
                 "Latency Walltime Outlet (ms)": "Latency QoS\n(ms)",
                 "Delivery Clumpiness": "Bunching QoS\n(consolidation)",
@@ -347,7 +347,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             data=_cond_df,
             col="Metric",
             col_order=[
-                "Throughput QoS\n(ms per update)",
+                "Straggling QoS\n(ms per update)",
                 "Latency QoS\n(ms)",
                 "Latency QoS\n(updates)",
                 "Attrition QoS\n(drop rate)",
