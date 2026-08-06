@@ -8,6 +8,16 @@ on:
   schedule:
     - cron: '0 0 * * 0'
   workflow_dispatch:
+
+# only one Pages deployment can be in flight at a time; without this,
+# concurrent runs (e.g. several pushes to this PR in quick succession)
+# each queue their own deploy-pages step and time out waiting on
+# whichever run's deployment is currently active -- serialize instead,
+# matching GitHub's own recommended pattern for Pages-deploying workflows
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
 
   latex:
