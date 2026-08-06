@@ -3,14 +3,14 @@
 \centering
 \subfigure[\footnotesize types of best-effort relaxation]{
   \label{moreno:fig:best-effort:types}
-  \includegraphics[width=\linewidth,trim={0 -0.2cm 0 0}]{img/best-effort-types}
+  \includegraphics[width=\linewidth,trim={0 0.2cm 0.2cm 0}]{img/best-effort-types}
 }
 
 \vspace{2ex}
 
-\subfigure[\footnotesize practical trade-offs of best-effort strategies]{
+\subfigure[\footnotesize practical trade-offs of best-effort relaxations]{
     \label{moreno:fig:best-effort:tradeoffs}
-  \includegraphics[width=\linewidth,trim={0 -0.2cm 0 0}]{img/best-effort-tradeoffs}
+  \includegraphics[width=\linewidth,trim={0 -0.2cm 0 0},clip]{img/best-effort-tradeoffs}
 }
 
 \vspace{2ex}
@@ -23,7 +23,7 @@
 
 \vspace{2ex}
 
-\subfigure[\footnotesize quality of service dimensions for best-effort computation]{
+\subfigure[\footnotesize dimensions of quality of service (QoS) in best-effort computation]{
     \label{moreno:fig:best-effort:qos}
   \includegraphics[width=\linewidth,trim={0 -0.2cm 0 0}]{img/best-effort-qos}
 }
@@ -33,11 +33,12 @@
 \caption{
 \textbf{Conceptual framework for best-effort computing.}
 \footnotesize
-Best-effort computing strategies may incorporate tolerance for a chosen combination of asynchronicity, data attrition (both message loss and memory eviction), and data corruption (panel \ref{moreno:fig:best-effort:types}).
-While such strategies can improve fault-robustness, scaling efficiency, and memory efficiency, departing from a deterministic execution model sacrifices exact computational reproducibility, and introduces potential for greater variance and even systematic bias in computational outcomes (panel \ref{moreno:fig:best-effort:tradeoffs}).
-In the context of scientific computing, a distinction can be often drawn between an underlying computation (e.g., a simulation kernel) and operations performed to observe and record its behavior (panel \ref{moreno:fig:best-effort:components}).
-To manage trade-offs between computational efficiency and computational integrity, best-effort strategies may be restricted to one or the other, or extended to both.
-In either case, projects incorporating best-effort strategies should consider including instrumentation to characterize the runtime behavior; panel \ref{moreno:fig:best-effort:qos} suggests several metrics that may be collected.
+Best-effort computing strategies may tolerate asynchronicity, data attrition (e.g., packet loss, dynamic eviction, crashout), or data corruption (panel \ref{moreno:fig:best-effort:types}).
+While such strategies can improve robustness and efficiency, departing from a reliable deterministic execution model sacrifices computational reproducibility and can degrade computational results by introducing noise and bias (panel \ref{moreno:fig:best-effort:tradeoffs}).
+In the context of scientific computing, distinction can often be drawn between an \textit{underlying computation} (e.g., a simulation kernel) and \textit{observations} performed to document its behavior (panel \ref{moreno:fig:best-effort:components});
+to balance efficiency and integrity, best-effort relaxation may be restricted to just data collection (``inferential observability'').
+As a best practice, projects incorporating best-effort strategies should consider \textit{instrumentation} to monitor runtime behavior of relaxations (panel \ref{moreno:fig:best-effort:components}).
+Panel \ref{moreno:fig:best-effort:qos} suggests several quality of service metrics that may be collected.
 }
 \label{moreno:fig:best-effort}
 \end{figure}
