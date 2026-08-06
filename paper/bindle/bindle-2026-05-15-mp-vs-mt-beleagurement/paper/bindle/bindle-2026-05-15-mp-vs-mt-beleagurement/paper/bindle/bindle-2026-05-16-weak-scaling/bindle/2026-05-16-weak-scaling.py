@@ -57,9 +57,11 @@ def do_watermark(mo, watermark):
 
 @app.cell(hide_code=True)
 def delimit_prep_data(mo):
-    mo.md("""
+    mo.md(
+        """
     ## Prep Data
-    """)
+    """
+    )
     return
 
 
@@ -88,6 +90,7 @@ def _(np, requests, retrieve_and_prepare_delta_dataframes):
             df_snapshot_diffs["Net Flux Through Duct"],
         )
     )
+
     return (df_snapshot_diffs,)
 
 
@@ -247,7 +250,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
     _data_all = pd.concat([data_max, data_median], ignore_index=True).replace(
         {
             "Metric": {
-                "Simstep Period Outlet (ms)": "Throughput QoS\n(ms per update)",
+                "Simstep Period Outlet (ms)": "Straggling QoS\n(ms per update)",
                 "Latency Simsteps Outlet": "Latency QoS\n(updates)",
                 "Latency Walltime Outlet (ms)": "Latency QoS\n(ms)",
                 "Delivery Clumpiness": "Bunching QoS\n(consolidation)",
@@ -347,7 +350,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             data=_cond_df,
             col="Metric",
             col_order=[
-                "Throughput QoS\n(ms per update)",
+                "Straggling QoS\n(ms per update)",
                 "Latency QoS\n(ms)",
                 "Latency QoS\n(updates)",
                 "Attrition QoS\n(drop rate)",
@@ -375,7 +378,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             teeplot_show=True,
             teeplot_subdir=pathlib.Path(__file__).stem,
         ) as _g:
-            _g.figure.set_size_inches(12, 2)
+            _g.figure.set_size_inches(9.8, 1.6)
             _g.set_titles(col_template="{col_name}", row_template="{row_name}")
             _g.set(ylim=(0, None), xlabel="Num Processes", ylabel="")
             plt.subplots_adjust(hspace=0.2, wspace=0.7)

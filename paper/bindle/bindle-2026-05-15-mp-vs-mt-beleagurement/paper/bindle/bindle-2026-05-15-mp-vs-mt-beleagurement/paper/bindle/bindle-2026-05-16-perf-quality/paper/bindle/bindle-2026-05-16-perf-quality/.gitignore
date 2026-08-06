@@ -30,6 +30,7 @@ coverage_include/
 .pytest_cache
 .ruff_cache/
 __pycache__/
+teeplots/
 
 uv.lock
 
