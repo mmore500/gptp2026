@@ -75,11 +75,14 @@ rm "${stage}/Authors/Moreno/Author.tex.raw"
 cp "${chapter_dir}/reference.bib" "${stage}/Authors/Moreno/"
 cp "${chapter_dir}/spmpsci.bst" "${stage}/Authors/Moreno/"
 cp "${chapter_dir}/svmult.cls" "${stage}/Authors/Moreno/"
-# orcidlink.sty is a shared (book-root) resource, not chapter-local, but
-# Author.tex's \orcidlink calls still need it available when compiled
-# standalone
-cp tex/orcidlink.sty "${stage}/Authors/Moreno/"
 sed -i 's#\\bibliography{Authors/Moreno/reference}#\\bibliography{reference}#' \
+  "${stage}/Authors/Moreno/Author.tex"
+
+# \orcidlink needs hyperref+tikz loaded from a preamble, which Author.tex
+# doesn't have (it's \input into the book's \begin{document}), and the
+# submission guidelines ask to avoid unusual packages -- so swap the icon
+# macro for a plain-text ORCID mention instead of shipping orcidlink.sty
+sed -i -E 's/\\orcidlink\{([^}]*)\}/(ORCID~\1)/g' \
   "${stage}/Authors/Moreno/Author.tex"
 
 rm -f "${out_zip}"
@@ -114,7 +117,12 @@ echo "wrote ${out_zip}"
 {
   grep -E '^\\documentclass' main.tex
   grep -E '^\\def\\nofake' main.tex
-  sed 's#\\subincludefrom{Authors/Moreno/}{Author}#\\input{Author}#' tex/document.tex
+  # Author.tex no longer uses \orcidlink (see above), so drop
+  # document.tex's \usepackage{orcidlink} too -- it would otherwise need
+  # orcidlink.sty on the search path from this standalone compile location
+  sed -e 's#\\subincludefrom{Authors/Moreno/}{Author}#\\input{Author}#' \
+      -e '/^\\usepackage{orcidlink}$/d' \
+      tex/document.tex
 } > "${stage}/Authors/Moreno/test-build.tex"
 
 if ! (
