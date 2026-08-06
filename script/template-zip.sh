@@ -75,6 +75,10 @@ rm "${stage}/Authors/Moreno/Author.tex.raw"
 cp "${chapter_dir}/reference.bib" "${stage}/Authors/Moreno/"
 cp "${chapter_dir}/spmpsci.bst" "${stage}/Authors/Moreno/"
 cp "${chapter_dir}/svmult.cls" "${stage}/Authors/Moreno/"
+# orcidlink.sty is a shared (book-root) resource, not chapter-local, but
+# Author.tex's \orcidlink calls still need it available when compiled
+# standalone
+cp tex/orcidlink.sty "${stage}/Authors/Moreno/"
 sed -i 's#\\bibliography{Authors/Moreno/reference}#\\bibliography{reference}#' \
   "${stage}/Authors/Moreno/Author.tex"
 
