@@ -82,11 +82,11 @@ sed -i 's#\\bibliography{Authors/Moreno/reference}#\\bibliography{reference}#' \
 # (matched only where immediately followed by \orcidlink, so the \author
 # byline up top keeps full names) to keep that line compact
 sed -i \
-  -e 's/Matthew Andres Moreno \\orcidlink/MAM \\orcidlink/' \
-  -e 's/Luis Zaman \\orcidlink/LHZ \\orcidlink/' \
-  -e 's/Santiago Rodriguez Papa  \\orcidlink/SRP \\orcidlink/' \
-  -e 's/Charles Ofria \\orcidlink/CAO \\orcidlink/' \
-  -e 's/Emily Dolson \\orcidlink/ELD \\orcidlink/' \
+  -e 's/Matthew Andres Moreno \\orcidlink/MAM\\orcidlink/' \
+  -e 's/Luis Zaman \\orcidlink/LHZ\\orcidlink/' \
+  -e 's/Santiago Rodriguez Papa  \\orcidlink/SRP\\orcidlink/' \
+  -e 's/Charles Ofria \\orcidlink/CAO\\orcidlink/' \
+  -e 's/Emily Dolson \\orcidlink/ELD\\orcidlink/' \
   "${stage}/Authors/Moreno/Author.tex"
 
 # \orcidlink needs hyperref+tikz loaded from a preamble, which Author.tex
@@ -95,8 +95,10 @@ sed -i \
 # macro for a small but plain-text (machine-readable, not just an icon)
 # ORCID mention instead of shipping orcidlink.sty. A real \footnote/\thanks
 # doesn't work here -- svmult's \institute block swallows or discards them
-# (see script history) -- so just shrink the font instead.
-sed -i -E 's/\\orcidlink\{([^}]*)\}/{\\tiny~(ORCID~\1)}/g' \
+# (see script history) -- so just shrink the font instead. Thin spaces
+# (\,) instead of full spaces keep the three-author line fitting on one
+# line at \scriptsize.
+sed -i -E 's/\\orcidlink\{([^}]*)\}/{\\scriptsize\\,(ORCID\\,\1)}/g' \
   "${stage}/Authors/Moreno/Author.tex"
 
 rm -f "${out_zip}"
