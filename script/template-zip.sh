@@ -7,7 +7,7 @@ cd "${script_dir}/.."
 repo_root="$(pwd)"
 
 chapter_dir="tex/Authors/Moreno"
-out_zip="${1:-gptp2026-template.zip}"
+out_zip="${1:-moreno-chapter.zip}"
 
 stage="$(mktemp -d)"
 trap 'rm -rf "${stage}"' EXIT
