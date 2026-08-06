@@ -323,8 +323,10 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
         _g.set(ylim=(0, None), ylabel="Message per Sec", xlabel=None)
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
         _g.figure.set_size_inches(2.5, 1.3)
+        # push the ylabel further left to make room for "1e5" without colliding
+        _ax.yaxis.labelpad += 8
         _offset_text = _ax.yaxis.get_offset_text()
-        _offset_text.set_x(-0.2)
+        _offset_text.set_x(-0.32)
         # canvas shrunk 1.3/2 to enlarge other text on the page; hold this
         # element's on-page size constant by counter-scaling its font size
         _offset_text.set_fontsize(_offset_text.get_fontsize() * 117.36 / 144.45)
@@ -335,13 +337,17 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
         # (sets Axes._autotitlepos = False) so it won't get bumped again by
         # the draw inside teeplot's savefig
         for _a in _g.axes.flat:
-            _a.set_title(_a.title.get_text(), y=1.06)
+            _a.set_title(
+                _a.title.get_text(),
+                y=1.02,
+                fontsize=_a.title.get_fontsize() * 0.9,
+            )
 
         # nudge "Recv"/"Sent" apart so they don't crowd together
         for _a in _g.axes.flat:
             _a.set_xticklabels(
                 [
-                    f"{_t.get_text()} " if _t.get_text() == "Recv" else f" {_t.get_text()}"
+                    f"{_t.get_text()}   " if _t.get_text() == "Recv" else f"   {_t.get_text()}"
                     for _t in _a.get_xticklabels()
                 ]
             )
