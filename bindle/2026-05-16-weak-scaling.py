@@ -57,9 +57,11 @@ def do_watermark(mo, watermark):
 
 @app.cell(hide_code=True)
 def delimit_prep_data(mo):
-    mo.md("""
+    mo.md(
+        """
     ## Prep Data
-    """)
+    """
+    )
     return
 
 
@@ -88,6 +90,7 @@ def _(np, requests, retrieve_and_prepare_delta_dataframes):
             df_snapshot_diffs["Net Flux Through Duct"],
         )
     )
+
     return (df_snapshot_diffs,)
 
 
@@ -375,15 +378,15 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             teeplot_show=True,
             teeplot_subdir=pathlib.Path(__file__).stem,
         ) as _g:
-            _g.figure.set_size_inches(9.8, 1.6)
+            _g.figure.set_size_inches(8.3, 1.36)
             _g.set_titles(col_template="{col_name}", row_template="{row_name}")
             _g.set(ylim=(0, None), xlabel="Num Processes", ylabel="")
             plt.subplots_adjust(hspace=0.2, wspace=0.7)
             for _ax in _g.axes.flat:
                 _ax.ticklabel_format(style="sci", axis="y", scilimits=(-4, 3))
-                _ax.yaxis.get_offset_text().set_x(-0.45)
+                _ax.yaxis.get_offset_text().set_x(-0.3)
                 _ax.yaxis.get_offset_text().set_y(0.5)
-                _ax.yaxis.get_offset_text().set_fontsize(7)
+                _ax.yaxis.get_offset_text().set_fontsize(9)
             for _ax in _g.axes[1, :].flat:
                 _ax.set_ylim(1.6 * np.array(_ax.get_ylim()))
             sns.despine(fig=_g.figure, bottom=True)
