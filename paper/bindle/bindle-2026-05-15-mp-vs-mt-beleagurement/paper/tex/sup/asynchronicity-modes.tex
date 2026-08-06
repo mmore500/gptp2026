@@ -2,7 +2,7 @@
 
 % TODO \subimport{submodule/2021-gecco-conduit/}{fig/asynchronicity_modes}
 
-For both benchmarks, we compared performance across a spectrum of synchronization settings, which we term ``asynchronicity modes'' (Table \ref{tab:asynchronicity_modes}).
+For both benchmarks, we compared performance across a spectrum of synchronization settings, which we term ``asynchronicity modes.''% (Table \ref{tab:asynchronicity_modes}).
 Asynchronicity mode 0 represents traditional fully-synchronous methodology.
 Under this treatment, full barrier synchronization was performed between each computational update.
 Asynchronicity mode 3 represents fully asynchronous methodology.
@@ -26,4 +26,4 @@ In this run mode for the graph coloring benchmark, all calls to send messages be
 Because of its larger footprint, incorporating logic into the digital evolution simulation to disable all inter-thread and inter-process messaging was impractical.
 Instead, we launched multiple instances of the simulation as fully-independent processes and measured performance of each.
 
-For succinctness, reported experiments focus on asynchronicity modes 0, 3, 4.
+For succinctness, reported experiments exclusively focus on asynchronicity modes 0 and 3.

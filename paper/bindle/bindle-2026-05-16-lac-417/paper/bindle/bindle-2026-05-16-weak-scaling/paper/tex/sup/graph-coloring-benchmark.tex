@@ -1,0 +1,18 @@
+\subsection{ Graph Coloring Benchmark } \label{sec:graph-coloring-benchmark}
+
+The graph coloring benchmark employs a graph coloring algorithm designed for distributed WLAN channel selection \citep{leith2012wlan}.
+In this algorithm, nodes begin by randomly choosing a color.
+Each computational update, nodes test for any neighbor with the same color.
+If and only if a conflicting neighbor is detected, nodes randomly select another color.
+The probability of selecting each possible color is stored in an array associated with each node.
+Before selecting a new color, the stored probability of selecting the current (conflicting) color is decreased by a multiplicative factor $1 - b$.
+We used $b=0.1$, as suggested by Leith et al.
+Tandem adjustments increase the probability of selecting all other channels.
+Regardless of whether their color changed, nodes always transmit their current color to their neighbors.
+
+Our benchmarks focus on weak scalability, using a fixed problem size of \numprint{2048} graph nodes per thread or process.
+These nodes were arranged in a two-dimensional grid topology where each node had three possible colors and four neighbors.
+We implement the algorithm with a single Conduit communication layer carrying graph color as an unsigned integer.
+We used Conduit's built-in pooling feature to consolidate color information into a single MPI message between pairs of communicating processes each update.
+We performed five replicates, each with a five second simulation runtime.
+Solution error was measured as the number of graph color conflicts remaining at the end of the benchmark.
