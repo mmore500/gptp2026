@@ -317,10 +317,8 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
         _g.set(ylim=(0, None), ylabel="Message per Sec", xlabel=None)
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
         _g.figure.set_size_inches(2.5, 1.3)
-        # push the ylabel further left to make room for "1e5" without colliding
-        _ax.yaxis.labelpad += 8
         _offset_text = _ax.yaxis.get_offset_text()
-        _offset_text.set_x(-0.32)
+        _offset_text.set_x(-0.2)
         # canvas shrunk 1.3/2 to enlarge other text on the page; hold this
         # element's on-page size constant by counter-scaling its font size
         _offset_text.set_fontsize(_offset_text.get_fontsize() * 117.36 / 144.45)
@@ -331,25 +329,16 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
         # (sets Axes._autotitlepos = False) so it won't get bumped again by
         # the draw inside teeplot's savefig
         for _a in _g.axes.flat:
-            _a.set_title(
-                _a.title.get_text(),
-                y=1.02,
-                fontsize=_a.title.get_fontsize() * 0.9,
-            )
+            _a.set_title(_a.title.get_text(), y=1.06)
 
-        # left-align "Recv" so its "R" sits at the left axis and
-        # right-align "Sent" so its "t" sits at the right axis, instead of
-        # each label centering on its tick (which crowds them together);
-        # zero the categorical x-margin so the Recv/Sent ticks actually sit
-        # at the axes edges (otherwise the default margin leaves a gap
-        # between the tick and the spine that the alignment can't close)
+        # nudge "Recv"/"Sent" apart so they don't crowd together
         for _a in _g.axes.flat:
-            _a.margins(x=0)
-            for _t in _a.get_xticklabels():
-                if _t.get_text() == "Recv":
-                    _t.set_ha("left")
-                elif _t.get_text() == "Sent":
-                    _t.set_ha("right")
+            _a.set_xticklabels(
+                [
+                    f"{_t.get_text()} " if _t.get_text() == "Recv" else f" {_t.get_text()}"
+                    for _t in _a.get_xticklabels()
+                ]
+            )
 
         # Left facet legend — NUMA symmetry, bottom
         _ax0 = _g.axes.flat[0]
