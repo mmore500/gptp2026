@@ -78,7 +78,7 @@ Such an \textit{inferential observability} paradigm thus strikes an intermediate
 As for aspects of runtime behavior that should be instrumented, an exhaustive treatment remains for future work.
 In this initial exploration, we consider four broad QoS dimensions (Figure \ref{moreno:fig:best-effort:qos}):
 \begin{itemize}
-  \item \textit{throughput}, computational operations processed per unit time;
+  \item \textit{straggling}, increase in time elapsed per computational operation processed;
   \item \textit{latency}, communication delay between sender and receiver;
   \item \textit{attrition}, data discarded or lost --- both in flight and at rest; and
   \item \textit{bunching}, irregularity in the timing of communication.
@@ -150,7 +150,7 @@ In the second case study, we demonstrate best-effort strategies for approximate 
 % Figure \ref{moreno:fig:best-effort} lists a few possible (non-exhaustive) quality-of-service metrics that can be collected inexpensively.
 % We suggest four aspects of real-time behavior to monitor, with corresponding quality of service metrics \cite{karakus2017quality},
 % \begin{itemize}
-%   \item throughput,
+%   \item straggling,
 %   \item latency,
 %   \item attrition, and
 %   \item bunching.
