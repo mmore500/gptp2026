@@ -1,8 +1,9 @@
 SHELL=/bin/bash
 
-# get the basename of the containing directory
-# this will be used to name the output document
-BUILD_DIR := $(notdir $(CURDIR))
+# name used for the output document; fixed so the result is named
+# consistently (e.g. gptp2026-draft) regardless of the checkout directory
+# name, including when this repo is built as the `paper` submodule on main
+BUILD_DIR := gptp2026
 
 DRAFT_SUPPLEMENT_PAGE = $(shell pdftk ${BUILD_DIR}-draft.pdf dump_data_utf8 | pcregrep -M -o1 '^BookmarkBegin\nBookmarkTitle: Supplemental Material\nBookmarkLevel: 1\nBookmarkPageNumber: ([0-9]+)$$')
 
