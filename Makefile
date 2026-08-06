@@ -13,7 +13,7 @@ all: ${BUILD_DIR}-draft.pdf
 
 draft: ${BUILD_DIR}-draft.pdf ${BUILD_DIR}-manuscript-draft.pdf ${BUILD_DIR}-supplement-draft.pdf ${BUILD_DIR}-draft.tex
 
-release: ${BUILD_DIR}.pdf ${BUILD_DIR}-manuscript.pdf ${BUILD_DIR}-supplement.pdf ${BUILD_DIR}.tex
+release: ${BUILD_DIR}.pdf ${BUILD_DIR}-manuscript.pdf ${BUILD_DIR}-supplement.pdf ${BUILD_DIR}.tex moreno-chapter.zip
 
 ${BUILD_DIR}.pdf: main.tex
 	BIBINPUTS="tex:." BSTINPUTS="tex:." latexmk -pdf -silent \
@@ -22,6 +22,12 @@ ${BUILD_DIR}.pdf: main.tex
 
 ${BUILD_DIR}.tex: main.tex
 	./script/latexpand.pl main.tex > ${BUILD_DIR}.tex
+
+# Springer contributed-volume submission zip: flattens the Moreno chapter
+# into a single Authors/Moreno/Author.tex (via latexpand) with its
+# graphics localized alongside, matching the author submission template.
+moreno-chapter.zip: tex/Authors/Moreno/Author.tex
+	./script/template-zip.sh moreno-chapter.zip
 
 ${BUILD_DIR}-manuscript.pdf: ${BUILD_DIR}.pdf
 	pdftk ${BUILD_DIR}.pdf cat 1-$$(( $(RELEASE_SUPPLEMENT_PAGE) - 1 )) output ${BUILD_DIR}-manuscript.pdf
@@ -56,6 +62,7 @@ clean:
 	rm -f ${BUILD_DIR}-manuscript-draft.pdf
 	rm -f ${BUILD_DIR}-supplement.pdf
 	rm -f ${BUILD_DIR}-supplement-draft.pdf
+	rm -f moreno-chapter.zip
 
 sview:
 	xdg-open ${BUILD_DIR}-draft.pdf 2>/dev/null
