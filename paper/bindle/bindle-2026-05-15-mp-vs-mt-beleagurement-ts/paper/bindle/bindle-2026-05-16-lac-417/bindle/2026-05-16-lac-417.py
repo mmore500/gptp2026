@@ -69,6 +69,7 @@ def delimit_prep_data(mo):
 @app.cell
 def _(
     find_treat_idx_mapped_col,
+    np,
     requests,
     retrieve_and_prepare_delta_dataframes,
 ):
@@ -81,13 +82,21 @@ def _(
             )
 
     merge_df, (
-        df_finalized_observations,
+        _df_finalized_observations,
         df_snapshot_diffs,
     ) = retrieve_and_prepare_delta_dataframes(
         df_inlet_url="/tmp/jgpnv",
         df_outlet_url="/tmp/ncdfq",
         treatment_column="Allocation",
         return_merge_df=True,
+    )
+
+    df_snapshot_diffs["Delivery Clumpiness"] = 1 - (
+        df_snapshot_diffs["Num Pulls That Were Laden Immediately"]
+        / np.minimum(
+            df_snapshot_diffs["Num Pulls Attempted"],
+            df_snapshot_diffs["Net Flux Through Duct"],
+        )
     )
 
     allocation_idx_mapped_title = find_treat_idx_mapped_col(df_snapshot_diffs)
@@ -298,21 +307,21 @@ def _(
                     1: "With\nlac-417",
                 },
                 "Metric": {
-                    "Simstep Period Outlet (ms)": "Update Walltime\n(ms)",
-                    "Latency Simsteps Outlet": "Latency\n(updates)",
-                    "Latency Walltime Outlet (ms)": "Latency\n(ms)",
-                    "Delivery Clumpiness": "Bunching",
-                    "Delivery Failure Rate": "Message\nDrop Rate",
+                    "Simstep Period Outlet (ms)": "Throughput QoS\n(ms per update)",
+                    "Latency Simsteps Outlet": "Latency QoS\n(updates)",
+                    "Latency Walltime Outlet (ms)": "Latency QoS\n(ms)",
+                    "Delivery Clumpiness": "Bunching QoS\n(consolidation)",
+                    "Delivery Failure Rate": "Attrition QoS\n(drop rate)",
                 },
             },
         ),
         col="Metric",
         col_order=[
-            "Update Walltime\n(ms)",
-            "Latency\n(ms)",
-            "Latency\n(updates)",
-            "Message\nDrop Rate",
-            "Bunching",
+            "Throughput QoS\n(ms per update)",
+            "Latency QoS\n(ms)",
+            "Latency QoS\n(updates)",
+            "Attrition QoS\n(drop rate)",
+            "Bunching QoS\n(consolidation)",
         ],
         row="Kind",
         x=allocation_idx_mapped_title,
@@ -363,11 +372,11 @@ def _(
         {
             allocation_idx_mapped_title: {0: "Base\nline", 1: "With\nlac-417"},
             "Metric": {
-                "Simstep Period Outlet (ms)": "Update Walltime\n(ms)",
-                "Latency Simsteps Outlet": "Latency\n(updates)",
-                "Latency Walltime Outlet (ms)": "Latency\n(ms)",
-                "Delivery Clumpiness": "Bunching",
-                "Delivery Failure Rate": "Message\nDrop Rate",
+                "Simstep Period Outlet (ms)": "Throughput QoS\n(ms per update)",
+                "Latency Simsteps Outlet": "Latency QoS\n(updates)",
+                "Latency Walltime Outlet (ms)": "Latency QoS\n(ms)",
+                "Delivery Clumpiness": "Bunching QoS\n(consolidation)",
+                "Delivery Failure Rate": "Attrition QoS\n(drop rate)",
             },
         },
     )
@@ -392,11 +401,11 @@ def _(
         _treatment = _grp.loc[
             _grp[allocation_idx_mapped_title] == "With\nlac-417", "Value"
         ].to_numpy()
-        _n = min(len(_baseline), len(_treatment))
+        print(len(_baseline), len(_treatment))
         _p = np.nan
         try:
-            _, _p = scipy_stats.wilcoxon(_baseline[:_n], _treatment[:_n])
-            _sig = _pvalue_to_sig(_p, _baseline[:_n], _treatment[:_n])
+            _, _p = scipy_stats.mannwhitneyu(_baseline, _treatment)
+            _sig = _pvalue_to_sig(_p, _baseline, _treatment)
         except ValueError:  # all zeros
             _sig = "n.s."
 
@@ -453,11 +462,11 @@ def _(
         data=_data_combined,
         col="Metric",
         col_order=[
-            "Update Walltime\n(ms)",
-            "Latency\n(ms)",
-            "Latency\n(updates)",
-            "Message\nDrop Rate",
-            "Bunching",
+            "Throughput QoS\n(ms per update)",
+            "Latency QoS\n(ms)",
+            "Latency QoS\n(updates)",
+            "Attrition QoS\n(drop rate)",
+            "Bunching QoS\n(consolidation)",
         ],
         row="Kind",
         x=allocation_idx_mapped_title,
@@ -477,10 +486,10 @@ def _(
         teeplot_show=True,
         teeplot_subdir=pathlib.Path(__file__).stem,
     ) as _g:
-        _g.figure.set_size_inches(9, 2)
+        _g.figure.set_size_inches(12, 2)
         _g.set_titles(col_template="{col_name}", row_template="{row_name}")
         _g.set(ylim=(0, None), xlabel="", ylabel="")
-        plt.subplots_adjust(hspace=0.2, wspace=0.2)
+        plt.subplots_adjust(hspace=0.2, wspace=0.7)
         for _ax in _g.axes.flat:
             _ax.ticklabel_format(style="sci", axis="y", scilimits=(-4, 3))
             _ax.yaxis.get_offset_text().set_x(-0.25)
