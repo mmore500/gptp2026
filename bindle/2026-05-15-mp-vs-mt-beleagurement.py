@@ -318,7 +318,8 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
         _g.figure.set_size_inches(2.5, 1.3)
         # push the ylabel further left to make room for "1e5" without colliding
-        _ax.yaxis.labelpad += 8
+        _ax.yaxis.labelpad += 2
+        _ax.yaxis.label.set_fontsize(_ax.yaxis.label.get_fontsize() * 0.65)
         _offset_text = _ax.yaxis.get_offset_text()
         _offset_text.set_x(-0.32)
         # canvas shrunk 1.3/2 to enlarge other text on the page; hold this
