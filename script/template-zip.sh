@@ -82,3 +82,28 @@ rm -f "${out_zip}"
 (cd "${stage}" && zip -qr "${repo_root}/${out_zip}" Authors)
 
 echo "wrote ${out_zip}"
+
+# test-build: unzip the archive just written and compile it completely on
+# its own, standing in for what Springer's build will do with the
+# submission. Reuses the real preamble (main.tex's \documentclass plus
+# document.tex's packages) so this step tracks the live book build instead
+# of a hand-maintained copy, swapping the multi-file \subincludefrom for a
+# plain \input of the now-self-contained, unzipped Author.tex.
+test_build="$(mktemp -d)"
+trap 'rm -rf "${stage}" "${test_build}"' EXIT
+
+unzip -q "${out_zip}" -d "${test_build}"
+{
+  grep -E '^\\documentclass' main.tex
+  grep -E '^\\def\\nofake' main.tex
+  sed 's#\\subincludefrom{Authors/Moreno/}{Author}#\\input{Author}#' tex/document.tex
+} > "${test_build}/Authors/Moreno/test-build.tex"
+
+(
+  cd "${test_build}/Authors/Moreno"
+  latexmk -pdf -silent -interaction=nonstopmode -halt-on-error \
+    -pdflatex="pdflatex -interaction=nonstopmode -halt-on-error" \
+    test-build.tex
+)
+
+echo "verified ${out_zip} builds standalone"
