@@ -323,7 +323,11 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
         _g.set(ylim=(0, None), ylabel="Message per Sec", xlabel=None)
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
         _g.figure.set_size_inches(2.5, 1.3)
-        _ax.yaxis.get_offset_text().set_x(-0.2)
+        _offset_text = _ax.yaxis.get_offset_text()
+        _offset_text.set_x(-0.2)
+        # canvas shrunk 1.3/2 to enlarge other text on the page; hold this
+        # element's on-page size constant by counter-scaling its font size
+        _offset_text.set_fontsize(_offset_text.get_fontsize() * 117.36 / 144.45)
 
         # Left facet legend — NUMA symmetry, bottom
         _ax0 = _g.axes.flat[0]
