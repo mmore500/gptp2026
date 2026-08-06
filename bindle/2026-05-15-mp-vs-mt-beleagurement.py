@@ -324,7 +324,8 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
         _g.figure.set_size_inches(2.5, 1.3)
         # push the ylabel further left to make room for "1e5" without colliding
-        _ax.yaxis.labelpad += 8
+        _ax.yaxis.labelpad += 2
+        _ax.yaxis.label.set_fontsize(_ax.yaxis.label.get_fontsize() * 0.65)
         _offset_text = _ax.yaxis.get_offset_text()
         _offset_text.set_x(-0.32)
         # canvas shrunk 1.3/2 to enlarge other text on the page; hold this
@@ -480,12 +481,16 @@ def _(data, mo, palette, pathlib, plt, scipy_stats, sns, tp):
         _g.set_titles(template="{col_name}")
         _g.set(ylabel="ms per Update", xlabel=None)
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-        _g.figure.set_size_inches(0.8, 1.5)
+        # width is free to grow (only height drives on-page size, since
+        # this panel is placed with height=1in in the document); widen it
+        # to keep the lac-220/lac-221 tick labels from crowding together
+        _g.figure.set_size_inches(0.95, 1.28)
         _offset_text = _ax.yaxis.get_offset_text()
         _offset_text.set_x(-0.2)
-        # canvas shrunk 1.5/2 to enlarge other text on the page; hold this
-        # element's on-page size constant by counter-scaling its font size
-        _offset_text.set_fontsize(_offset_text.get_fontsize() * 131.49 / 161.118)
+        # canvas shrunk from the original 2in to enlarge other text on the
+        # page; hold this element's on-page size constant by counter-scaling
+        # its font size against the original (pre-shrink) bbox height
+        _offset_text.set_fontsize(_offset_text.get_fontsize() * 115.7 / 161.118)
         _ax.set_xticklabels(["lac\n220", "lac\n221"])
 
     _pivot2 = _data2.pivot(
