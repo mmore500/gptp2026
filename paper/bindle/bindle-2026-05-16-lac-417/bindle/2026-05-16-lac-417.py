@@ -60,9 +60,11 @@ def do_watermark(mo, watermark):
 
 @app.cell(hide_code=True)
 def delimit_prep_data(mo):
-    mo.md("""
+    mo.md(
+        """
     ## Prep Data
-    """)
+    """
+    )
     return
 
 
@@ -307,7 +309,7 @@ def _(
                     1: "With\nlac-417",
                 },
                 "Metric": {
-                    "Simstep Period Outlet (ms)": "Throughput QoS\n(ms per update)",
+                    "Simstep Period Outlet (ms)": "Straggling QoS\n(ms per update)",
                     "Latency Simsteps Outlet": "Latency QoS\n(updates)",
                     "Latency Walltime Outlet (ms)": "Latency QoS\n(ms)",
                     "Delivery Clumpiness": "Bunching QoS\n(consolidation)",
@@ -317,7 +319,7 @@ def _(
         ),
         col="Metric",
         col_order=[
-            "Throughput QoS\n(ms per update)",
+            "Straggling QoS\n(ms per update)",
             "Latency QoS\n(ms)",
             "Latency QoS\n(updates)",
             "Attrition QoS\n(drop rate)",
@@ -372,7 +374,7 @@ def _(
         {
             allocation_idx_mapped_title: {0: "Base\nline", 1: "With\nlac-417"},
             "Metric": {
-                "Simstep Period Outlet (ms)": "Throughput QoS\n(ms per update)",
+                "Simstep Period Outlet (ms)": "Straggling QoS\n(ms per update)",
                 "Latency Simsteps Outlet": "Latency QoS\n(updates)",
                 "Latency Walltime Outlet (ms)": "Latency QoS\n(ms)",
                 "Delivery Clumpiness": "Bunching QoS\n(consolidation)",
@@ -462,7 +464,7 @@ def _(
         data=_data_combined,
         col="Metric",
         col_order=[
-            "Throughput QoS\n(ms per update)",
+            "Straggling QoS\n(ms per update)",
             "Latency QoS\n(ms)",
             "Latency QoS\n(updates)",
             "Attrition QoS\n(drop rate)",
@@ -486,7 +488,7 @@ def _(
         teeplot_show=True,
         teeplot_subdir=pathlib.Path(__file__).stem,
     ) as _g:
-        _g.figure.set_size_inches(12, 2)
+        _g.figure.set_size_inches(9.8, 1.6)
         _g.set_titles(col_template="{col_name}", row_template="{row_name}")
         _g.set(ylim=(0, None), xlabel="", ylabel="")
         plt.subplots_adjust(hspace=0.2, wspace=0.7)

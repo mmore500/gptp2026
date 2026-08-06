@@ -62,9 +62,11 @@ def do_watermark(mo, watermark):
 
 @app.cell(hide_code=True)
 def delimit_prep_data(mo):
-    mo.md("""
+    mo.md(
+        """
     ## Prep Data
-    """)
+    """
+    )
     return
 
 
@@ -325,9 +327,11 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
 
 @app.cell
 def delimit_besteffort_sync(mo):
-    mo.md("""
+    mo.md(
+        """
     ## Best-Effort vs. Synchronous Comparisons
-    """)
+    """
+    )
     return
 
 
@@ -576,13 +580,15 @@ def _(filtered_procs, mpl, np, pathlib, plt, sns, tp):
 
 @app.cell(hide_code=True)
 def delimit_besteffort_sync_error(mo):
-    mo.md("""
+    mo.md(
+        """
     ### Best-Effort vs. Synchronous: Graph Coloring Error
 
     Completing the best-effort vs. synchronous comparison with the third
     performance measure: graph coloring solution error (conflicts per
     cpu), reported at each problem size as above.
-    """)
+    """
+    )
     return
 
 
@@ -977,7 +983,7 @@ def _(filtered_procs, mpl, np, pathlib, pd, plt, sns, tp):
         _g.set(xscale="log")
         _g.set_titles(col_template="", row_template="")
         plt.subplots_adjust(wspace=0.4)
-        _g.figure.set_size_inches(9, 1.2)
+        _g.figure.set_size_inches(7.4, 1.0)
 
         for _ax in _g.axes.flat:
             _ax.minorticks_off()

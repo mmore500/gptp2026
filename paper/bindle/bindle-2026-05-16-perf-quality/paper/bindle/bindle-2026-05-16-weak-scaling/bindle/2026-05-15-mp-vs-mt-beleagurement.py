@@ -15,6 +15,7 @@ def import_std():
 @app.cell
 def import_pkg():
     import marimo as mo
+    import matplotlib as mpl
     from matplotlib import pyplot as plt
     import pandas as pd
     import requests
@@ -25,7 +26,7 @@ def import_pkg():
     from teeplot import teeplot as tp
     from watermark import watermark
 
-    return mo, pd, plt, requests, scipy_stats, sm, smf, sns, tp, watermark
+    return mo, mpl, pd, plt, requests, scipy_stats, sm, smf, sns, tp, watermark
 
 
 @app.cell
@@ -285,7 +286,7 @@ def _(data):
 
 
 @app.cell
-def _(df_long, palette, pathlib, plt, sns, tp):
+def _(df_long, mpl, palette, pathlib, plt, sns, tp):
     df_long["special"] = df_long["Replicate"].isin([1, 4, 6, 9])
     with tp.teed(
         sns.relplot,
@@ -323,6 +324,35 @@ def _(df_long, palette, pathlib, plt, sns, tp):
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
         _g.figure.set_size_inches(3, 2)
         _ax.yaxis.get_offset_text().set_x(-0.2)
+
+        # Left facet legend — NUMA symmetry, bottom
+        _ax0 = _g.axes.flat[0]
+        _numa_handles = [
+            mpl.patches.Patch(color="#EFB743", label="NUMA-\nSymmetric"),
+            mpl.patches.Patch(color="#A1331C", label="NUMA-\nAsymmetric"),
+        ]
+        _ax0.legend(
+            handles=_numa_handles,
+            loc="lower center",
+            ncol=1,
+            frameon=False,
+            fontsize="x-small",
+        )
+
+        # Right facet legend — Hostname, top
+        _ax1 = _g.axes.flat[1]
+        _hostname_colors = [palette[h] for h in ["lac-220", "lac-221"]]
+        _host_handles = [
+            mpl.patches.Patch(color=_hostname_colors[0], label="lac-220"),
+            mpl.patches.Patch(color=_hostname_colors[1], label="lac-221"),
+        ]
+        _ax1.legend(
+            handles=_host_handles,
+            loc="lower center",
+            ncol=1,
+            frameon=False,
+            fontsize="x-small",
+        )
     return
 
 
