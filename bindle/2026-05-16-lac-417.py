@@ -60,9 +60,11 @@ def do_watermark(mo, watermark):
 
 @app.cell(hide_code=True)
 def delimit_prep_data(mo):
-    mo.md("""
+    mo.md(
+        """
     ## Prep Data
-    """)
+    """
+    )
     return
 
 
@@ -486,7 +488,7 @@ def _(
         teeplot_show=True,
         teeplot_subdir=pathlib.Path(__file__).stem,
     ) as _g:
-        _g.figure.set_size_inches(12, 2)
+        _g.figure.set_size_inches(9.8, 1.6)
         _g.set_titles(col_template="{col_name}", row_template="{row_name}")
         _g.set(ylim=(0, None), xlabel="", ylabel="")
         plt.subplots_adjust(hspace=0.2, wspace=0.7)
