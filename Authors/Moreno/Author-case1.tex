@@ -63,7 +63,7 @@ Further details on methods are included with Supplemental Material \cite{moreno_
 
 Reported metrics measure four dimensions of runtime QoS (Figure \ref{moreno:fig:best-effort:qos}):
 \begin{enumerate}
-\item \textbf{Throughput QoS}: \textit{update time}, amount of walltime elapsed per update cycle;
+\item \textbf{Straggling QoS}: \textit{update time}, amount of walltime elapsed per update cycle;
 \item \textbf{Latency QoS}: \textit{update-latency} or \textit{walltime-latency}, duration elapsed between message dispatch and delivery, estimated via a round-trip counter;
 \item \textbf{Attrition QoS}: \textit{drop rate}, proportion of sent messages failing to be delivered; and
 \item \textbf{Bunching QoS}: \textit{consolidation}, the proportion of possible independent delivery events eliminated by batching.
@@ -141,10 +141,10 @@ Figure \ref{moreno:fig:cpu:qos-scaling} compares maximum (i.e., worst within all
 All reported QoS metrics --- unsurprisingly --- exhibited more extreme tail values in larger process pools (Mann-Whitney tests, all $p < 0.001$; Figure \ref{moreno:fig:cpu:qos-scaling}, top row).
 % Given more samples, it is not surprising to see larger-magnitude outliers --- however, for problem domains sensitive to worst-case degradation, this tendency would prove adverse.
 By contrast, median QoS tolerates scaling between 64 and 256 processes (Figure \ref{moreno:fig:cpu:qos-scaling}, bottom row).
-Across metrics, no detectable degradation arose between process pool sizes (Mann-Whitney tests, $\alpha = 0.05$), and throughput, in fact, improved by 4\% (Mann-Whitney test, $p < 0.001$).
+Across metrics, no detectable degradation arose between process pool sizes (Mann-Whitney tests, $\alpha = 0.05$), and straggling, in fact, improved by 4\% (Mann-Whitney test, $p < 0.001$).
 
 Scaling between 64- and 256-process allocations under even more challenging conditions with extreme communication intensity (1 graph coloring node per process) produced similar QoS outcomes.
-Among median QoS readings, only throughput detectably degraded by 8\% (Mann-Whitney tests, $\alpha = 0.05$; Supplemental Figure 1 \cite{moreno_2026_trust}).
+Among median QoS readings, only straggling detectably degraded by 8\% (Mann-Whitney tests, $\alpha = 0.05$; Supplemental Figure 1 \cite{moreno_2026_trust}).
 
 % Multiprocess performance scales well under the best-effort approach, with overlapping performance estimate intervals for 16 and 64 processor counts on both surveyed benchmark problems.
 % This section aims to flesh out a more holistic picture of the effects of increasing processor count on best-effort computation by considering a comprehensive suite of quality of service metrics.
@@ -211,12 +211,12 @@ The extreme magnitude of QoS outliers observed in 256-process allocations prompt
 So, we performed further tests acquiring two separate 256-process allocations on the lac cluster: one including \texttt{lac-417} and one excluding \texttt{lac-417}.
 
 Figure \ref{moreno:fig:cpu:lac417} compares the distributions of QoS metrics between 256-process allocations with and without \texttt{lac-417}.
-For throughput QoS, worst-case slowdowns were comparable between allocations (Mann-Whitney test, $\alpha = 0.05$).
+For straggling QoS, worst-case slowdowns were comparable between allocations (Mann-Whitney test, $\alpha = 0.05$).
 For other measures, \texttt{lac-417} introduced up to orders-of-magnitude more extreme outlying QoS values (Mann-Whitney tests, all $p<0.001$; Figure \ref{moreno:fig:cpu:lac417}).
 
 Despite extreme outliers, median QoS values remained stable across all metrics (Mann-Whitney tests, $\alpha = 0.05$; Figure \ref{moreno:fig:cpu:lac417}, lower panel).
 % https://github.com/mmore500/gptp2026/blob/d4e3af1b4719800889b98ff58286ab64e76153c3/bindle/2026-05-16-lac-417.ipynb
-Incorporating \texttt{lac-417}, in fact, produced a marginal 0.5\% improvement in throughput (Mann-Whitney test, $p=0.04$).
+Incorporating \texttt{lac-417}, in fact, produced a marginal 0.5\% improvement in straggling (Mann-Whitney test, $p=0.04$).
 Thus, in this case, global QoS robustly tolerated local disruptions.
 % Though such robustness should not be expected universally across all best-effort systems, such quality of service metrics provide a proactive means to detect any such widespread disruption arising from defective or degraded hardware components.
 
@@ -242,7 +242,7 @@ In the between-node experiment, imbalance arose from an underlying 12\% disparit
 
 In the within-node case, traffic imbalance appears likely to have arisen as an artifact of Non-Uniform Memory Access (NUMA) architecture.
 Because host cluster nodes use two independent CPU sockets, conflicting memory accesses can trigger cache invalidations that stall execution.
-Figure \ref{moreno:fig:cpu:intranode} visualizes throughput QoS within process pairs over the 5-minute course of execution trials.
+Figure \ref{moreno:fig:cpu:intranode} visualizes straggling QoS within process pairs over the 5-minute course of execution trials.
 % Replicates are split by whether they exhibited apparent incoming/outgoing imbalance (bottom vs. top row).
 Across all replicates, at least one process slows during one-second snapshot windows --- consistent with a scenario where the background polling thread violates NUMA.
 Where incoming/outgoing imbalance arose, only one process slows; otherwise, both processes slow.
