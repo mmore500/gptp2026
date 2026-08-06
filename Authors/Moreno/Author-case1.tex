@@ -141,10 +141,10 @@ Figure \ref{moreno:fig:cpu:qos-scaling} compares maximum (i.e., worst within all
 All reported QoS metrics --- unsurprisingly --- exhibited more extreme tail values in larger process pools (Mann-Whitney tests, all $p < 0.001$; Figure \ref{moreno:fig:cpu:qos-scaling}, top row).
 % Given more samples, it is not surprising to see larger-magnitude outliers --- however, for problem domains sensitive to worst-case degradation, this tendency would prove adverse.
 By contrast, median QoS tolerates scaling between 64 and 256 processes (Figure \ref{moreno:fig:cpu:qos-scaling}, bottom row).
-Across metrics, no detectable degradation arose between process pool sizes (Mann-Whitney tests, $\alpha = 0.05$), and straggling, in fact, improved by 4\% (Mann-Whitney test, $p < 0.001$).
+Across metrics, no detectable degradation arose between process pool sizes (Mann-Whitney tests, $\alpha = 0.05$), and straggling, in fact, reduced by 4\% (Mann-Whitney test, $p < 0.001$).
 
 Scaling between 64- and 256-process allocations under even more challenging conditions with extreme communication intensity (1 graph coloring node per process) produced similar QoS outcomes.
-Among median QoS readings, only straggling detectably degraded by 8\% (Mann-Whitney tests, $\alpha = 0.05$; Supplemental Figure 1 \cite{moreno_2026_trust}).
+Among median QoS readings, only straggling detectably worsened by 8\% (Mann-Whitney tests, $\alpha = 0.05$; Supplemental Figure 1 \cite{moreno_2026_trust}).
 
 % Multiprocess performance scales well under the best-effort approach, with overlapping performance estimate intervals for 16 and 64 processor counts on both surveyed benchmark problems.
 % This section aims to flesh out a more holistic picture of the effects of increasing processor count on best-effort computation by considering a comprehensive suite of quality of service metrics.
@@ -216,7 +216,7 @@ For other measures, \texttt{lac-417} introduced up to orders-of-magnitude more e
 
 Despite extreme outliers, median QoS values remained stable across all metrics (Mann-Whitney tests, $\alpha = 0.05$; Figure \ref{moreno:fig:cpu:lac417}, lower panel).
 % https://github.com/mmore500/gptp2026/blob/d4e3af1b4719800889b98ff58286ab64e76153c3/bindle/2026-05-16-lac-417.ipynb
-Incorporating \texttt{lac-417}, in fact, produced a marginal 0.5\% improvement in straggling (Mann-Whitney test, $p=0.04$).
+Incorporating \texttt{lac-417}, in fact, produced a marginal 0.5\% reduction in straggling (Mann-Whitney test, $p=0.04$).
 Thus, in this case, global QoS robustly tolerated local disruptions.
 % Though such robustness should not be expected universally across all best-effort systems, such quality of service metrics provide a proactive means to detect any such widespread disruption arising from defective or degraded hardware components.
 
