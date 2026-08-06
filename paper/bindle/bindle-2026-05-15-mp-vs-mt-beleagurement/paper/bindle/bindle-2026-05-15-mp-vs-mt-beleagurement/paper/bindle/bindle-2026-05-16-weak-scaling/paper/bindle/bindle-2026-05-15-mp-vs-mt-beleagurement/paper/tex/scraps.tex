@@ -1,0 +1,72 @@
+The bulk synchronous parallel (BSP) model, which is prevalent among classic HPC applications \cite{dongarra2014applied}, illustrates the challenge.
+This model segments computational tasks into sequential global supersteps.
+Tasks at superstep $i$ depend only on data from strictly preceding steps $<i$, often just $i-1$.
+Parallelization assigns tasks across a pool of available processing components.
+
+The BSP model assumes perfectly reliable messaging: all dispatched messages between computational fragments are faithfully delivered.
+In practice, realizing this assumption introduces overhead costs: secondary acknowledgment messages to confirm delivery and mechanisms to dispatch potential resends as the need arises.
+Global synchronization occurs between supersteps, with cotasks held until their preceding superstep has completed \cite{valiant1990bridging}.
+This ensures availability of every single expected input, including those required from fragments located on other processing elements, before proceeding.
+
+Supersteps therefore only turn over once the entire pool of processing components have completed their work for that superstep.
+Put another way, all processing components stall until the most laggardly component catches up.
+% In a game of double dutch with several jumpers, this would be like slowing the tempo to whoever is most slow-footed each particular turn of the rope.
+
+Heterogeneous tasks, with some fast to process and others much slower, would result in poor efficiency under a naive approach where each processing element handled just one fragment.
+Some processing elements with easy tasks would finish early then idle while more difficult tasks carry on.
+To counteract such load imbalances, programmers can allow for ``parallel slack'' by ensuring computational fragments greatly outnumber processing elements or even performing dynamic load balancing at runtime \cite{valiant1990bridging}.
+
+Unfortunately, hardware factors on the underlying processing elements ensure that inherent global superstep jitter will persist: memory access and message delivery time varies due to cache effects, network conditions, error detection and recovery, process scheduling by the operating system, etc.
+\cite{dongarra2014applied}.
+Power management concerns introduce even more variability \cite{gropp2013programming}.
+Worse yet, as we work with more and more processes, the expected magnitude of the worst-sampled jitter grows and grows --- and in lockstep with it, our expected superstep duration.
+% In the double dutch analogy, with enough jumpers, at almost every turn of the rope someone will need to stop and tie their shoe.
+The global synchronization operations underpinning the BSP model further hinder its scalability.
+Irrespective of time to complete computational fragments within a superstep, the cost of performing a global synchronization operation increases with processor count \cite{dongarra2014applied}.
+
+Efforts to recover scalability by relaxing superstep synchronization fall under two banners.
+The first approach, termed ``Relaxed Bulk-Synchronous Programming'' (rBSP), hides latency by performing collective operations asynchronously, essentially allowing useful computation to be performed at the same time as synchronization primitives for a single superstep percolate through the collective \cite{heroux2014toward}.
+So, the time cost required to perform that synchronization can be discounted, up to the time taken up by computational work at one superstep.
+Likewise, individual processes experiencing heavier workloads or performance degradation due to hardware factors can fall behind by up to a single superstep without slowing the entire collective.
+However, this approach cannot mask synchronization costs or cumulative performance degradation exceeding a single superstep's duration.
+
+The second approach, termed relaxed barrier synchronization, forgoes global synchronization entirely \cite{kim1998relaxed}.
+Instead, computational fragments at superstep $i$ only wait on expected inputs from the subset of superstep $i-1$ fragments that they directly interact with.
+% Imagine a double-dutch routine where each jumper exchanges patty cakes with both neighboring jumpers at every turn of the rope.
+% Relaxed barrier synchronization would dispense entirely with the rope.
+% Instead, players would be free to proceed to their next round of patty cakes as soon as they had successfully patty-caked both neighbors.
+% With $n$ players, player 0 could conceivably advance $n$ rounds ahead of player $n-1$ (each player would be one round ahead of their right neighbor).
+Assuming computational interactions form a graph structure that persists across supersteps, in the general case before causing the entire collective to slow an individual fragment can fall behind at most a number of supersteps equal to the graph diameter \cite{gamell2015local}.
+Even though this approach can shield the collective from most one-off performance degradations of a single fragment (especially in large-diameter cases), persistently laggard hardware or extreme one-off degradations will ultimately still hobble efficiency.
+Dynamic task scheduling and migration have been explored to address this shortcoming, redistributing work in order to ``catch up'' delinquent fragments \cite{acun2014parallel}.
+% With our double-dutch analogy, we could think of this something like a team coach temporarily benching a jumper who skinned their knee and instructing the other jumpers to pick up their roles in the routine.
+
+In addition to concerns over efficiency, resiliency poses another inexorable problem to massive HPC systems.
+In small scales, it usually suffices to assume failures occur negligibly, with any that do transpire simply causing an (acceptably rare) global interruption or failure.
+At large scales, however, software crashes and hardware failures become the rule rather than the exception \cite{dongarra2014applied} --- at some point reaching completion requires so many retries as to be practically infeasible.
+
+A typical contemporary approach to improve resiliency is checkpointing: the runtime periodically records global state then, when a failure arises, progress is kicked off from the most recent global known-good state \cite{hursey2007design}.
+Global checkpoint-based recovery is expensive, especially at scale due to overhead associated with regularly recording global state, losing progress since the most recent checkpoint, and actually performing a global teardown and restart procedure.
+% In fact, at large enough scales global recovery durations could conceivably exceed mean time between failures, making any forward simulation progress all but impossible \cite{dongarra2014applied}.
+The local failure, local recovery (LFLR) paradigm eschews global recovery by maintaining persistent state on a process-wise basis and providing a recovery function to initialize a step-in replacement process \cite{heroux2014toward,teranishi2014toward}.
+In practice, such an approach can require keeping running logs of all messaging traffic in order to replay them for the benefit of any potential step-in replacement \cite{chakravorty2004fault}.
+% Returning once more to the double dutch analogy, LFLR would transpire as something like a handful of teammates pulling a stricken teammate aside to catch them up after an amnesia attack (rather than starting the entire team's routine back at the top of the current track).
+% The intervening jumpers would have to remind the stricken teammate of a previously recorded position then discreetly re-feign some of their moves that the stricken teammate had cued off of between that recorded position and the amnesia episode.
+The possibility of multiple simultaneous failure (perhaps, for example, of dozens of processes resident on a single node) poses an even more difficult, although not insurmountable, challenge for LFLR.
+
+One extension of the LFLR strategy involves pairing up with a remote ``buddy'' process.
+The ``buddy'' hangs onto the focal process' snapshots and is carbon-copied on all of that process' messages in order to ensure an independently survivable log.
+Unfortunately, this could potentially require forwarding all messaging traffic between simulation elements coresident on the focal process to its buddy, dragging inter-node communication into some otherwise trivial simulation operations \cite{chakravorty2007fault}.
+Efforts to ensure resiliency beyond single-node failures currently appear unnecessary \cite[p. 12]{ni2016mitigation}.
+Even though LFLR saves the cost of global spin-down and spin-up, all processes will potentially have to wait for work lost since the last checkpoint to be recompleted, although in some cases this could be helped along by tapping idle hardware to take over delinquent work from the failed process and help catch it up \cite{dongarra2014applied}.
+
+\subsection{Soft errors}
+
+Still more insidious to the reliable digital machine model, though, are soft errors --- events where corruption of data in memory occurs, usually due to environmental interference (i.e., ``cosmic rays'') \cite{karnik2004characterization}.
+Further miniaturization and voltage reduction, assumed as a likely vehicle for continuing advances in hardware efficiency and performance, could worsen susceptibility to such errors \cite{dongarra2014applied,kajmakovic2020challenges}.
+
+What makes soft errors so dangerous is their potential undetectability.
+Unlike typical hardware or software failures, which result in an explicit, observable outcome (i.e., an error code, an exception, or even just a crash), soft errors can transpire silently and lead to incorrect computational results without leaving anyone the wiser.
+Luckily, soft errors occur rarely enough to be largely neglected in most single-processor applications (except the most safety-critical settings); however, at scale soft errors occur at a non-trivial rate \cite{sridharan2015memory,scoles2018cosmic}.
+Redundancy (be it duplicated hardware components or error correction codes) can reduce the rate of uncorrected (or at least undetected) soft errors, although at a non-trivial cost \cite{vankeirsbilck2015soft,sridharan2015memory}.
+In some application domains with symmetries or conservation principles, the rate of soft errors (or, at least, silent soft errors) could also be reduced through so-called ``skeptical'' assertions at runtime \cite{dongarra2014applied}, although this too comes at a cost.
