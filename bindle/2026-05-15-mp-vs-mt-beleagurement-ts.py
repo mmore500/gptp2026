@@ -277,7 +277,7 @@ def _(group_cols, np, pathlib, pd, plt, result, sns, tp):
         teeplot_subdir=pathlib.Path(__file__).stem,
     ) as _g:
         _g.set(ylim=(0, None))
-        _g.figure.set_size_inches(3, 2)
+        _g.figure.set_size_inches(2.5, 1.6)
         _g.set_titles("")
 
         _g.map_dataframe(
