@@ -139,7 +139,7 @@ Likely, these approaches will prove most effective in conjunction.
 Within evolving microbial populations, genes that elevate mutation rate cause frequent harmful mutations but, on the other hand, create rare beneficial mutations --- a fundamental trade-off known to be sensitive to population size \cite{raynes2018sign}.
 % Existing single-CPU agent-based simulation work suggests that increased population size should generally favor the proliferation of mutator alleles due to ``hitch-hiking'' effects associated with beneficial mutation discovery.
 % However, in contrast to this expectation, this outcome is often not the case in large asexual populations found in nature.
-% To address this knowledge gap, we leveraged the 850,000-processor Cerebras Wafer-Scale Engine (WSE)'
+% To address this knowledge gap, we leveraged the 850,000-processor Cerebras Wafer-Scale Engine (WSE)
 % In benchmarks, WSE provided $294\times$ speedup over GPU and $111{,}091\times$ speedup over single-core CPU execution.
 To explore how selection acts on such ``mutator alleles'' in spatially structured populations, we harnessed WSE-2 hardware to run large-scale agent-based evolution simulations \cite{moreno2025hypermutatorsc}.
 % Among other results, our experiments indicate that limitation of adaptive potential (i.e., few beneficial mutations available) can produce a tertiary regime where complete mutator allele takeover becomes disfavored at very large population sizes.
@@ -179,5 +179,5 @@ Among other results, time-series data revealed that even in circumstances where 
 % % https://github.com/mmore500/hypermutator-dynamics/blob/90422b30f2dd9ca29baad273cbcc676dbfeab55f/binder/wse-denovo-spatial2d-explicitsite-genomes.ipynb
 % In scenarios where mutators fix, surviving patches of nonmutators dwindle away entirely (panel \ref{fig:dynamics:fixation}).
 % Where nonmutators persist, they re-establish via concentric growth from surviving pockets (panel \ref{fig:dynamics:no-fixation}).
-% This DOTO allowed us to assess the fact that mutators transiently peak at well above the majority of population composition.
+% This approach allowed us to assess the fact that mutators transiently peak at well above the majority of population composition.
 % \input{fig/peaksweep}
