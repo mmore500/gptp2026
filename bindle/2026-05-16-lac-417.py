@@ -465,6 +465,7 @@ def _(
         ]
         if _s in _data_combined["Significance"].unique()
     ]
+    _x_order = ["Base\nline", "With\nlac-417"]
 
     with tp.teed(
         sns.catplot,
@@ -479,7 +480,7 @@ def _(
         ],
         row="Kind",
         x=allocation_idx_mapped_title,
-        order=["Base\nline", "With\nlac-417"],
+        order=_x_order,
         y="Value",
         hue="Significance",
         hue_order=_hue_order,
@@ -519,6 +520,43 @@ def _(
             )
         for _ax in _g.axes[1, :].flat:
             _ax.set_ylim(1.6 * np.array(_ax.get_ylim()))
+
+        # subtle color-matched box plot outlines behind the strip points,
+        # with transparent fill so the underlying points stay legible
+        for _i, _row_val in enumerate(_g.row_names):
+            for _j, _col_val in enumerate(_g.col_names):
+                _ax = _g.axes[_i, _j]
+                _facet_df = _data_combined[
+                    (_data_combined["Kind"] == _row_val)
+                    & (_data_combined["Metric"] == _col_val)
+                ]
+                for _k, _xval in enumerate(_x_order):
+                    _facet_x_df = _facet_df[
+                        _facet_df[allocation_idx_mapped_title] == _xval
+                    ]
+                    _vals = _facet_x_df["Value"].dropna()
+                    if _vals.empty:
+                        continue
+                    _box_color = _sig_palette[
+                        _facet_x_df["Significance"].iloc[0]
+                    ]
+                    _bp = _ax.boxplot(
+                        _vals,
+                        positions=[_k],
+                        widths=0.6,
+                        patch_artist=True,
+                        showfliers=False,
+                        manage_ticks=False,
+                        zorder=0.5,
+                    )
+                    for _part in ("boxes", "whiskers", "caps", "medians"):
+                        for _artist in _bp[_part]:
+                            _artist.set_color(_box_color)
+                            _artist.set_alpha(0.6)
+                            _artist.set_linewidth(1)
+                    for _box in _bp["boxes"]:
+                        _box.set_facecolor("none")
+
         sns.despine(fig=_g.figure, bottom=True)
         sns.move_legend(
             _g,
