@@ -56,6 +56,8 @@
 \makeatother
 
 \usepackage{makeidx}         % allows index generation
+\makeindex                   % preview aid: typeset \MyIndex entries locally
+                             % (the volume editors generate the book-wide index)
 \ifdefined\nofake
   \usepackage{graphicx}      % standard LaTeX graphics tool
 \else
@@ -158,5 +160,7 @@
 % \subincludefrom (rather than \includefrom) appends to the parent
 % import path so the parent main.tex's \import{tex/}{...} keeps working.
 \subincludefrom{Authors/Moreno/}{Author}
+
+\printindex
 
 \end{document}

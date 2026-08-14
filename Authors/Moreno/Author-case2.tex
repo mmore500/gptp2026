@@ -49,7 +49,7 @@ In WSE-based experiments, agent migrations across the chip pose substantial logi
 On WSE, instrumentation must be lightweight because memory used comes at the direct cost of simulation capacity.
 Even were sufficient memory and bandwidth available, a complete evolutionary history --- upwards of a quadrillion replication events in some simulations \cite{singhvi2025scalable} --- would be impractical in its entirety; instead, means are needed to extract a representative summary.
 
-In evolutionary studies, one key aspect of history is phylogeny --- the structure of ancestry relationships among organisms \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lenski2003evolutionary}.
+In evolutionary studies, one key aspect of history is phylogeny\MyIndex{phylogeny} --- the structure of ancestry relationships among organisms \cite{faithConservationEvaluationPhylogenetic1992, STAMATAKIS2005phylogenetics,frenchHostPhylogenyShapes2023,kim2006discovery,lenski2003evolutionary}.
 In addition to tracing the history of evolutionary events \cite{dawkins2016ancestor,hedges2015tree,hinchliff2015synthesis}, phylogenetic analysis can test more general questions about the underlying mode and tempo of evolution \cite{felsenstein1985phylogenies}.
 Classically, these analyses have been applied to species-level macroevolution; however, population- and organism-level dynamics can also be inferred \cite{genthon2023cell, levy2015quantitative,stadler2013recovering,Moreno2025ecology,lewinsohnStatedependentEvolutionaryModels2023a,nozoe2017inferring}.
 Phylogeny data can also be leveraged in proactive efforts to influence the trajectory of an evolving population \cite{Scott2018}.
@@ -63,7 +63,7 @@ Finally, digital phylogenies additionally serve as a useful testbed for bioinfor
 % Notably, in this domain, phylogeny data underpins core metrics for measuring ongoing system change \cite{dolson2019modes}.
 
 To collect ancestry data from WSE experiments, we have adopted strategies inspired by real-world experiments that assume data collection is expensive, limited, and non-deterministic.
-Rather than exhaustively tracking parent-child relationships \cite{dolson2023phylotrackpy}, we adopt an approach inspired by bioengineered lineage tracking \cite{moreno2022hereditary} --- in which progressive DNA barcode inserts identify closely related organisms by shared commonalities \cite{Masuyama2019,konno2022deep,jones2020inference,kebschull2018cellular,pan2026integrative,jones2024spatiotemporal}.
+Rather than exhaustively tracking parent-child relationships \cite{dolson2023phylotrackpy}, we adopt an approach inspired by bioengineered lineage tracking\MyIndex{lineage tracking} \cite{moreno2022hereditary} --- in which progressive DNA barcode inserts identify closely related organisms by shared commonalities \cite{Masuyama2019,konno2022deep,jones2020inference,kebschull2018cellular,pan2026integrative,jones2024spatiotemporal}.
 We implement this approach using single-bit markers as barcodes \cite{moreno2025testing}, stored within a fixed-capacity 64-bit genome region; once full, markers overwrite each other to maintain an approximate record \cite{moreno2024algorithms}.
 In contrast to scenarios where the chronological order of random mutations is unknown \cite{gabor2017genealogical,moreno2021case},
 the known timing of injected barcodes allows reconstruction of phylogenetic trees by simple agglomerative trie-building over shared prefix sequences \cite{moreno2023toward,singhvi2025scalable}.
@@ -95,7 +95,7 @@ Runtime parity checks confirmed that this phenomenon did not compromise on-devic
 In this case, best-effort resilience allowed work to continue uninterrupted over the following two months the chip remained in service.
 While clear localization in this case made excluding bad data easy, a lightweight checksum over each PE's exported data could readily handle more generalized transfer faults (barring rare checksum collisions).
 
-Hardware faults are inescapable in large-scale HPC \cite{gupta2017failures,navaux2023challenges}, reaching upwards of daily occurrence in some systems \cite{kokolis2025revisiting}.
+Hardware faults\MyIndex{fault tolerance} are inescapable in large-scale HPC \cite{gupta2017failures,navaux2023challenges}, reaching upwards of daily occurrence in some systems \cite{kokolis2025revisiting}.
 Faults are typically handled by checkpoint rollbacks \cite{gupta2017failures,zhu2025understanding}.
 In some flagship workloads, such checkpointing consumes on the order of 100PB of high-bandwidth disk capacity \cite{frontiere2025cosmological}.
 In highly integrated platforms, such as the WSE, challenges are compounded by the fact that small failures can compromise much larger hardware units \cite{cerebras2025yield}.
