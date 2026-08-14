@@ -330,7 +330,9 @@ def _(df_long, mpl, palette, pathlib, plt, sns, tp):
         _offset_text.set_x(-0.32)
         # canvas shrunk 1.3/2 to enlarge other text on the page; hold this
         # element's on-page size constant by counter-scaling its font size
-        _offset_text.set_fontsize(_offset_text.get_fontsize() * 117.36 / 144.45)
+        _offset_text.set_fontsize(
+            _offset_text.get_fontsize() * 117.36 / 144.45
+        )
 
         # matplotlib auto-raises the intranode facet's title at draw time to
         # dodge its "1e5" offset text (internode has no offset text, so its
@@ -490,7 +492,9 @@ def _(data, mo, palette, pathlib, plt, scipy_stats, sns, tp):
         # canvas shrunk from the original 2in to enlarge other text on the
         # page; hold this element's on-page size constant by counter-scaling
         # its font size against the original (pre-shrink) bbox height
-        _offset_text.set_fontsize(_offset_text.get_fontsize() * 115.7 / 161.118)
+        _offset_text.set_fontsize(
+            _offset_text.get_fontsize() * 115.7 / 161.118
+        )
         _ax.set_xticklabels(["lac\n220", "lac\n221"])
 
     _pivot2 = _data2.pivot(

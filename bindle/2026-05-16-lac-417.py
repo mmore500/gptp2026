@@ -537,7 +537,9 @@ def _(
                     _vals = _facet_x_df["Value"].dropna()
                     if _vals.empty:
                         continue
-                    _box_color = _sig_palette[_facet_x_df["Significance"].iloc[0]]
+                    _box_color = _sig_palette[
+                        _facet_x_df["Significance"].iloc[0]
+                    ]
                     _bp = _ax.boxplot(
                         _vals,
                         positions=[_k],
