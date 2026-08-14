@@ -342,6 +342,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             for _s in _sig_full_order
             if _s in _cond_df["Significance"].unique()
         ]
+        _x_order = [64, 256]
         with tp.teed(
             sns.catplot,
             data=_cond_df,
@@ -355,7 +356,7 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             ],
             row="Kind",
             x="Num Processes",
-            order=[64, 256],
+            order=_x_order,
             y="Value",
             hue="Significance",
             hue_order=_hue_order,
@@ -375,16 +376,65 @@ def _(data_max, data_median, np, pathlib, pd, plt, scipy_stats, sns, tp):
             teeplot_show=True,
             teeplot_subdir=pathlib.Path(__file__).stem,
         ) as _g:
-            _g.figure.set_size_inches(9.8, 1.6)
+            _g.figure.set_size_inches(8.3, 1.36)
             _g.set_titles(col_template="{col_name}", row_template="{row_name}")
             _g.set(ylim=(0, None), xlabel="Num Processes", ylabel="")
             plt.subplots_adjust(hspace=0.2, wspace=0.7)
             for _ax in _g.axes.flat:
                 _ax.ticklabel_format(style="sci", axis="y", scilimits=(-4, 3))
-                _ax.yaxis.get_offset_text().set_x(-0.25)
+                _ax.yaxis.get_offset_text().set_x(-0.3)
                 _ax.yaxis.get_offset_text().set_y(0.5)
+                _ax.yaxis.get_offset_text().set_fontsize(9)
+            # matplotlib auto-raises a facet's title at draw time to dodge
+            # its offset text (columns without offset text keep their
+            # titles at the default position, creating a ragged title
+            # row); passing an explicit y disables that autoposition so
+            # all titles line up
+            for _a in _g.axes.flat:
+                _a.set_title(
+                    _a.title.get_text(),
+                    y=1.02,
+                    fontsize=_a.title.get_fontsize() * 0.9,
+                )
             for _ax in _g.axes[1, :].flat:
                 _ax.set_ylim(1.6 * np.array(_ax.get_ylim()))
+
+            # subtle color-matched box plot outlines behind the strip
+            # points, with transparent fill so the points stay legible
+            for _i, _row_val in enumerate(_g.row_names):
+                for _j, _col_val in enumerate(_g.col_names):
+                    _ax = _g.axes[_i, _j]
+                    _facet_df = _cond_df[
+                        (_cond_df["Kind"] == _row_val)
+                        & (_cond_df["Metric"] == _col_val)
+                    ]
+                    for _k, _xval in enumerate(_x_order):
+                        _facet_x_df = _facet_df[
+                            _facet_df["Num Processes"] == _xval
+                        ]
+                        _vals = _facet_x_df["Value"].dropna()
+                        if _vals.empty:
+                            continue
+                        _box_color = _sig_palette[
+                            _facet_x_df["Significance"].iloc[0]
+                        ]
+                        _bp = _ax.boxplot(
+                            _vals,
+                            positions=[_k],
+                            widths=0.6,
+                            patch_artist=True,
+                            showfliers=False,
+                            manage_ticks=False,
+                            zorder=0.5,
+                        )
+                        for _part in ("boxes", "whiskers", "caps", "medians"):
+                            for _artist in _bp[_part]:
+                                _artist.set_color(_box_color)
+                                _artist.set_alpha(0.6)
+                                _artist.set_linewidth(1)
+                        for _box in _bp["boxes"]:
+                            _box.set_facecolor("none")
+
             sns.despine(fig=_g.figure, bottom=True)
             sns.move_legend(
                 _g,
