@@ -56,7 +56,7 @@ In existing work, best-effort relaxations have been shown to improve speed \cite
 Best-effort approaches, however, involve important drawbacks (Figure \ref{moreno:fig:best-effort:tradeoffs}).
 Most obviously, best-effort computation abandons bitwise reproducibility\MyIndex{reproducibility} --- the guarantee that repeating a computation will produce an identical result \cite{menon2025reproducibility}.
 In addition to introducing stochastic noise, such relaxation can undermine qualitative integrity and reproducibility by unpredictably biasing results.
-For instance, in the context of EC, asynchronous fitness evaluation\MyIndex{asynchronous evaluation}\MyIndex{fitness evaluation} can implicitly disfavor slower-to-evaluate solutions \cite{scott2015understanding,scott2016evaluation,scott2022avoiding,guijt2023impact,karns2025evaluation}.
+For instance, in the context of EC, asynchronous fitness evaluation\MyIndex{asynchronous evaluation} can implicitly disfavor slower-to-evaluate solutions \cite{scott2015understanding,scott2016evaluation,scott2022avoiding,guijt2023impact,karns2025evaluation}.
 In tandem, algorithms become more opaque, as they are no longer fully described independent from an underlying execution context.
 
 Given these drawbacks, prudent integration of best-effort approaches will require careful consideration.
