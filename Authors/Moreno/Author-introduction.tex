@@ -2,24 +2,24 @@
 \label{moreno:sec:introduction}
 \vspace{-2.0ex}
 
-Relative to instances of digital evolution \textit{in silico}, biological evolution operates at nearly incomprehensible scale.
+Relative to instances of digital evolution\MyIndex{digital evolution} \textit{in silico}, biological evolution operates at nearly incomprehensible scale.
 It has been estimated that the biosphere hosts $5 \times 10^{30}$ living cells and on the order of $5.3 \times 10^{37}$ DNA base pairs --- a workload analogized to the storage and processing capacity of between $10^{20}$ and $10^{21}$ supercomputers circa 2015 \cite{Landenmark2015}.
 % Indeed, at present, detailed simulation at the scope of individual biological cells is only beginning to materialize \cite{Thornburg2026}.
 As such, many interesting biological processes remain out of reach of satisfactory modeling experiments.
 Rapid generational turnover in digital evolution often comes at the cost of small population sizes \cite{moreno2022engineering}.
 This limitation hinders computational experiments incorporating many-species eco-evolutionary dynamics and evolutionary transitions in individuality (e.g., multicellularity, eusociality) \cite{penczykowski2016understanding,alizon2012modelling,schreiber2021cross}.
-In the field of artificial life, such cross-scale processes are of great interest in exploring how evolution can produce ongoing complexity, novelty, and adaptation \cite{taylor2016open,dolson2021digital,taylor2019evolutionary,ackley2014indefinitely}.
+In the field of artificial life\MyIndex{artificial life}, such cross-scale processes are of great interest in exploring how evolution can produce ongoing complexity, novelty, and adaptation \cite{taylor2016open,dolson2021digital,taylor2019evolutionary,ackley2014indefinitely}.
 Indeed, evidence suggests such experiments have been meaningfully constrained by computational scale \cite{channon2019maximum}.
 
 Analogous limitations in computational scale, in retrospect, turn out to have profoundly influenced connectionist approaches to artificial intelligence \cite{kaplan2020scaling}.
 Deep learning has gained prominence in tandem with growth in training set sizes, parameter counts, and training FLOPs \cite{marcus2018deep}.
 % --- accomplished, in part, by tailoring deep learning architecture to available hardware \cite{krizhevsky2012imagenet}.
-Since then, AI/ML workloads have brought to market powerful next-generation compute accelerators affording up to hundreds of thousands of processing cores (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras) \cite{zhang2016cambricon,emani2021accelerating,jia2019dissecting,medina2020habana}.
-These accelerator devices are anticipated to drive advances in both agent-based modeling (ABM) and high-performance computing (HPC) writ large \cite{perumalla2022computer,VanEssendelft2025}, and opportunity exists to benefit digital evolution.
+Since then, AI/ML workloads have brought to market powerful next-generation compute accelerators\MyIndex{hardware accelerators} affording up to hundreds of thousands of processing cores (e.g., by Tenstorrent, Groq, Graphcore, SambaNova, and Cerebras) \cite{zhang2016cambricon,emani2021accelerating,jia2019dissecting,medina2020habana}.
+These accelerator devices are anticipated to drive advances in both agent-based modeling (ABM) and high-performance computing (HPC)\MyIndex{high-performance computing} writ large \cite{perumalla2022computer,VanEssendelft2025}, and opportunity exists to benefit digital evolution.
 % The emerging class of fabric-based accelerators, led by the 880,000 core Cerebras CS-3 Wafer-Scale Engine (WSE) \cite{lauterbach2021path,lie2022cerebras,TODOCS3}, holds particular promise as a vehicle for digital evolution.
 
 To maximize compute throughput, emerging accelerator platforms exploit highly distributed dataflow architectures --- though this can come at the cost of on-device memory scarcity and locality.
-For instance, to pack 880,000 processors onto a single chip, the Cerebras Wafer-Scale Engine (WSE) platform provisions only 48kB memory per processor, introduces multi-hop message routing, and allows data export only from the chip periphery.
+For instance, to pack 880,000 processors onto a single chip, the Cerebras Wafer-Scale Engine (WSE)\MyIndex{wafer-scale engine} platform provisions only 48kB memory per processor, introduces multi-hop message routing, and allows data export only from the chip periphery.
 These constraints mirror broader trends in HPC where data storage and movement are becoming more expensive relative to compute \cite{Buluc2021,khan2021analysis,gholami2024ai}.
 
 % Due to physical constraints associated with existing computing technology, over the last decades, high-performance computational capability has grown through scaling-out rather than souping-up \cite{sutter2005free}.
@@ -29,7 +29,7 @@ Effectively harnessing AI/ML accelerators for scientific computing thus poses su
 In the case of digital evolution, a key challenge is tracking population dynamics across a vast, highly distributed fabric of memory-constrained processors.
 Such data collection can be essential to digital evolution work.
 Hypothesis-driven computational experiments are scientifically useful only insofar as they are interpretable and observable \cite{casti1997wouldbe}.
-Likewise, in the context of application-oriented evolutionary computation (EC), diagnostic information is necessary to troubleshoot, tune parameters, and develop theory \cite{hernandez2022dossier,Hooker1995}.
+Likewise, in the context of application-oriented evolutionary computation (EC)\MyIndex{evolutionary computation}, diagnostic information is necessary to troubleshoot, tune parameters, and develop theory \cite{hernandez2022dossier,Hooker1995}.
 
 In some regards, computational costs and constraints arising around data storage and movement resemble the logistical costs and constraints faced in research studying real-world systems.
 Rather than ``complete,'' deterministic data observability, most real-world studies instead rely on dynamic, query-driven sampling --- a paradigm we term ``inferential observability.''
@@ -45,22 +45,22 @@ However, past a certain point, data precision has essentially negligible practic
 
 \input{fig/best-effort.tex}
 
-Here, we explore incorporating \textit{best-effort computing} approaches into digital evolution work.
+Here, we explore incorporating \textit{best-effort computing}\MyIndex{best-effort computing} approaches into digital evolution work.
 This paradigm broadens processing beyond deterministic logical transforms --- a near-universal assumption of scientific computing \cite{chakradhar2010best,rinard2012unsynchronized}, except in unusual circumstances \cite{desell2009robust}.
-Though outside our primary focus, best-effort computing intertwines with related topics of \textit{approximate computing} (which emphasizes bypassing non-essential computation) and \textit{randomized algorithms} (which typically harness statistical properties of pseudorandomness) \cite{Buluc2021,mittal2016survey,menon2023approximate}.
+Though outside our primary focus, best-effort computing intertwines with related topics of \textit{approximate computing}\MyIndex{approximate computing} (which emphasizes bypassing non-essential computation) and \textit{randomized algorithms}\MyIndex{randomized algorithms} (which typically harness statistical properties of pseudorandomness) \cite{Buluc2021,mittal2016survey,menon2023approximate}.
 
 Best-effort relaxations can allow \textit{asynchronicity} (e.g., transmission delays, data races, jitter, straggler effects), \textit{data attrition} (e.g., memory constraint, transmission failure, hardware crashout), and \textit{data corruption} (e.g., soft errors, partial writes, analog approximation) (Figure \ref{moreno:fig:best-effort:types}).
 Due to the economy of error detection in digital computing \cite{hamming1950error} (e.g., via parity, checksums, duplicate operations, inverse checks, or skeptical assertions), we narrow focus to handle data corruption as simple data attrition \cite{ackley2013beyond}.
 
 In existing work, best-effort relaxations have been shown to improve speed \cite{kasap2018dynamic,chakrapani2008probabilistic}, energy efficiency \cite{chakrapani2008probabilistic,bocquet2018memory}, solution quality \cite{rinard2013parallel}, and scalability \cite{meng2009best}.  % TODO fault tolerance
 Best-effort approaches, however, involve important drawbacks (Figure \ref{moreno:fig:best-effort:tradeoffs}).
-Most obviously, best-effort computation abandons bitwise reproducibility --- the guarantee that repeating a computation will produce an identical result \cite{menon2025reproducibility}.
+Most obviously, best-effort computation abandons bitwise reproducibility\MyIndex{reproducibility} --- the guarantee that repeating a computation will produce an identical result \cite{menon2025reproducibility}.
 In addition to introducing stochastic noise, such relaxation can undermine qualitative integrity and reproducibility by unpredictably biasing results.
-For instance, in the context of EC, asynchronous fitness evaluation can implicitly disfavor slower-to-evaluate solutions \cite{scott2015understanding,scott2016evaluation,scott2022avoiding,guijt2023impact,karns2025evaluation}.
+For instance, in the context of EC, asynchronous fitness evaluation\MyIndex{asynchronous evaluation}\MyIndex{fitness evaluation} can implicitly disfavor slower-to-evaluate solutions \cite{scott2015understanding,scott2016evaluation,scott2022avoiding,guijt2023impact,karns2025evaluation}.
 In tandem, algorithms become more opaque, as they are no longer fully described independent from an underlying execution context.
 
 Given these drawbacks, prudent integration of best-effort approaches will require careful consideration.
-We suggest, in particular, two mitigations: domain-appropriate scoping of allowed relaxations and, for relaxations that are incorporated, monitoring of runtime quality of service (QoS) \cite{karakus2017quality}.
+We suggest, in particular, two mitigations: domain-appropriate scoping of allowed relaxations and, for relaxations that are incorporated, monitoring of runtime quality of service (QoS)\MyIndex{quality of service} \cite{karakus2017quality}.
 
 To structure discussion of these mitigations, we frame a best-effort system's runtime activity in three parts: (1) an underlying \textit{core computation}, (2) \textit{observation} of that computation's intermediate and final states, and (3) \textit{instrumentation} of runtime behavior (Figure \ref{moreno:fig:best-effort:components}).
 In the context of digital evolution, \textit{core computation} would comprise runtime operations that influence an end-state population and \textit{observation} would include operations to record lineage histories, discrete evolutionary events, or aggregate population statistics.

@@ -9,7 +9,7 @@ Digital evolution experiments exploring how these transitions unfold can be comp
 % Infrastructure for such experiments therefore provides a germane testbed to explore HPC methods for digital evolution.
 
 In this case study, we test the performance characteristics of a best-effort multiprocessing framework developed to support the DISHTINY platform, which targets such experiments \cite{moreno2019toward}.
-This system tracks a fixed-capacity population of virtual cells controlled by event-driven linear genetic programs (GP) \cite{lalejini2018evolving}, which may form cooperative groups with local neighbors \cite{moreno2021exploring}.
+This system tracks a fixed-capacity population of virtual cells controlled by event-driven linear genetic programs (GP)\MyIndex{genetic programming}\MyIndex{linear genetic programming} \cite{lalejini2018evolving}, which may form cooperative groups with local neighbors \cite{moreno2021exploring}.
 
 To support multiprocessing, DISHTINY routes all cell-cell interactions through a communication layer implemented by the Conduit library \cite{moreno2021conduit}.
 \unskip\footnote{%
@@ -41,7 +41,7 @@ By incrementing this value upon receipt, it increases by two for each successful
 }.
 In addition to recording final counter values at completion, a background thread polled counters once per minute to collect values bookending a one-second ``snapshot'' window.
 
-To profile compute-heavy conditions representative of island-model EC, DISHTINY profiling assigned a grid size of 3{\small,}600 cells per process (a widely used default \cite{ofria2004avida}).
+To profile compute-heavy conditions representative of island-model EC\MyIndex{island model}, DISHTINY profiling assigned a grid size of 3{\small,}600 cells per process (a widely used default \cite{ofria2004avida}).
 For efficiency, Conduit was configured to consolidate communication between processes to single bulk transfers once per update cycle.
 % This benchmark thus reflects a compute-intensive, rather than communication-intensive, workload.
 
@@ -91,7 +91,7 @@ Formulas to calculate these metrics from timestamped instrumentation counter val
 \label{moreno:sec:case1:scaling-efficiency}
 \vspace{-2.0ex}
 
-To test whether best-effort relaxations can improve scaling efficiency, we compared execution speeds across trials harnessing 1, 4, 16, and 64 processes.
+To test whether best-effort relaxations can improve scaling efficiency\MyIndex{scalability}, we compared execution speeds across trials harnessing 1, 4, 16, and 64 processes.
 Allocations were configured with one process per cluster node at constant problem size per process (i.e., weak scaling).
 
 % We considered two measures of performance: computational steps executed per unit time and, for the graph-coloring problem, solution quality achieved within a fixed-duration run window.
