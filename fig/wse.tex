@@ -1,55 +1,61 @@
-\begin{figure}
+\begin{figure}[htbp]
+  \centering
 
-\centering
-\subfigure[\footnotesize Wafer-Scale Engine architecture]{
-  \label{moreno:fig:wse:architecture}
-  \includegraphics[width=\linewidth]{img/wse-architecture}
-}
+  % --- Subfigure A ---
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/wse-architecture.pdf}
+    \caption{Wafer-Scale Engine architecture}
+    \label{moreno:fig:wse:architecture}
+  \end{subfigure}
 
-\vspace{2ex}
+  \vspace{2ex}
 
-\begin{minipage}{0.3\linewidth}
-\subfigure[\footnotesize encountered h/w anomaly]{
-  \includegraphics[width=\linewidth]{../binder/binder-2026-03-23-d2h-memcpy-diagnostics.ipynb/binder/teeplots/2026-03-23-d2h-memcpy-diagnostics/viz=heatmap+ext=.pdf}
-  \label{moreno:fig:wse:fault}
-}%
-\end{minipage}%
-\begin{minipage}{0.7\linewidth}
-\subfigure[\footnotesize sampling-based estimation of evolutionary history]{
-  \includegraphics[width=\linewidth]{img/wse-phylogeny}
-  \label{moreno:fig:wse:phylogeny}
-}
-\end{minipage}
+  % --- Subfigures B & C (Side-by-side row) ---
+  \begin{subfigure}{0.3\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/viz=heatmap+ext=.pdf}
+    \caption{encountered h/w anomaly}
+    \label{moreno:fig:wse:fault}
+  \end{subfigure}%
+  \begin{subfigure}{0.7\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/wse-phylogeny.pdf}
+    \caption{sampling-based estimation of evolutionary history}
+    \label{moreno:fig:wse:phylogeny}
+  \end{subfigure}
 
-\vspace{2ex}
+  \vspace{2ex}
 
-% https://docs.google.com/presentation/d/1kn24rzx6Wyqk6sMxubkFevnUSXRjL5UW6r71Mg-rNMk
-% https://github.com/mmore500/hstrat-synthesis/blob/fa615ab1c9909a2442e36a0756291c194cca3ca7/binder/teeplots/2026-03-04-fossil-foliage/viz%3Dsubplots%2Bext%3D.png
-% https://github.com/mmore500/hstrat-synthesis/blob/8e34ac63dd20ede894354760bc9519027f6baecd/binder/teeplots/2026-03-18-260225-btqc-lineage-pure-s00-dsamp/cmap%3Dbcyr%2Bregime%3Dpure%2Bseed%3D0%2Bviz%3Ddraw-cscatter%2Bx%3Dx%2By%3Dy%2Bext%3D.png
-% https://github.com/mmore500/hstrat-synthesis/blob/8e34ac63dd20ede894354760bc9519027f6baecd/binder/teeplots/2026-03-18-260225-btqc-lineage-pure-s00-dsamp/invert%3Dxy%2Blayout%3Dvertical%2Bregime%3Dpure-mask%2Bseed%3D0%2Bviz%3Ddraw-ctree%2Bx%3Dx%2By%3Dy%2Bext%3D.png
-\subfigure[\footnotesize directional migration bias along lineage histories under neutral evolution]{
+  % --- Subfigure D ---
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/wse-bias.pdf}
+    \caption{directional migration bias along lineage histories under neutral evolution}
     \label{moreno:fig:wse:bias}
-  \includegraphics[width=\linewidth]{img/wse-bias}
-}
+  \end{subfigure}
 
-\vspace{2ex}
+  \vspace{2ex}
 
-\subfigure[\footnotesize fixed-capacity strategy for best-effort recording of spatiotemporal hypermutator dynamics]{
+  % --- Subfigure E ---
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/wse-timeseries.pdf}
+    \caption{fixed-capacity strategy for best-effort recording of spatiotemporal hypermutator dynamics}
     \label{moreno:fig:wse:timeseries}
-  \includegraphics[width=\linewidth]{img/wse-timeseries}
-}
+  \end{subfigure}
 
-\vspace{2ex}
+  \vspace{2ex}
 
-\caption{
-\textbf{Accelerator-based HPC Case Study.}
-\footnotesize
-Wafer-Scale Engine (WSE) architecture arranges independent processing elements (PEs) in a grid lattice (panel \subref{moreno:fig:wse:architecture}).
-To accommodate constraints in host-device communication and on-device memory, lineage histories can be estimated using a best-effort approach via barcode-like markers in sparsely sampled genomes (panel \subref{moreno:fig:wse:phylogeny}).
-Such a strategy gracefully tolerates missing data, such as occurred in a persistent device-to-host transfer fault on one WSE-3 chip (panel \subref{moreno:fig:wse:fault}).
-Migration between per-PE subpopulations is also conducted asynchronously;
-before correction, a small directional bias in migration rates biased long-term lineage histories (panel \subref{moreno:fig:wse:bias}).
-In experiments exploring the evolution of hypermutator traits, where recording duration was unknown \textit{a priori}, time series records of local hypermutator prevalence were curated on a best-effort basis using a generalized ring buffer (panel \subref{moreno:fig:wse:timeseries}, hypermutators in black; video at \url{https://hopth.ru/ej}).
-}
-\label{moreno:fig:wse}
+  % --- Main Caption ---
+  \caption{
+    \textbf{Accelerator-based HPC Case Study.}~%
+    Wafer-Scale Engine (WSE) architecture arranges independent processing elements (PEs) in a grid lattice (panel~\subref{moreno:fig:wse:architecture}).
+    To accommodate constraints in host-device communication and on-device memory, lineage histories can be estimated using a best-effort approach via barcode-like markers in sparsely sampled genomes (panel~\subref{moreno:fig:wse:phylogeny}).
+    Such a strategy gracefully tolerates missing data, such as occurred in a persistent device-to-host transfer fault on one WSE-3 chip (panel~\subref{moreno:fig:wse:fault}).
+    Migration between per-PE subpopulations is also conducted asynchronously;
+    before correction, a small directional bias in migration rates biased long-term lineage histories (panel~\subref{moreno:fig:wse:bias}).
+    In experiments exploring the evolution of hypermutator traits, where recording duration was unknown \textit{a priori}, time series records of local hypermutator prevalence were curated on a best-effort basis using a generalized ring buffer (panel~\subref{moreno:fig:wse:timeseries}, hypermutators in black; video at \url{https://hopth.ru/ej}).
+  }
+  \label{moreno:fig:wse}
 \end{figure}
