@@ -1,4 +1,13 @@
+% NB: keep every panel's \caption/\label as a direct child of its
+% subfigure environment, never inside a nested minipage.  subcaption
+% patches \label to also record the sub@<label> entry that \subref reads,
+% and that patch does not survive a nested minipage under LaTeX 2025-06-01
+% (it does under older kernels), which silently turns each \subref in the
+% figure caption below into "??" on up-to-date TeX installations.
 \begin{figure}
+% pull sub-captions up toward the panel they label; the inter-panel
+% \vspace below then pushes the next panel away.  Scoped to this figure.
+\captionsetup[sub]{skip=2pt}
 
 \centering
 \begin{subfigure}{\linewidth}
@@ -7,44 +16,38 @@
   \label{moreno:fig:cpu:architecture}
 \end{subfigure}
 
-\vspace{-0.5ex}
+\vspace{0.5ex}
 \centering
 \begin{subfigure}{\linewidth}
-\begin{minipage}{\linewidth}
   \includegraphics[width=\linewidth]{../bindle/bindle-2026-05-16-perf-quality/bindle/teeplots/2026-05-16-perf-quality/col=panel+hue=asynchronicity-mode+kind=line+viz=perf-quality-delta-onerow+x=ncpus+y=value+ext=.pdf}
-\vspace{-5ex}
+\vspace{-7ex}
   \caption{comparison of best-effort vs. synchronous performance scaling; higher values worse}
   \label{moreno:fig:cpu:performance}
-\end{minipage}%
 \end{subfigure}
 
-\vspace{-0.5ex}
+\vspace{0.5ex}
 
 \begin{subfigure}{\linewidth}
-\begin{minipage}{\linewidth}
   \centering
 \includegraphics[width=\linewidth]{../bindle/bindle-2026-05-16-weak-scaling/bindle/teeplots/2026-05-16-weak-scaling/col=metric+cpus_per_node=1+hue=significance+kind=strip+marker=x+num_simels_per_cpu=2048+row=kind+viz=catplot+x=num-processes+y=value+ext=.pdf}
-  \vspace{-2ex}
+  \vspace{-3.7ex}
   \caption{stability of median and extreme QoS under best-effort scaling; higher values worse}
   \label{moreno:fig:cpu:qos-scaling}
-\end{minipage}%
 \end{subfigure}
 
-\vspace{-0.5ex}
+\vspace{0.5ex}
 
 \begin{subfigure}{\linewidth}
-\begin{minipage}{\linewidth}
   \centering
   \includegraphics[width=\linewidth]{../bindle/bindle-2026-05-16-lac-417/bindle/teeplots/2026-05-16-lac-417/col=metric+hue=significance+kind=strip+marker=x+row=kind+viz=catplot+x=0-sans-lac-417-1-with-lac-417+y=value+ext=.pdf}
-\vspace{-2ex}
+\vspace{-3.7ex}
   \caption{effect of anomalous node on median and extreme QoS; higher values worse}
   \label{moreno:fig:cpu:lac417}
-\end{minipage}%
 \end{subfigure}
 
-\vspace{-0.5ex}
+\vspace{0.5ex}
 
-\begin{subfigure}{0.45\linewidth}
+\begin{subfigure}[b]{0.45\linewidth}
 \begin{minipage}{\linewidth}
 \centering
 \begin{minipage}[t]{0.65\linewidth}
@@ -66,23 +69,19 @@
 \caption{intranode snapshot cycle profiles}
 \label{moreno:fig:cpu:intranode}
 \end{subfigure}%
-\begin{subfigure}{0.3\linewidth}
-\begin{minipage}{\linewidth}
+\begin{subfigure}[b]{0.3\linewidth}
 \centering
   \includegraphics[height=1in]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement/col=multiprocessing+hue=hostname+kind=line+style=indexx+viz=relplot+x=type+y=count-per-second+ext=.pdf}%
+  \vspace{-1.2ex}
   \caption{msg. balance diagnostic}
-  \label{moreno:fig:cpu:balance}%
-  \vspace{0.6ex}
-\end{minipage}
+  \label{moreno:fig:cpu:balance}
 \end{subfigure}%
-\begin{subfigure}{0.25\linewidth}
-\begin{minipage}{\linewidth}
+\begin{subfigure}[b]{0.25\linewidth}
 \centering
   \includegraphics[height=1in]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement/hue=hostname+kind=box+viz=catplot+x=hostname+y=ms-per-update+ext=.pdf}%
+  \vspace{-1.2ex}
   \caption{internode perf.}
-  \label{moreno:fig:cpu:internode}%
-  \vspace{0.6ex}
-\end{minipage}
+  \label{moreno:fig:cpu:internode}
 \end{subfigure}%
 
 \vspace{-0.5ex}
