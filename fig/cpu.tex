@@ -5,6 +5,9 @@
 % (it does under older kernels), which silently turns each \subref in the
 % figure caption below into "??" on up-to-date TeX installations.
 \begin{figure}
+% pull sub-captions up toward the panel they label; the inter-panel
+% \vspace below then pushes the next panel away.  Scoped to this figure.
+\captionsetup[sub]{skip=2pt}
 
 \centering
 \begin{subfigure}{\linewidth}
@@ -13,7 +16,7 @@
   \label{moreno:fig:cpu:architecture}
 \end{subfigure}
 
-\vspace{-0.5ex}
+\vspace{0.5ex}
 \centering
 \begin{subfigure}{\linewidth}
   \includegraphics[width=\linewidth]{../bindle/bindle-2026-05-16-perf-quality/bindle/teeplots/2026-05-16-perf-quality/col=panel+hue=asynchronicity-mode+kind=line+viz=perf-quality-delta-onerow+x=ncpus+y=value+ext=.pdf}
@@ -22,7 +25,7 @@
   \label{moreno:fig:cpu:performance}
 \end{subfigure}
 
-\vspace{-0.5ex}
+\vspace{0.5ex}
 
 \begin{subfigure}{\linewidth}
   \centering
@@ -32,7 +35,7 @@
   \label{moreno:fig:cpu:qos-scaling}
 \end{subfigure}
 
-\vspace{-0.5ex}
+\vspace{0.5ex}
 
 \begin{subfigure}{\linewidth}
   \centering
@@ -42,7 +45,7 @@
   \label{moreno:fig:cpu:lac417}
 \end{subfigure}
 
-\vspace{-0.5ex}
+\vspace{0.5ex}
 
 \begin{subfigure}[b]{0.45\linewidth}
 \begin{minipage}{\linewidth}
@@ -69,12 +72,14 @@
 \begin{subfigure}[b]{0.3\linewidth}
 \centering
   \includegraphics[height=1in]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement/col=multiprocessing+hue=hostname+kind=line+style=indexx+viz=relplot+x=type+y=count-per-second+ext=.pdf}%
+  \vspace{-1.2ex}
   \caption{msg. balance diagnostic}
   \label{moreno:fig:cpu:balance}
 \end{subfigure}%
 \begin{subfigure}[b]{0.25\linewidth}
 \centering
   \includegraphics[height=1in]{../bindle/bindle-2026-05-15-mp-vs-mt-beleagurement/bindle/teeplots/2026-05-15-mp-vs-mt-beleagurement/hue=hostname+kind=box+viz=catplot+x=hostname+y=ms-per-update+ext=.pdf}%
+  \vspace{-1.2ex}
   \caption{internode perf.}
   \label{moreno:fig:cpu:internode}
 \end{subfigure}%
