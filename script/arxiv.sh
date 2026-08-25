@@ -26,9 +26,10 @@ mkdir -p "${stage}/img"
 
 # arXiv wants one self-contained submission: no external \include chain,
 # and (per arXiv's own submission guidance) a pre-compiled .bbl rather
-# than a .bib/.bst pair, since automated bibtex invocation on arXiv's end
-# is unreliable for nonstandard styles like the Springer spmpsci.bst used
-# here. So flatten the *whole* manuscript (not just the chapter, as
+# than relying on their build to invoke bibtex, which is unreliable for
+# nonstandard styles like the Springer spmpsci.bst used here (reference.bib
+# is dropped for the same reason -- it's not needed once the bibliography
+# is inlined). So flatten the *whole* manuscript (not just the chapter, as
 # moreno-chapter.zip does for the Springer submission) into one file with
 # the bibliography inlined.
 
@@ -98,8 +99,13 @@ PERL_EOF
 rm "${stage}/arxiv.tex.raw"
 
 # ship the document class -- svmult isn't part of standard TeX Live, so
-# arXiv's build needs its own copy
+# arXiv's build needs its own copy. Ship spmpsci.bst too: the inlined
+# .bbl means it's never actually read, but \bibliographystyle{spmpsci}
+# is still present in arxiv.tex (latexpand's --expand-bbl only replaces
+# the \bibliography command), and arXiv's submission-completeness
+# scanner flags that as a missing dependency if the .bst isn't included.
 cp svmult.cls "${stage}/"
+cp tex/spmpsci.bst "${stage}/"
 
 rm -f "${out_zip}"
 out_zip_abs="${repo_root}/${out_zip}"
