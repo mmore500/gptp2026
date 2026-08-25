@@ -32,11 +32,14 @@ moreno-chapter.zip: tex/Authors/Moreno/Author.tex
 # arXiv submission zip: flattens the whole manuscript (chapter plus its
 # book-level preamble) into a single arxiv.tex, with the bibliography
 # already compiled to .bbl and its graphics localized alongside -- see
-# script/arxiv.sh for why. Depends on the draft PDF for its .bbl
-# byproduct, since the manuscript source is identical between draft and
-# release builds.
+# script/arxiv.sh for why. Depends on the draft PDF for its Author.bbl
+# byproduct (named after the chapter, not the jobname, because
+# document.tex's chapterbib package gives each \subincludefrom'd chapter
+# its own independent bibtex run); the manuscript source is identical
+# between draft and release builds, so the draft build is reused here to
+# avoid a second full compile.
 arxiv.zip: tex/document.tex ${BUILD_DIR}-draft.pdf
-	./script/arxiv.sh arxiv.zip ${BUILD_DIR}-draft.bbl
+	./script/arxiv.sh arxiv.zip Author.bbl
 
 ${BUILD_DIR}-manuscript.pdf: ${BUILD_DIR}.pdf
 	pdftk ${BUILD_DIR}.pdf cat 1-$$(( $(RELEASE_SUPPLEMENT_PAGE) - 1 )) output ${BUILD_DIR}-manuscript.pdf

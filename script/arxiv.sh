@@ -7,7 +7,11 @@ cd "${script_dir}/.."
 repo_root="$(pwd)"
 
 out_zip="${1:-arxiv.zip}"
-bbl="${2:-${repo_root}/gptp2026-draft.bbl}"
+# document.tex loads chapterbib, which gives each \subincludefrom'd
+# chapter its own independent bibtex run keyed to the chapter's own file
+# basename rather than \jobname -- so building gptp2026-draft.pdf leaves
+# the compiled bibliography at Author.bbl, not gptp2026-draft.bbl.
+bbl="${2:-${repo_root}/Author.bbl}"
 
 if [ ! -f "${bbl}" ]; then
   echo "error: bibliography file '${bbl}' not found" >&2
