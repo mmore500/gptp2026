@@ -47,6 +47,8 @@ jobs:
           cd tex && latexmk -pdf -interaction=nonstopmode -file-line-error ../supplement.tex
       - name: Build template zip
         run: make moreno-chapter.zip
+      - name: Build arXiv zip
+        run: make arxiv.zip
       - name: Prepare deploy directory
         run: |
           mkdir -p deploy
@@ -68,6 +70,11 @@ jobs:
         with:
           name: template-zip
           path: moreno-chapter.zip
+      - name: Upload arXiv zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: arxiv-zip
+          path: arxiv.zip
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
